@@ -1,33 +1,24 @@
 package mapreducesim.execution;
 
 import mapreducesim.core.SimProcess;
+import mapreducesim.tasks.SimpleMapTask;
 import mapreducesim.tasks.WorkTask;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Process;
 
-public class WorkerProcess extends SimProcess {
-	private boolean working;
+//TODO: error stuff and such
+public abstract class WorkerProcess extends SimProcess {
+	protected TaskTrackerProcess parent;
+	protected WorkTask task;
+	public final double failureRate = 0.001;
 
-	public WorkerProcess(Host host, String name) {
+	public WorkerProcess(Host host, String name, TaskTrackerProcess parent, WorkTask task) {
 		super(host, name);
+		this.parent = parent;
+		this.timeElapsed = parent.getTimeElapsed();
+		this.task = task;
 	}
 
-	public void handleWorkTask(WorkTask task) throws MsgException {
-		if (!working) {
-			long timeToWork = task.calculateWorkLength(this);
-			working = true;
-			long worked = 0;
-			while (worked < timeToWork) {
-				step();
-				worked += 10;
-			}
-			working = false;
-		}
-	}
-
-	public boolean isWorking() {
-		return working;
-	}
 }
