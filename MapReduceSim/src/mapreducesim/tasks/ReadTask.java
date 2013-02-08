@@ -9,6 +9,7 @@ import mapreducesim.core.SimFile.SimFileLocation;
 
 public class ReadTask extends Task {
 	private int timeTaken;
+	private SimFile readFile;
 	private SimFileLocation location;
 	private boolean readDone;
 
@@ -31,8 +32,13 @@ public class ReadTask extends Task {
 
 	public void finishRead(SimFile readFile) {
 		readDone = true;
+		this.readFile = readFile;
 		HostData hostData = (HostData) this.getSource().getData();
 		hostData.addFile(readFile);
+	}
+
+	public SimFile getReadFile() {
+		return readFile;
 	}
 
 	public boolean isReadDone() {

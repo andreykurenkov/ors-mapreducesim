@@ -18,6 +18,8 @@ public abstract class WorkTask extends Task {
 	public final List<SimFileLocation> NEEDED_FILES;
 	public final long WORK_AMOUNT;
 	public final Type TYPE;
+	public SimFileLocation outout;
+	public boolean finished;
 
 	public WorkTask(List<SimFileLocation> files, long workAmount, Type type) {
 		this.WORK_AMOUNT = workAmount;
@@ -28,7 +30,5 @@ public abstract class WorkTask extends Task {
 	public Type getType() {
 		return TYPE;
 	}
-
-	public abstract Process getExecutionProcess(Host host, String name, TaskTrackerProcess parent);
 
 }
