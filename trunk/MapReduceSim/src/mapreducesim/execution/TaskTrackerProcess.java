@@ -19,10 +19,10 @@ import mapreducesim.tasks.WorkTask;
 import mapreducesim.util.SafeParsing;
 
 public class TaskTrackerProcess extends SimProcess {
-	private int numMapSlots;
-	private int numReduceSlots;
-	private int numMapRunning;
-	private int numReduceRunning;
+	private int numMapSlots, numMapRunning;
+	private int numReduceSlots, numReduceRunning;
+
+	private int mapCount, reduceCount;
 
 	private int timeUntilNextHeartbeat;
 
@@ -36,7 +36,7 @@ public class TaskTrackerProcess extends SimProcess {
 			numMapSlots = SafeParsing.safeIntParse(args[0], 2, "args[0] (int numMap) wrong format for TaskTracker at "
 					+ this.getHost());
 		else
-			numMapSlots = 40;
+			numMapSlots = 20;
 
 		if (args.length > 1)
 			numReduceSlots = SafeParsing.safeIntParse(args[1], 2, "args[1] (int numReduce) wrong format for TaskTracker at "
@@ -76,28 +76,37 @@ public class TaskTrackerProcess extends SimProcess {
 		return numMapSlots > numReduceRunning;
 	}
 
+	protected WorkerProcess getMapperProcess(Host host, String name, WorkTask workTask) {
+		return new SimpleMapperProcess(host, name, this, workTask);
+	}
+
+	protected WorkerProcess getReducerProcess(Host host, String name, WorkTask workTask) {
+		return new SimpleReduceProcess(host, name, this, workTask);
+	}
+
 	protected void handleTask(Task received) {
 		if (received instanceof WorkTask) {
 			WorkTask workTask = (WorkTask) received;
-			String name = null;
+			WorkerProcess process = null;
 			switch (workTask.getType()) {
 			case MAP:
 				if (hasMapSlots()) {
 					numMapRunning++;
-					name = this.getHost().getName() + " Mapper " + numMapRunning;
+					mapCount++;
+					process = getMapperProcess(host, this.getHost().getName() + " Mapper " + mapCount, workTask);
 				}
 				break;
 			case REDUCE:
 				if (hasMapSlots()) {
 					numReduceRunning++;
-					name = this.getHost().getName() + " Reducer " + numReduceRunning;
+					reduceCount++;
+					process = getReducerProcess(host, this.getHost().getName() + " Reducer " + reduceCount, workTask);
 				}
 				break;
 			}
-			if (name != null) {
+			if (process != null) {
 				try {
-					Process work = workTask.getExecutionProcess(this.getHost(), name, this);
-					work.start();
+					process.start();
 				} catch (HostNotFoundException e) {
 					e.printStackTrace();
 				}
