@@ -1,0 +1,3 @@
+go to the bin folder, then run:
+
+java -cp .:/opt/simgrid-java/java/simgrid.jar scheduler/SchedulerMain ../testfiles/plat.xml ../testfiles/depl.xml
