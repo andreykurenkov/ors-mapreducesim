@@ -2,11 +2,11 @@
  <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
  <platform version="3">
  	<AS id="main" routing="Full">
- 	<host id="jobtracker" power="10000" state="ON" />
- 	<host id="jobsubmitter" power="1" state="ON" />
- 	<host id="tasktracker1" power="1" state="ON" />
- 	<host id="tasktracker2" power="1" state="ON" />
- 	<host id="tasktracker3" power="1" state="ON" />
+ 	<host id="JobTracker" power="10000" state="ON" />
+ 	<host id="JobSubmitter" power="1" state="ON" />
+ 	<host id="TaskTracker1" power="1" state="ON" />
+ 	<host id="TaskTracker2" power="1" state="ON" />
+ 	<host id="TaskTracker3" power="1" state="ON" />
  	<link id="link1" bandwidth="1E7" latency="0.001" />
  	<route src="jobtracker" dst="jobsubmitter">
  		<link_ctn id="link1"/>
