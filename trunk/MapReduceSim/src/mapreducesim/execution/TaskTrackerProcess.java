@@ -52,7 +52,7 @@ public class TaskTrackerProcess extends SimProcess {
 					(new HeartbeatTask()).send(JobTrackerInterface.MAILBOX);
 					timeUntilNextHeartbeat = JobTrackerInterface.HEARTBEAT_INTERVAL;
 				}
-			} catch (TransferFailureException | HostFailureException | TimeoutException e1) {
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 

@@ -1,7 +1,6 @@
 package mapreducesim.execution;
 
 import mapreducesim.core.SimProcess;
-import mapreducesim.tasks.SimpleMapTask;
 import mapreducesim.tasks.WorkTask;
 
 import org.simgrid.msg.Host;
