@@ -4,9 +4,10 @@ import mapreducesim.core.MapReduceSimMain;
 import mapreducesim.core.SimFile;
 import mapreducesim.core.SimFile.SimFileLocation;
 import mapreducesim.core.SimProcess;
-import mapreducesim.tasks.ReadTask;
+import mapreducesim.tasks.FileTransferTask;
 import mapreducesim.tasks.WorkTask;
-import mapreducesim.tasks.WriteTask;
+import mapreducesim.tasks.FileTransferTask.WriteFileRequestTask;
+import mapreducesim.tasks.FileTransferTask.ReadFileRequestTask;
 import mapreducesim.util.ExceptionUtil;
 
 import org.simgrid.msg.Comm;
@@ -30,12 +31,13 @@ public class SimpleMapperProcess extends WorkerProcess {
 		// read needed files
 		int totalSize = 0;
 		for (SimFileLocation neededFile : task.NEEDED_FILES) {
-			ReadTask read = new ReadTask(neededFile);
+			ReadFileRequestTask read = new ReadFileRequestTask(neededFile);
 			read.send(StorageInterface.MAILBOX);
-			while (!read.isReadDone()) {
-				this.step();
+			Task transferTask = Task.receive(this.MAILBOX);
+			while (!(transferTask instanceof FileTransferTask)) {
+				transferTask = Task.receive(this.MAILBOX);
 			}
-			totalSize += read.getReadFile().getSize();
+			totalSize += ((FileTransferTask) transferTask).getTransferFile().getSize();
 		}
 		// Do map task
 		Msg.info(this.getHost().getName() + " starting Map" + task + " at " + this.getTimeElapsed());
@@ -46,11 +48,9 @@ public class SimpleMapperProcess extends WorkerProcess {
 		Msg.info(this.getHost().getName() + " finishing Map" + task + " at " + this.getTimeElapsed());
 		// Write output
 		SimFile outputFile = new SimFile(this.getHost().getName() + " output", totalSize);
-		WriteTask write = new WriteTask(outputFile, this.getHost());
+		WriteFileRequestTask write = new WriteFileRequestTask(outputFile, this.getHost());
 		write.send(StorageInterface.MAILBOX);
-		while (!write.isWriteDone()) {
-			this.step();
-		}
+
 		this.kill();
 	}
 
