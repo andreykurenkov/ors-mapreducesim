@@ -1,0 +1,16 @@
+<jobSubmissions>
+	<job>
+		<map>
+			<task preferredLocation="host1" />
+		</map>
+		<reduce>
+		
+		</reduce>
+	
+	</job>
+	
+	<job submissionTime="30">
+	
+	
+	</job>
+</jobSubmissions>
