@@ -8,8 +8,6 @@ import org.simgrid.msg.NativeException;
 
 public class MapReduceSimMain {
 
-	public static final long SIM_STEP = 10;
-
 	public static void main(String[] args) throws NativeException {
 		/* check usage error and initialize with defaults */
 		if (args.length == 0) {

@@ -1,5 +1,8 @@
 package mapreducesim.core;
 
+import mapreducesim.core.HostData;
+import mapreducesim.core.MapReduceSimMain;
+
 import org.simgrid.msg.Host;
 import org.simgrid.msg.HostFailureException;
 import org.simgrid.msg.MsgException;
@@ -9,7 +12,8 @@ import org.simgrid.msg.Task;
 public abstract class SimProcess extends Process {
 
 	protected boolean finished;
-	protected int timeElapsed;
+	// this is meant to store how much time was spent working in any Process
+	protected double timeElapsed;
 	public final String MAILBOX;
 
 	public SimProcess() {
@@ -22,13 +26,12 @@ public abstract class SimProcess extends Process {
 		MAILBOX = host.getName();
 	}
 
-	protected void step() throws HostFailureException {
-		this.waitFor(MapReduceSimMain.SIM_STEP);
+	protected void elapseTime(double amountOfTIme) throws HostFailureException {
+		sleep(MapReduceSimMain.SIM_STEP);
 		timeElapsed += MapReduceSimMain.SIM_STEP;
 	}
 
-	protected Task stepAndCheckTask() throws MsgException {
-		step();
+	protected Task checkTask() throws MsgException {
 		Task received = Task.receive(MAILBOX);
 		return received;
 	}

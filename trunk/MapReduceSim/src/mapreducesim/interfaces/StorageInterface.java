@@ -1,4 +1,4 @@
-package mapreducesim.execution;
+package mapreducesim.interfaces;
 
 public interface StorageInterface {
 	public final static String MAILBOX = "Storage";
