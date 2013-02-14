@@ -15,6 +15,7 @@ import org.simgrid.msg.Process;
 import mapreducesim.core.MapReduceSimMain;
 import mapreducesim.core.SimFile;
 import mapreducesim.core.SimProcess;
+import mapreducesim.interfaces.JobTrackerInterface;
 import mapreducesim.tasks.WorkTask;
 import mapreducesim.util.SafeParsing;
 

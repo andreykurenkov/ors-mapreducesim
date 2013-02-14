@@ -4,16 +4,17 @@ import org.simgrid.msg.Host;
 import org.simgrid.msg.Task;
 
 import mapreducesim.core.HostData;
-import mapreducesim.core.SimFile;
-import mapreducesim.core.SimFile.SimFileLocation;
+import mapreducesim.storage.File;
+import mapreducesim.storage.File.FileLocation;
+import mapreducesim.storage.File;
 
 public class FileTransferTask extends Task {
 	private int timeTaken;
-	private SimFile transferFile;
-	private SimFileLocation location;
+	private File transferFile;
+	private FileLocation location;
 	private boolean readDone;
 
-	public FileTransferTask(SimFileLocation location) {
+	public FileTransferTask(FileLocation location) {
 		this.timeTaken = 0;
 		this.location = location;
 	}
@@ -26,18 +27,18 @@ public class FileTransferTask extends Task {
 		this.timeTaken = timeTaken;
 	}
 
-	public SimFileLocation getLocation() {
+	public FileLocation getFileLocation() {
 		return location;
 	}
 
-	public void finishRead(SimFile readFile) {
+	public void finishRead(File readFile) {
 		readDone = true;
 		this.transferFile = readFile;
 		HostData hostData = (HostData) this.getSource().getData();
 		hostData.addFile(readFile);
 	}
 
-	public SimFile getTransferFile() {
+	public File getTransferFile() {
 		return transferFile;
 	}
 
@@ -46,14 +47,14 @@ public class FileTransferTask extends Task {
 	}
 
 	public static class ReadFileRequestTask extends Task {
-		private SimFileLocation location;
+		private FileLocation location;
 		private boolean readDone;
 
-		public ReadFileRequestTask(SimFileLocation location) {
+		public ReadFileRequestTask(FileLocation location) {
 			this.location = location;
 		}
 
-		public SimFileLocation getLocation() {
+		public FileLocation getFileLocation() {
 			return location;
 		}
 
@@ -64,10 +65,10 @@ public class FileTransferTask extends Task {
 
 	public static class WriteFileRequestTask extends Task {
 		private int timeTaken;
-		private SimFile file;
+		private File file;
 		private Host destination;
 
-		public WriteFileRequestTask(SimFile file, Host destination) {
+		public WriteFileRequestTask(File file, Host destination) {
 			this.timeTaken = 0;
 			this.file = file;
 			this.destination = destination;
@@ -81,7 +82,7 @@ public class FileTransferTask extends Task {
 			this.timeTaken = timeTaken;
 		}
 
-		public SimFile getFile() {
+		public File getFile() {
 			return file;
 		}
 

@@ -4,6 +4,7 @@ import mapreducesim.core.MapReduceSimMain;
 import mapreducesim.core.SimFile;
 import mapreducesim.core.SimFile.SimFileLocation;
 import mapreducesim.core.SimProcess;
+import mapreducesim.interfaces.StorageInterface;
 import mapreducesim.tasks.FileTransferTask;
 import mapreducesim.tasks.WorkTask;
 import mapreducesim.tasks.FileTransferTask.WriteFileRequestTask;
