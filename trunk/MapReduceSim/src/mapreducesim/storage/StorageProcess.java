@@ -8,7 +8,7 @@ import mapreducesim.execution.StorageInterface;
 import mapreducesim.tasks.FileTransferTask.*;
 
 public class StorageProcess extends SimProcess {
-	private int filesize;
+	//private int filesize;
 	
 	public StorageProcess(Host host, String name) {
 		super(host, name);
@@ -25,13 +25,12 @@ public class StorageProcess extends SimProcess {
 				//update the actual filesystem, etc.
 				Msg.info("Writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at " + this.getTimeElapsed());
 				//simulate the expense
-				long costRemaining = 1; //dummy value for now...
+				long costRemaining = 6; //dummy value for now...
 				while (costRemaining > 0) {
 					costRemaining -= MapReduceSimMain.SIM_STEP;
 				}
 				Msg.info("Finished writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at " + this.getTimeElapsed());
-				//mark task complete
-				//currentTask.finalize();
+				((WriteFileRequestTask) currentTask).cancel(); //TODO: another way to mark task complete?
 			}
 			
 			if (currentTask instanceof ReadFileRequestTask) { //read task
@@ -43,8 +42,7 @@ public class StorageProcess extends SimProcess {
 					costRemaining -= MapReduceSimMain.SIM_STEP;
 				}
 				Msg.info("Finished reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at " + this.getTimeElapsed());
-				//mark task complete
-				//currentTask.finalize();
+				((ReadFileRequestTask) currentTask).cancel(); //mark task complete (?)
 			}
 				
 			}

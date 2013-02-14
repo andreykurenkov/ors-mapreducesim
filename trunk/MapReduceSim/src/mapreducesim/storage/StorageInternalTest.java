@@ -25,20 +25,20 @@ public class StorageInternalTest {
 		System.out.println("Path to this directory: '" + tree.getRootElement().getChildAtPosition(0).getPath() + "'");
 		System.out.println("Path to this directory: '" + tree.getRootElement().getChildAtPosition(1).getPath() + "'");
 		
-		//Add some files to one of the directories
-		System.out.println("Adding some files...");
-		File file1 = new File(dir1, "file");
-		File file2 = new File(dir1, "anotherfile");
-		dir2.addChild(file1);
-		dir2.addChild(file2);
-		System.out.println("Path to this file: '" + file1.getPath() + "'");
-		System.out.println("Path to this file: '" + file2.getPath() + "'");
+		//Add some FSFiles to one of the directories
+		System.out.println("Adding some FSFiles...");
+		FSFile FSFile1 = new FSFile(dir1, "FSFile");
+		FSFile FSFile2 = new FSFile(dir1, "anotherFSFile");
+		dir2.addChild(FSFile1);
+		dir2.addChild(FSFile2);
+		System.out.println("Path to this FSFile: '" + FSFile1.getPath() + "'");
+		System.out.println("Path to this FSFile: '" + FSFile2.getPath() + "'");
 		
-		//Add a bunch more files
-		dir1.addChild(new File(dir1, "uenatoshueoh"));
-		dir1.addChild(new File(dir1, "utehoatsuh"));
-		dir1.addChild(new File(dir1, "utnsehoastuh"));
-		dir1.addChild(new File(dir1, "uehtoasthu"));
+		//Add a bunch more FSFiles
+		dir1.addChild(new FSFile(dir1, "uenatoshueoh"));
+		dir1.addChild(new FSFile(dir1, "utehoatsuh"));
+		dir1.addChild(new FSFile(dir1, "utnsehoastuh"));
+		dir1.addChild(new FSFile(dir1, "uehtoasthu"));
 		
 		//Print the contents of directories
 		dir2.ls();
