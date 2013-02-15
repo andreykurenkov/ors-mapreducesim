@@ -13,8 +13,8 @@ public class SimpleReduceProcess extends WorkerProcess {
 	private TaskTrackerProcess parent;
 	public final double failureRate = 0.001;
 
-	public SimpleReduceProcess(Host host, String name, TaskTrackerProcess parent, WorkTask task) {
-		super(host, name, parent, task);
+	public SimpleReduceProcess(Host host, String name, String mailbox, TaskTrackerProcess parent, WorkTask task) {
+		super(host, name, mailbox, parent, task);
 	}
 
 	@Override

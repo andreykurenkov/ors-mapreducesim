@@ -13,8 +13,8 @@ public abstract class WorkerProcess extends SimProcess {
 	protected WorkTask task;
 	public final double failureRate = 0.001;
 
-	public WorkerProcess(Host host, String name, TaskTrackerProcess parent, WorkTask task) {
-		super(host, name);
+	public WorkerProcess(Host host, String name, String mailbox, TaskTrackerProcess parent, WorkTask task) {
+		super(host, name, null, mailbox);
 		this.parent = parent;
 		this.timeElapsed = parent.getTimeElapsed();
 		this.task = task;

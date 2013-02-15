@@ -16,14 +16,27 @@ public abstract class SimProcess extends Process {
 	protected double timeElapsed;
 	public final String MAILBOX;
 
-	public SimProcess() {
-		MAILBOX = host.getName();
-		this.getHost().setData(new HostData());
+	/**
+	 * Default constructor for Processes needs to be used as part of framework.
+	 * 
+	 * @param host
+	 * @param name
+	 * @param args
+	 */
+	public SimProcess(Host host, String name, String[] args, String mailbox) {
+		super(host, name, args);
+		MAILBOX = mailbox;
 	}
 
-	public SimProcess(Host host, String name) {
-		super(host, name);
-		MAILBOX = host.getName();
+	/**
+	 * Default constructor for Processes needs to be used as part of framework.
+	 * 
+	 * @param host
+	 * @param name
+	 * @param args
+	 */
+	public SimProcess(Host host, String name, String[] args) {
+		this(host, name, args, host.getName());
 	}
 
 	protected void elapseTime(double amountOfTIme) throws HostFailureException {
@@ -45,7 +58,7 @@ public abstract class SimProcess extends Process {
 		return finished;
 	}
 
-	public int getTimeElapsed() {
+	public double getTimeElapsed() {
 		return timeElapsed;
 	}
 }

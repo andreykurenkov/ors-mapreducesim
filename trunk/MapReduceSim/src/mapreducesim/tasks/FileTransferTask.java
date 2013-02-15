@@ -11,12 +11,11 @@ import mapreducesim.storage.File;
 public class FileTransferTask extends Task {
 	private int timeTaken;
 	private File transferFile;
-	private FileLocation location;
 	private boolean readDone;
 
-	public FileTransferTask(FileLocation location) {
+	public FileTransferTask(File transferFile) {
 		this.timeTaken = 0;
-		this.location = location;
+		this.transferFile = transferFile;
 	}
 
 	public int getTimeTaken() {
@@ -25,10 +24,6 @@ public class FileTransferTask extends Task {
 
 	public void setTimeTaken(int timeTaken) {
 		this.timeTaken = timeTaken;
-	}
-
-	public FileLocation getFileLocation() {
-		return location;
 	}
 
 	public void finishRead(File readFile) {
@@ -49,9 +44,11 @@ public class FileTransferTask extends Task {
 	public static class ReadFileRequestTask extends Task {
 		private FileLocation location;
 		private boolean readDone;
+		public final String originMailbox;
 
-		public ReadFileRequestTask(FileLocation location) {
+		public ReadFileRequestTask(FileLocation location, String origin) {
 			this.location = location;
+			originMailbox = origin;
 		}
 
 		public FileLocation getFileLocation() {

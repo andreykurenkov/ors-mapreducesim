@@ -2,19 +2,18 @@
 <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
 <platform version="3">
         <!--add your mapping between process and hosts here-->
-        <process host="JobTracker" function="scheduler.FIFOScheduler">
+        <process host="JobTracker" function="mapreducesim.execution.TestClass.TestJobTracker">
                 <argument value="Alive!"/>
         </process>
-        <process host="JobSubmitter" function="scheduler.JobSubmitter">
-                <argument value="job1"/>
+        <process host="Storage" function="mapreducesim.execution.TestClass.TestStorage">
         </process>
-        <process host="TaskTracker1" function="scheduler.TestTaskTracker">
+        <process host="TaskTracker1" function="mapreducesim.execution.TaskTrackerProcess">
         	
         </process>
-        <process host="TaskTracker2" function="scheduler.TestTaskTracker">
+        <process host="TaskTracker2" function="mapreducesim.execution.TaskTrackerProcess">
         	
         </process>
-        <process host="TaskTracker3" function="scheduler.TestTaskTracker">
+        <process host="TaskTracker3" function="mapreducesim.execution.TaskTrackerProcess">
         	
         </process>
  </platform>
