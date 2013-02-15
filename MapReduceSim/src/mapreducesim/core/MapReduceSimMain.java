@@ -7,6 +7,7 @@ import org.simgrid.msg.Msg;
 import org.simgrid.msg.NativeException;
 
 public class MapReduceSimMain {
+	public static final int SIM_STEP = 10;// generic time passing quantity. May be removed in future.
 
 	public static void main(String[] args) throws NativeException {
 		/* check usage error and initialize with defaults */

@@ -1,37 +1,37 @@
-package mapreducesim.storage;
-
-import org.simgrid.msg.*;
+package mapreducesim.execution;
 
 import mapreducesim.core.MapReduceSimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.interfaces.StorageInterface;
-import mapreducesim.tasks.FileTransferTask.*;
+import mapreducesim.storage.File;
+import mapreducesim.tasks.FileTransferTask;
+import mapreducesim.tasks.FileTransferTask.ReadFileRequestTask;
+import mapreducesim.tasks.FileTransferTask.WriteFileRequestTask;
 
-public class StorageProcess extends SimProcess {
-	// private int filesize;
+import org.simgrid.msg.Host;
+import org.simgrid.msg.Msg;
+import org.simgrid.msg.MsgException;
+import org.simgrid.msg.Task;
 
-	public StorageProcess(Host host, String name, String[] args) {
-		super(host, name, args);
+public class TestStorage extends SimProcess {
+
+	public TestStorage(Host host, String name, String[] args) {
+		super(host, name, args, StorageInterface.MAILBOX);
 	}
 
 	@Override
-	public void main(String[] args) throws TransferFailureException, HostFailureException, TimeoutException {
+	public void main(String[] arg0) throws MsgException {
 		while (!finished) {
 			// get the next task from the storage interface mailbox
-			Task currentTask = Task.receive(StorageInterface.MAILBOX);
+			Task currentTask = Task.receive(MAILBOX);
 			// handle task appropriately
 
 			if (currentTask instanceof WriteFileRequestTask) { // write task
 				// update the actual filesystem, etc.
 				Msg.info("Writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at "
 						+ this.getTimeElapsed());
+				currentTask.execute();
 				// simulate the expense
-				long costRemaining = 6; // dummy value for now...
-				while (costRemaining > 0) {
-					costRemaining -= MapReduceSimMain.SIM_STEP;
-				}
-				Msg.info("Finished writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at "
-						+ Msg.getClock());
 
 			}
 
@@ -43,9 +43,7 @@ public class StorageProcess extends SimProcess {
 				while (costRemaining > 0) {
 					costRemaining -= MapReduceSimMain.SIM_STEP;
 				}
-				Msg.info("Finished reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at "
-						+ this.getTimeElapsed());
-				((ReadFileRequestTask) currentTask).cancel(); // mark task complete (?)
+				(new FileTransferTask(new File(null, "yay"))).send(((ReadFileRequestTask) currentTask).originMailbox);
 			}
 
 		}

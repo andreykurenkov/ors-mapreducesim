@@ -13,7 +13,6 @@ import org.simgrid.msg.TransferFailureException;
 import org.simgrid.msg.Process;
 
 import mapreducesim.core.MapReduceSimMain;
-import mapreducesim.core.SimFile;
 import mapreducesim.core.SimProcess;
 import mapreducesim.interfaces.JobTrackerInterface;
 import mapreducesim.tasks.WorkTask;
@@ -27,8 +26,15 @@ public class TaskTrackerProcess extends SimProcess {
 
 	private int timeUntilNextHeartbeat;
 
-	public TaskTrackerProcess(Host host, String name) {
-		super(host, name);
+	/**
+	 * Default constructor for Processes needs to be used as part of framework.
+	 * 
+	 * @param host
+	 * @param name
+	 * @param args
+	 */
+	public TaskTrackerProcess(Host host, String name, String[] args) {
+		super(host, name, args);
 	}
 
 	@Override
@@ -58,7 +64,7 @@ public class TaskTrackerProcess extends SimProcess {
 			}
 
 			try {
-				Task task = super.stepAndCheckTask();
+				Task task = super.checkTask();
 				timeUntilNextHeartbeat -= MapReduceSimMain.SIM_STEP;
 				if (task != null)
 					handleTask(task);
@@ -78,14 +84,15 @@ public class TaskTrackerProcess extends SimProcess {
 	}
 
 	protected WorkerProcess getMapperProcess(Host host, String name, WorkTask workTask) {
-		return new SimpleMapperProcess(host, name, this, workTask);
+		return new SimpleMapperProcess(host, name, "Mapper for " + workTask.getID(), this, workTask);
 	}
 
 	protected WorkerProcess getReducerProcess(Host host, String name, WorkTask workTask) {
-		return new SimpleReduceProcess(host, name, this, workTask);
+		return new SimpleReduceProcess(host, name, "Reducer for " + workTask.getID(), this, workTask);
 	}
 
 	protected void handleTask(Task received) {
+		Msg.info(this.getHost().getName() + " handling " + received);
 		if (received instanceof WorkTask) {
 			WorkTask workTask = (WorkTask) received;
 			WorkerProcess process = null;
@@ -116,14 +123,14 @@ public class TaskTrackerProcess extends SimProcess {
 	}
 
 	public class HeartbeatTask extends Task {
-		public final int sentAtTime;
+		public final double sentAtTime;
 		public final TaskTrackerProcess from;
 		public final int numMapSlotsLeft;
 		public final int numReduceSlotsLeft;
 
 		public HeartbeatTask() {
+			sentAtTime = Msg.getClock();
 			from = TaskTrackerProcess.this;
-			sentAtTime = from.timeElapsed;
 			numMapSlotsLeft = from.numMapSlots - from.numMapRunning;
 			numReduceSlotsLeft = from.numReduceSlots - from.numReduceRunning;
 		}
