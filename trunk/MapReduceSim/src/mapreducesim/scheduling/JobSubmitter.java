@@ -16,7 +16,7 @@ public class JobSubmitter extends org.simgrid.msg.Process{
 		String jobName = arg0[0];
 		JobSubmission js = new JobSubmission(jobName);
 		
-		js.send("jobtracker");
+		js.send("JobTracker");
 	}
 
 }

@@ -1,7 +1,6 @@
 package mapreducesim.execution;
 
 import mapreducesim.core.SimProcess;
-import mapreducesim.execution.TaskTrackerProcess.HeartbeatTask;
 import mapreducesim.interfaces.JobTrackerInterface;
 import mapreducesim.storage.File.FileLocation;
 import mapreducesim.tasks.WorkTask;
