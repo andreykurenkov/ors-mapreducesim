@@ -2,11 +2,14 @@
 <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
 <platform version="3">
         <!--add your mapping between process and hosts here-->
+        
+        <!-- Andrey, please use the execution test folder to write test deployments for your code -->
+        
+        
         <process host="JobTracker" function="mapreducesim.execution.TestClass.TestJobTracker">
                 <argument value="Alive!"/>
         </process>
-        <process host="Storage" function="mapreducesim.execution.TestClass.TestStorage">
-        </process>
+        
         <process host="TaskTracker1" function="mapreducesim.execution.TaskTrackerProcess">
         	
         </process>

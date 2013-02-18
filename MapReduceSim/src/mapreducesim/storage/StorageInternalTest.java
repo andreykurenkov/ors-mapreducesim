@@ -7,7 +7,7 @@ public class StorageInternalTest {
 		
 		//Create the tree
 		System.out.print("Creating datatree...");
-		DataTree<DataTreeNode> tree = new DataTree<>();
+		DataTree<DataTreeNode> tree = new DataTree<DataTreeNode>();
 		System.out.print("complete.\n");
 		
 		//Add the root node to the tree

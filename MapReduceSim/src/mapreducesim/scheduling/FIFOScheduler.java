@@ -1,6 +1,7 @@
 package mapreducesim.scheduling;
 
-import mapreducesim.execution.TaskTrackerProcess.HeartbeatTask;
+
+import mapreducesim.execution.HeartbeatTask;
 
 import org.simgrid.msg.*;
 

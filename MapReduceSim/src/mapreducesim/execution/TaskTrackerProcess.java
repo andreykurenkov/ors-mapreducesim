@@ -56,7 +56,7 @@ public class TaskTrackerProcess extends SimProcess {
 		while (!finished) {
 			try {
 				if (timeUntilNextHeartbeat <= 0) {
-					(new HeartbeatTask()).send(JobTrackerInterface.MAILBOX);
+					(new HeartbeatTask(this)).send(JobTrackerInterface.MAILBOX);
 					timeUntilNextHeartbeat = JobTrackerInterface.HEARTBEAT_INTERVAL;
 				}
 			} catch (Exception e1) {
@@ -122,18 +122,20 @@ public class TaskTrackerProcess extends SimProcess {
 		}
 	}
 
-	public class HeartbeatTask extends Task {
-		public final double sentAtTime;
-		public final TaskTrackerProcess from;
-		public final int numMapSlotsLeft;
-		public final int numReduceSlotsLeft;
-
-		public HeartbeatTask() {
-			sentAtTime = Msg.getClock();
-			from = TaskTrackerProcess.this;
-			numMapSlotsLeft = from.numMapSlots - from.numMapRunning;
-			numReduceSlotsLeft = from.numReduceSlots - from.numReduceRunning;
-		}
+	/** Boiler plate getters
+	 * 
+	 */
+	public int getNumMapSlots(){
+		return this.numMapSlots;
+	}
+	public int getNumReduceSlots(){
+		return this.numReduceSlots;
+	}
+	public int getNumMapRunning(){
+		return this.numMapRunning;
+	}
+	public int getNumReduceRunning(){
+		return this.numReduceRunning;
 	}
 
 }
