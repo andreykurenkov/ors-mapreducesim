@@ -4,6 +4,7 @@ package mapreducesim.scheduling.test;
 import java.util.Set;
 
 import mapreducesim.execution.HeartbeatTask;
+import mapreducesim.execution.TaskTrackerProcess;
 import mapreducesim.scheduling.HadoopTaskCacheEntry;
 import mapreducesim.scheduling.JobStatus;
 import mapreducesim.scheduling.JobSubmission;
@@ -27,15 +28,25 @@ public class FIFOScheduler extends Scheduler {
 	
 	
 	
-	public void onHeartbeatReceived(HeartbeatTask heartbeat){
-		Msg.info("FIFOScheduler received heartbeat from: "+heartbeat.from.getHost().getName());
+	public void assignTasks(TaskTrackerProcess process){
+		Msg.info("FIFOScheduler received heartbeat from: "+process.getHost().getName());
 		
 		//simple scheduling algorithm
 		
 		//for each map slot available on the task tracker
-		for (int i = 0;i<heartbeat.numMapSlotsLeft;i++){
+		for (int i = 0;i<process.getNumMapSlots()-process.getNumMapRunning();i++){
 			//pick out an appropriate map task
 			HadoopTaskCacheEntry mapTask = pickMapTask();
+			//assign task to that tasktracker
+			
+		}
+		
+		//for each reduce slot available on the task tracker
+		for (int i = 0;i<process.getNumReduceSlots()-process.getNumReduceRunning();i++){
+			//pick out an appropriate map task
+			HadoopTaskCacheEntry reduceTask = pickReduceTask();
+			//assign task to that tasktracker
+			
 		}
 		
 		
@@ -73,4 +84,8 @@ public class FIFOScheduler extends Scheduler {
 		this.currentJob = createNewJobStatus(js);
 		Msg.info("New job submission received (job name '"+this.currentJob.getJobName()+"')");
 	}
+
+
+
+
 }

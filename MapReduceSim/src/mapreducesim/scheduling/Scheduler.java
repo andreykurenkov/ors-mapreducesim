@@ -12,6 +12,7 @@ import org.simgrid.msg.Task;
 import org.simgrid.msg.TimeoutException;
 
 import mapreducesim.execution.HeartbeatTask;
+import mapreducesim.execution.TaskTrackerProcess;
 
 public abstract class Scheduler extends org.simgrid.msg.Process{
 	
@@ -19,13 +20,13 @@ public abstract class Scheduler extends org.simgrid.msg.Process{
 	 * Maintained by the scheduler, keeps track of known TaskTrackers in the simulation
 	 */
 	private Map<String,TaskTrackerCacheEntry> taskTrackerCache;
-	
+		
 	
 	public Scheduler(Host host, String name, String[] args){
 		super(host,name,args);
 		taskTrackerCache = new HashMap<String,TaskTrackerCacheEntry>();
 	}
-	public abstract void onHeartbeatReceived(HeartbeatTask h);
+	public abstract void assignTasks(TaskTrackerProcess t);
 	public abstract void onJobSubmissionReceived(JobSubmission js);
 	
 	@Override
@@ -53,27 +54,8 @@ public abstract class Scheduler extends org.simgrid.msg.Process{
 			Msg.info("Job tracker received job submission: " + js.getJobName());
 			onJobSubmissionReceived((JobSubmission)js);
 		} else if (task instanceof HeartbeatTask) {
-			Msg.info("Job tracker received heartbeat from " + task.getSource().getName());
-			HeartbeatTask hb = (HeartbeatTask)task;
 			
-			
-			// // maintain the tasktracker cache
-			String sourceName = task.getSource().getName();
-			//if this task tracker wasn't in the cache
-			if (!taskTrackerCache.containsKey(sourceName)){
-				//add it to the cache
-				taskTrackerCache.put(sourceName, new TaskTrackerCacheEntry(sourceName,hb.numMapSlotsLeft,hb.numReduceSlotsLeft));
-				Msg.info("Current task tracker cache: "+taskTrackerCache);
-			}
-			//now, update the cached information
-			TaskTrackerCacheEntry entry = taskTrackerCache.get(sourceName);
-			entry.bestKnownMapSlotsAvailable = hb.numMapSlotsLeft;
-			entry.bestKnownReduceSlotsAvailable = hb.numReduceSlotsLeft;
-			//finished updating the cache
-			
-			//invoke the callback method for the actual scheduling algorithm
-			onHeartbeatReceived(hb);
-			
+			onHeartbeatReceived((HeartbeatTask)task);
 		} else {
 			Msg.info("Job tracker ignoring unknown task received: " + task);
 		}
@@ -83,5 +65,31 @@ public abstract class Scheduler extends org.simgrid.msg.Process{
 		return this.taskTrackerCache;
 	}
 	
+	void onHeartbeatReceived(HeartbeatTask task){
+		Msg.info("Job tracker received heartbeat from " + task.getSource().getName());
+		HeartbeatTask hb = (HeartbeatTask)task;
+		
+		
+		// // maintain the tasktracker cache
+		String sourceName = task.getSource().getName();
+		//if this task tracker wasn't in the cache
+		if (!taskTrackerCache.containsKey(sourceName)){
+			//add it to the cache
+			taskTrackerCache.put(sourceName, new TaskTrackerCacheEntry(sourceName,hb.numMapSlotsLeft,hb.numReduceSlotsLeft));
+			Msg.info("Current task tracker cache: "+taskTrackerCache);
+		}
+		//now, update the cached information
+		TaskTrackerCacheEntry entry = taskTrackerCache.get(sourceName);
+		entry.bestKnownMapSlotsAvailable = hb.numMapSlotsLeft;
+		entry.bestKnownReduceSlotsAvailable = hb.numReduceSlotsLeft;
+		//finished updating the cache
+		
+		
+		//health monitoring stuff
+		
+		
+		//invoke the callback method for the actual scheduling algorithm
+		assignTasks(hb.from);
+	}
 	
 }
