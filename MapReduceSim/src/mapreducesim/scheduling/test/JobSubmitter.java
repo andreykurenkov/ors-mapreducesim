@@ -1,4 +1,6 @@
-package mapreducesim.scheduling;
+package mapreducesim.scheduling.test;
+
+import mapreducesim.scheduling.JobSubmission;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.MsgException;
@@ -14,7 +16,11 @@ public class JobSubmitter extends org.simgrid.msg.Process{
 	
 		//first arg is the name of job to submit
 		String jobName = arg0[0];
-		JobSubmission js = new JobSubmission(jobName);
+		//second arg is the number of map tasks
+		int numMap = Integer.parseInt(arg0[1]);
+		//third arg is the number of reduce tasks
+		int numReduce = Integer.parseInt(arg0[2]);
+		JobSubmission js = new JobSubmission(jobName,numMap,numReduce);
 		
 		js.send("JobTracker");
 	}

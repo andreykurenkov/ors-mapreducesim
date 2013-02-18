@@ -1,4 +1,4 @@
-package mapreducesim.scheduling;
+package mapreducesim.scheduling.test;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Msg;

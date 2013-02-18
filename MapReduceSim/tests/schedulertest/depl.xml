@@ -5,8 +5,16 @@
         
         <!-- Andrey, please use the execution test folder to write test deployments for your code -->
         
+        <process host="JobSubmitter" function="mapreducesim.scheduling.test.JobSubmitter">
+        	<!-- job name -->
+        		<argument value="job0" />
+        	<!-- num map tasks -->
+        		<argument value="4" />
+        	<!-- num reduce tasks -->
+        		<argument value="5" />
+        </process>
         
-        <process host="JobTracker" function="mapreducesim.execution.TestClass.TestJobTracker">
+        <process host="JobTracker" function="mapreducesim.scheduling.test.FIFOScheduler">
                 <argument value="Alive!"/>
         </process>
         

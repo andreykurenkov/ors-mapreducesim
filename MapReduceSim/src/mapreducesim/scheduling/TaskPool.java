@@ -9,29 +9,33 @@ import org.simgrid.msg.Task;
 
 public class TaskPool {
 
-	private List<HadoopTask> tasks;
-	private Map<String,List<HadoopTask>> internal_mapByNode;
-	private Map<HadoopTask,String> internal_mapByTask;
+	private List<HadoopTaskCacheEntry> tasks;
+	private Map<String,List<HadoopTaskCacheEntry>> internal_mapByNode;
+	private Map<HadoopTaskCacheEntry,String> internal_mapByTask;
 	
 	public TaskPool(){
-		tasks = new LinkedList<HadoopTask>();
-		internal_mapByNode = new HashMap<String,List<HadoopTask>>();
-		internal_mapByTask = new HashMap<HadoopTask,String>();
+		tasks = new LinkedList<HadoopTaskCacheEntry>();
+		internal_mapByNode = new HashMap<String,List<HadoopTaskCacheEntry>>();
+		internal_mapByTask = new HashMap<HadoopTaskCacheEntry,String>();
 	}
 	
-	public List<HadoopTask> getByPreferredLocation(String preferredLocation){
+	public List<HadoopTaskCacheEntry> getByPreferredLocation(String preferredLocation){
 		return internal_mapByNode.get(preferredLocation);
 	}
 	
-	public String getPreferredLocation(HadoopTask t){
+	public HadoopTaskCacheEntry getArbitrary(){
+		return tasks.get(0);
+	}
+	
+	public String getPreferredLocation(HadoopTaskCacheEntry t){
 		return internal_mapByTask.get(t);
 	}
 	
-	public void addTask(HadoopTask t, String preferredLocation){
+	public void addTask(HadoopTaskCacheEntry t, String preferredLocation){
 		tasks.add(t);
-		List<HadoopTask> l = internal_mapByNode.get(preferredLocation);
+		List<HadoopTaskCacheEntry> l = internal_mapByNode.get(preferredLocation);
 		if (l==null){
-			l = new LinkedList<HadoopTask>();
+			l = new LinkedList<HadoopTaskCacheEntry>();
 			internal_mapByNode.put(preferredLocation, l);
 		}else {
 			l.add(t);
@@ -39,7 +43,7 @@ public class TaskPool {
 		internal_mapByTask.put(t, preferredLocation);
 	}
 	
-	public void removeTask(HadoopTask t){
+	public void removeTask(HadoopTaskCacheEntry t){
 		tasks.remove(t);
 		String preferredLocation = internal_mapByTask.get(t);
 		internal_mapByNode.get(preferredLocation).remove(t);
