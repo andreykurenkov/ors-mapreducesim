@@ -3,8 +3,8 @@ package mapreducesim.scheduling.test;
 
 import java.util.Set;
 
-import mapreducesim.execution.HeartbeatTask;
 import mapreducesim.execution.TaskTrackerProcess;
+import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.scheduling.HadoopTaskCacheEntry;
 import mapreducesim.scheduling.JobStatus;
 import mapreducesim.scheduling.JobSubmission;

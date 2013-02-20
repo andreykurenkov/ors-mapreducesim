@@ -1,9 +1,10 @@
 package mapreducesim.execution;
 
 import mapreducesim.core.SimProcess;
-import mapreducesim.tasks.WorkTask;
+import mapreducesim.execution.tasks.WorkTask;
 
 import org.simgrid.msg.Host;
+import org.simgrid.msg.Msg;
 import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Process;
 

@@ -11,8 +11,8 @@ import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
 import org.simgrid.msg.TimeoutException;
 
-import mapreducesim.execution.HeartbeatTask;
 import mapreducesim.execution.TaskTrackerProcess;
+import mapreducesim.execution.tasks.HeartbeatTask;
 
 public abstract class Scheduler extends org.simgrid.msg.Process{
 	
