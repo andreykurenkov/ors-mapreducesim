@@ -5,7 +5,7 @@ import org.simgrid.msg.*;
 import mapreducesim.core.MapReduceSimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.interfaces.StorageInterface;
-import mapreducesim.tasks.FileTransferTask.*;
+import mapreducesim.storage.FileTransferTask.*;
 
 public class StorageProcess extends SimProcess {
 	// private int filesize;

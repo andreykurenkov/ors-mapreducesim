@@ -1,26 +1,20 @@
 package mapreducesim.execution;
 
-import mapreducesim.core.MapReduceSimMain;
-import mapreducesim.core.SimProcess;
+import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.interfaces.StorageInterface;
 import mapreducesim.storage.File;
 import mapreducesim.storage.File.FileLocation;
-import mapreducesim.tasks.FileTransferTask;
-import mapreducesim.tasks.WorkTask;
-import mapreducesim.tasks.FileTransferTask.WriteFileRequestTask;
-import mapreducesim.tasks.FileTransferTask.ReadFileRequestTask;
-import mapreducesim.util.ExceptionUtil;
+import mapreducesim.storage.FileTransferTask;
+import mapreducesim.storage.FileTransferTask.ReadFileRequestTask;
+import mapreducesim.storage.FileTransferTask.WriteFileRequestTask;
 
-import org.simgrid.msg.Comm;
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.MsgException;
-import org.simgrid.msg.Process;
 import org.simgrid.msg.Task;
 
 //TODO: handle excepptions
 public class SimpleMapperProcess extends WorkerProcess {
-	private TaskTrackerProcess parent;
 	public final double failureRate = 0.001;
 
 	public SimpleMapperProcess(Host host, String name, String mailbox, TaskTrackerProcess parent, WorkTask workTask) {
@@ -41,18 +35,17 @@ public class SimpleMapperProcess extends WorkerProcess {
 			// totalSize += ((FileTransferTask) transferTask).getTransferFile().getSize();
 		}
 		// Do map task
-		Msg.info(this.getHost().getName() + " starting " + task + " at " + this.getTimeElapsed());
 		long timeToWork = task.WORK_AMOUNT / (int) this.getHost().getSpeed();
-		while (timeToWork > 0) {
-			timeToWork -= MapReduceSimMain.SIM_STEP;
-		}
-		Msg.info(this.getHost().getName() + " finishing " + task + " at " + this.getTimeElapsed());
+		Msg.info(this.getHost().getName() + " starting " + task + " for " + timeToWork + " expected time.");
+		super.task.setComputeDuration(timeToWork);
+		super.task.execute();
+		Msg.info(this.getHost().getName() + " finishing " + task);
 		// Write output
 		File outputFile = new File(null, "null");
 		WriteFileRequestTask write = new WriteFileRequestTask(outputFile, this.getHost());
 		write.send(StorageInterface.MAILBOX);
+		parent.notifyMapFinish();
 
-		this.kill();
 	}
 
 }

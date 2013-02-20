@@ -1,4 +1,6 @@
-package mapreducesim.execution;
+package mapreducesim.execution.tasks;
+
+import mapreducesim.execution.TaskTrackerProcess;
 
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.Task;

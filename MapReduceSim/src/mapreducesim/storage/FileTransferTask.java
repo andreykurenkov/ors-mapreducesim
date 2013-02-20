@@ -1,12 +1,10 @@
-package mapreducesim.tasks;
+package mapreducesim.storage;
+
+import mapreducesim.core.HostData;
+import mapreducesim.storage.File.FileLocation;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Task;
-
-import mapreducesim.core.HostData;
-import mapreducesim.storage.File;
-import mapreducesim.storage.File.FileLocation;
-import mapreducesim.storage.File;
 
 public class FileTransferTask extends Task {
 	private int timeTaken;

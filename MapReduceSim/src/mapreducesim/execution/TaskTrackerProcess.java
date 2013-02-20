@@ -1,22 +1,12 @@
 package mapreducesim.execution;
 
-import java.util.ArrayList;
+import mapreducesim.core.SimProcess;
+import mapreducesim.execution.tasks.WorkTask;
 
 import org.simgrid.msg.Host;
-import org.simgrid.msg.HostFailureException;
 import org.simgrid.msg.HostNotFoundException;
 import org.simgrid.msg.Msg;
-import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
-import org.simgrid.msg.TimeoutException;
-import org.simgrid.msg.TransferFailureException;
-import org.simgrid.msg.Process;
-
-import mapreducesim.core.MapReduceSimMain;
-import mapreducesim.core.SimProcess;
-import mapreducesim.interfaces.JobTrackerInterface;
-import mapreducesim.tasks.WorkTask;
-import mapreducesim.util.SafeParsing;
 
 public class TaskTrackerProcess extends SimProcess {
 	private int numMapSlots, numMapRunning;
@@ -39,40 +29,26 @@ public class TaskTrackerProcess extends SimProcess {
 
 	@Override
 	public void main(String[] args) {
-		if (args.length > 0)
-			numMapSlots = SafeParsing.safeIntParse(args[0], 2, "args[0] (int numMap) wrong format for TaskTracker at "
-					+ this.getHost());
-		else
-			numMapSlots = 20;
-
-		if (args.length > 1)
-			numReduceSlots = SafeParsing.safeIntParse(args[1], 2, "args[1] (int numReduce) wrong format for TaskTracker at "
-					+ this.getHost());
-		else
-			numReduceSlots = 5;
-
-		timeUntilNextHeartbeat = 0;
-
-		while (!finished) {
-			try {
-				if (timeUntilNextHeartbeat <= 0) {
-					(new HeartbeatTask(this)).send(JobTrackerInterface.MAILBOX);
-					timeUntilNextHeartbeat = JobTrackerInterface.HEARTBEAT_INTERVAL;
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-
-			try {
-				Task task = super.checkTask();
-				timeUntilNextHeartbeat -= MapReduceSimMain.SIM_STEP;
-				if (task != null)
-					handleTask(task);
-			} catch (MsgException e) {
-				e.printStackTrace();
-			}
-
+		while (true) {
+			Msg.info("1");
 		}
+		/*
+		 * if (args.length > 0) numMapSlots = SafeParsing.safeIntParse(args[0], 2,
+		 * "args[0] (int numMap) wrong format for TaskTracker at " + this.getHost()); else numMapSlots = 20;
+		 * 
+		 * if (args.length > 1) numReduceSlots = SafeParsing.safeIntParse(args[1], 2,
+		 * "args[1] (int numReduce) wrong format for TaskTracker at " + this.getHost()); else numReduceSlots = 5;
+		 * 
+		 * timeUntilNextHeartbeat = 0;
+		 * 
+		 * while (!finished) { try { if (timeUntilNextHeartbeat <= 0) { (new
+		 * HeartbeatTask(this)).send(JobTrackerInterface.MAILBOX); timeUntilNextHeartbeat =
+		 * JobTrackerInterface.HEARTBEAT_INTERVAL; } } catch (Exception e1) { e1.printStackTrace(); }
+		 * 
+		 * try { Task task = super.checkTask(MapReduceSimMain.SIM_STEP); if (task != null) handleTask(task); } catch
+		 * (MsgException e) { // e.printStackTrace(); timeUntilNextHeartbeat -= MapReduceSimMain.SIM_STEP; //
+		 * Msg.info("waiting..."); } }
+		 */
 	}
 
 	public boolean hasMapSlots() {
@@ -89,6 +65,14 @@ public class TaskTrackerProcess extends SimProcess {
 
 	protected WorkerProcess getReducerProcess(Host host, String name, WorkTask workTask) {
 		return new SimpleReduceProcess(host, name, "Reducer for " + workTask.getID(), this, workTask);
+	}
+
+	protected void notifyMapFinish() {
+		mapCount--;
+	}
+
+	protected void notifyReduceFinish() {
+		mapCount--;
 	}
 
 	protected void handleTask(Task received) {

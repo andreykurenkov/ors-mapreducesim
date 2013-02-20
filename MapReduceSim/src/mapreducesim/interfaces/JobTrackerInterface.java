@@ -1,6 +1,6 @@
 package mapreducesim.interfaces;
 
-import mapreducesim.tasks.WorkTask;
+import mapreducesim.execution.tasks.WorkTask;
 
 public interface JobTrackerInterface {
 	public final static String MAILBOX = "JobTracker";

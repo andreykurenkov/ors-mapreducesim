@@ -349,7 +349,7 @@ public class XMLParser {
 					continue;
 				}
 				TextScope ts = (TextScope) scopeStackPeek;
-				ts.buffer.append(currChar);
+				TextScope.buffer.append(currChar);
 			}else{
 				throw new RuntimeException("Invalid scope: "+scopeStackPeek);
 			}

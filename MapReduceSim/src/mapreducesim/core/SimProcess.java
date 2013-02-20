@@ -49,9 +49,13 @@ public abstract class SimProcess extends Process {
 		return received;
 	}
 
-	public void kill() {
+	protected Task checkTask(double timeout) throws MsgException {
+		Task received = Task.receive(MAILBOX, timeout);
+		return received;
+	}
+
+	public void finish() {
 		finished = true;
-		super.kill();
 	}
 
 	public boolean isFinished() {

@@ -1,14 +1,8 @@
-package mapreducesim.tasks;
+package mapreducesim.execution.tasks;
 
-import java.util.List;
-
-import mapreducesim.execution.SimpleMapperProcess;
-import mapreducesim.execution.TaskTrackerProcess;
 import mapreducesim.storage.File.FileLocation;
 
-import org.simgrid.msg.Host;
 import org.simgrid.msg.Task;
-import org.simgrid.msg.Process;
 
 public class WorkTask extends Task {
 	public static enum Type {
@@ -20,6 +14,7 @@ public class WorkTask extends Task {
 	public final Type TYPE;
 	public FileLocation outout;
 	public boolean finished;
+
 
 	private static int mapCount;
 	private static int reduceCount;
