@@ -1,11 +1,16 @@
 package mapreducesim.execution;
 
+import mapreducesim.core.MapReduceSimMain;
 import mapreducesim.core.SimProcess;
+import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
+import mapreducesim.interfaces.JobTrackerInterface;
+import mapreducesim.util.SafeParsing;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.HostNotFoundException;
 import org.simgrid.msg.Msg;
+import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
 
 public class TaskTrackerProcess extends SimProcess {
@@ -29,28 +34,39 @@ public class TaskTrackerProcess extends SimProcess {
 
 	@Override
 	public void main(String[] args) {
-		while (true) {
-			Msg.info("1");
-		}
-		/*
-		 * if (args.length > 0) numMapSlots = SafeParsing.safeIntParse(args[0], 2,
-		 * "args[0] (int numMap) wrong format for TaskTracker at " + this.getHost()); else numMapSlots = 20;
-		 * 
-		 * if (args.length > 1) numReduceSlots = SafeParsing.safeIntParse(args[1], 2,
-		 * "args[1] (int numReduce) wrong format for TaskTracker at " + this.getHost()); else numReduceSlots = 5;
-		 * 
-		 * timeUntilNextHeartbeat = 0;
-		 * 
-		 * while (!finished) { try { if (timeUntilNextHeartbeat <= 0) { (new
-		 * HeartbeatTask(this)).send(JobTrackerInterface.MAILBOX); timeUntilNextHeartbeat =
-		 * JobTrackerInterface.HEARTBEAT_INTERVAL; } } catch (Exception e1) { e1.printStackTrace(); }
-		 * 
-		 * try { Task task = super.checkTask(MapReduceSimMain.SIM_STEP); if (task != null) handleTask(task); } catch
-		 * (MsgException e) { // e.printStackTrace(); timeUntilNextHeartbeat -= MapReduceSimMain.SIM_STEP; //
-		 * Msg.info("waiting..."); } }
-		 */
-	}
+		if (args.length > 0)
+			numMapSlots = SafeParsing.safeIntParse(args[0], 2, "args[0] (int numMap) wrong format for TaskTracker at "
+					+ this.getHost());
+		else
+			numMapSlots = 20;
 
+		if (args.length > 1)
+			numReduceSlots = SafeParsing.safeIntParse(args[1], 2, "args[1] (int numReduce) wrong format for TaskTracker at "
+					+ this.getHost());
+		else
+			numReduceSlots = 5;
+
+		timeUntilNextHeartbeat = 0;
+
+		while (!finished) {
+			try {
+				if (timeUntilNextHeartbeat <= 0) {
+					(new HeartbeatTask(this)).send(JobTrackerInterface.MAILBOX);
+					timeUntilNextHeartbeat = JobTrackerInterface.HEARTBEAT_INTERVAL;
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+
+			try {
+				Task task = super.checkTask(MapReduceSimMain.SIM_STEP);
+				if (task != null)
+					handleTask(task);
+			} catch (MsgException e) { // e.printStackTrace(); timeUntilNextHeartbeat -= MapReduceSimMain.SIM_STEP; //
+				Msg.info("waiting...");
+			}
+		}
+	}
 	public boolean hasMapSlots() {
 		return numMapSlots > numMapRunning;
 	}
