@@ -1,7 +1,6 @@
 package mapreducesim.storage;
 
 import mapreducesim.core.HostData;
-import mapreducesim.storage.File.FileLocation;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Task;
@@ -40,16 +39,16 @@ public class FileTransferTask extends Task {
 	}
 
 	public static class ReadFileRequestTask extends Task {
-		private FileLocation location;
+		private FileBlockLocation location;
 		private boolean readDone;
 		public final String originMailbox;
 
-		public ReadFileRequestTask(FileLocation location, String origin) {
+		public ReadFileRequestTask(FileBlockLocation location, String origin) {
 			this.location = location;
 			originMailbox = origin;
 		}
 
-		public FileLocation getFileLocation() {
+		public FileBlockLocation getFileLocation() {
 			return location;
 		}
 
