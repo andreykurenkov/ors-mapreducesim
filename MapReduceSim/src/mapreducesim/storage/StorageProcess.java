@@ -26,7 +26,7 @@ public class StorageProcess extends SimProcess {
 				Msg.info("Writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at "
 						+ this.getTimeElapsed());
 				// simulate the expense
-				long costRemaining = 6; // dummy value for now...
+				long costRemaining = 6; // dummy value for now.
 				while (costRemaining > 0) {
 					costRemaining -= MapReduceSimMain.SIM_STEP;
 				}

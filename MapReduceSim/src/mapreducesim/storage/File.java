@@ -1,16 +1,23 @@
 package mapreducesim.storage;
 
+import java.util.ArrayList;
+
 import org.simgrid.msg.Host;
 
-/*
- * The FSFile is a traditional file in the filesystem.  It is broken into DataBlock splits, but the FSFile object represents the entire file as it is is the filesystem.
+/**
+ * Represents a file in the file system.  Each file is divided into blocks (FileBlock)
+ * of a splitSize defined for each job.
  */
 
 public class File extends DataTreeNode {
 	private Boolean isDirectory;
+	private ArrayList<FileBlock> blocks;
+	private static final int SPLIT_SIZE = 128;
 
 	public File(DataTreeNode parent, String name) {
 		super(parent, name);
+		this.blocks = new ArrayList<FileBlock>();
+		blocks.add(new FileBlock(this, 0, File.SPLIT_SIZE, new FileBlockLocation(0,0)));
 	}
 
 	public Boolean getIsDirectory() {
@@ -22,10 +29,7 @@ public class File extends DataTreeNode {
 	}
 
 	public double calculateReadCost(Host requestor) {
-		return 0.01;
+		return 5;
 	}
 
-	public static class FileLocation {
-		// TODO
-	}
 }
