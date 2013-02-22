@@ -1,11 +1,16 @@
 package mapreducesim.execution;
 
+import java.lang.reflect.InvocationTargetException;
+
 import mapreducesim.core.MapReduceSimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.interfaces.JobTrackerInterface;
+import mapreducesim.util.ReflectionUtil;
 import mapreducesim.util.SafeParsing;
+import mapreducesim.util.xml.XMLDocument;
+import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.HostNotFoundException;
@@ -13,6 +18,7 @@ import org.simgrid.msg.Msg;
 import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
 
+@SuppressWarnings("unchecked")
 public class TaskTrackerProcess extends SimProcess {
 	private int numMapSlots, numMapRunning;
 	private int numReduceSlots, numReduceRunning;
@@ -20,6 +26,19 @@ public class TaskTrackerProcess extends SimProcess {
 	private int mapCount, reduceCount;
 
 	private int timeUntilNextHeartbeat;
+
+	private static String CONFIG_TIMER = "TaskTimer";
+	private static WorkTaskTimer workTimer;
+	static {
+		XMLDocument config = MapReduceSimMain.getConfig();
+		XMLElement timer = config.getRoot().getChildByName(CONFIG_TIMER);
+		String name = timer.getAttributeValue("name");
+		try {
+			workTimer = ReflectionUtil.attemptConstructorCallAndCast(WorkTaskTimer.class, Class.forName(name), timer);
+		} catch (InstantiationException | InvocationTargetException | ClassCastException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Default constructor for Processes needs to be used as part of framework.
@@ -30,6 +49,7 @@ public class TaskTrackerProcess extends SimProcess {
 	 */
 	public TaskTrackerProcess(Host host, String name, String[] args) {
 		super(host, name, args);
+
 	}
 
 	@Override
@@ -59,10 +79,11 @@ public class TaskTrackerProcess extends SimProcess {
 			}
 
 			try {
-				Task task = super.checkTask(MapReduceSimMain.SIM_STEP);
+				Task task = checkTask(MapReduceSimMain.SIM_STEP);
 				if (task != null)
 					handleTask(task);
-			} catch (MsgException e) { // e.printStackTrace(); timeUntilNextHeartbeat -= MapReduceSimMain.SIM_STEP; //
+			} catch (MsgException e) { // e.printStackTrace();
+				timeUntilNextHeartbeat -= MapReduceSimMain.SIM_STEP;
 				Msg.info("waiting...");
 			}
 		}
@@ -114,6 +135,7 @@ public class TaskTrackerProcess extends SimProcess {
 			}
 			if (process != null) {
 				try {
+					workTask.setComputeDuration(workTimer.estimateComputeDuration(this.getHost(), workTask));
 					process.start();
 				} catch (HostNotFoundException e) {
 					e.printStackTrace();

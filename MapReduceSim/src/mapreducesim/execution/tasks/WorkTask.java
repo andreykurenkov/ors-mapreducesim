@@ -1,6 +1,7 @@
 package mapreducesim.execution.tasks;
 
-import mapreducesim.storage.File.FileLocation;
+import mapreducesim.storage.File;
+import mapreducesim.storage.FileBlockLocation;
 
 import org.simgrid.msg.Task;
 
@@ -9,10 +10,10 @@ public class WorkTask extends Task {
 		MAP, REDUCE
 	}
 
-	public final FileLocation[] NEEDED_FILES;
-	public final long WORK_AMOUNT;
+	public final FileBlockLocation[] NEEDED_FILES;
+	public final double WORK_AMOUNT;
 	public final Type TYPE;
-	public FileLocation outout;
+	public File output;
 	public boolean finished;
 
 
@@ -20,7 +21,7 @@ public class WorkTask extends Task {
 	private static int reduceCount;
 	private String id;
 
-	public WorkTask(long workAmount, Type type, FileLocation... files) {
+	public WorkTask(double workAmount, Type type, FileBlockLocation... files) {
 		this.WORK_AMOUNT = workAmount;
 		this.NEEDED_FILES = files;
 		this.TYPE = type;

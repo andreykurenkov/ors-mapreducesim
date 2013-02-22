@@ -5,7 +5,7 @@ import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
 
-public class SimpleWorkTaskTimer extends WorkTaskTimer {
+public class SimpleWorkTaskTimer extends WorkTaskTimer<WorkTask> {
 
 	public SimpleWorkTaskTimer(XMLElement input) {
 		super(input);
@@ -13,7 +13,7 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 
 	@Override
 	public double estimateComputeDuration(Host onHost, WorkTask task) {
-		return task.getComputeDuration() / onHost.getSpeed();
+		return task.WORK_AMOUNT / onHost.getSpeed();
 	}
 
 }
