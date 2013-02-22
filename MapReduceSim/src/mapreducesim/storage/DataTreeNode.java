@@ -2,6 +2,14 @@ package mapreducesim.storage;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * The basic unit of a data tree.  A tree can be represented by a DataTree object,
+ * which basically just points to the root DataTreeNode, or on its own by its
+ * root node.
+ * The DataTreeNode has a name and has an array of children and a single parent
+ * defined by the constructor.  To hold data it must be extended (e.g., File/Directory)
+ */
 public class DataTreeNode {
 	private String name;
 	private ArrayList<DataTreeNode> children;
@@ -71,14 +79,6 @@ public class DataTreeNode {
 		if (this.isRoot) return "/";
 		else {
 			return (this.getParent().getPath() + name + "/");
-		}
-	}
-	public void ls() {
-		if (children.size()!=0) {		
-			System.out.println("Contents of directory '" + name + "' (" + this.numChildren() + " items):");
-			for (int i=0; i<children.size(); i++) {
-				System.out.println("\t" + this.getChildAtPosition(i).getName());
-			}
 		}
 	}
 	

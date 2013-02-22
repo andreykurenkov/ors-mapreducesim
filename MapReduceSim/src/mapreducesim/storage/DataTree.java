@@ -1,5 +1,11 @@
 package mapreducesim.storage;
 
+/**
+ * 
+ * Holds the root element for a tree.  Not really needed,
+ * but I'm not sure I want to get rid of it yet.
+ *
+ */
 public class DataTree<T> {
 	
 	private DataTreeNode rootElement;
