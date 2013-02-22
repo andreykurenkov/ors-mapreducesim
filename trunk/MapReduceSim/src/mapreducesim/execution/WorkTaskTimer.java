@@ -5,11 +5,11 @@ import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
 
-public abstract class WorkTaskTimer {
+public abstract class WorkTaskTimer<T extends WorkTask> {
 	protected XMLElement input;
 	public WorkTaskTimer(XMLElement input){
 		this.input=input;
 	}
 	
-	public abstract double estimateComputeDuration(Host onHost, WorkTask task);
+	public abstract double estimateComputeDuration(Host onHost, T task);
 }

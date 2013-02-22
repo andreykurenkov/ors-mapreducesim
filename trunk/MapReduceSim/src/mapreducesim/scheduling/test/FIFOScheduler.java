@@ -10,7 +10,7 @@ import mapreducesim.scheduling.JobStatus;
 import mapreducesim.scheduling.JobSubmission;
 import mapreducesim.scheduling.Scheduler;
 import mapreducesim.scheduling.TaskPool;
-import mapreducesim.scheduling.TaskTrackerCacheEntry;
+import mapreducesim.scheduling.HadoopTaskCacheEntry.Type;
 
 import org.simgrid.msg.*;
 

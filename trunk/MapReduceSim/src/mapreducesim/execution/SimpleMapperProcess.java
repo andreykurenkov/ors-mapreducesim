@@ -3,7 +3,7 @@ package mapreducesim.execution;
 import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.interfaces.StorageInterface;
 import mapreducesim.storage.File;
-import mapreducesim.storage.File.FileLocation;
+import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.storage.FileTransferTask;
 import mapreducesim.storage.FileTransferTask.ReadFileRequestTask;
 import mapreducesim.storage.FileTransferTask.WriteFileRequestTask;
@@ -25,7 +25,7 @@ public class SimpleMapperProcess extends WorkerProcess {
 	public void main(String[] args) throws MsgException {
 		// read needed files
 		int totalSize = 0;
-		for (FileLocation neededFile : task.NEEDED_FILES) {
+		for (FileBlockLocation neededFile : task.NEEDED_FILES) {
 			ReadFileRequestTask read = new ReadFileRequestTask(neededFile, MAILBOX);
 			read.send(StorageInterface.MAILBOX);
 			Task transferTask = Task.receive(this.MAILBOX);
@@ -35,10 +35,8 @@ public class SimpleMapperProcess extends WorkerProcess {
 			// totalSize += ((FileTransferTask) transferTask).getTransferFile().getSize();
 		}
 		// Do map task
-		long timeToWork = task.WORK_AMOUNT / (int) this.getHost().getSpeed();
-		Msg.info(this.getHost().getName() + " starting " + task + " for " + timeToWork + " expected time.");
-		super.task.setComputeDuration(timeToWork);
-		super.task.execute();
+		Msg.info(this.getHost().getName() + " starting " + task + " for " + task.getComputeDuration() + " expected time.");
+		task.execute();
 		Msg.info(this.getHost().getName() + " finishing " + task);
 		// Write output
 		File outputFile = new File(null, "null");

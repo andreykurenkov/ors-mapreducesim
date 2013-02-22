@@ -6,7 +6,7 @@ import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.execution.tasks.WorkTask.Type;
 import mapreducesim.interfaces.JobTrackerInterface;
-import mapreducesim.storage.File.FileLocation;
+import mapreducesim.storage.FileBlockLocation;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.MsgException;
@@ -29,7 +29,7 @@ public class TestJobTracker extends SimProcess {
 				if (received instanceof HeartbeatTask) {
 					TaskTrackerProcess from = ((HeartbeatTask) received).from;
 					if (from.hasMapSlots()) {
-						(new WorkTask(50, Type.MAP, new FileLocation())).send(from.MAILBOX);
+						(new WorkTask(50, Type.MAP, new FileBlockLocation(1, 1))).send(from.MAILBOX);
 						if (totalToMap > 0) {
 							totalToMap--;
 						} else {

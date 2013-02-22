@@ -1,12 +1,11 @@
 package mapreducesim.execution;
 
+import mapreducesim.core.MapReduceSimMain;
+import mapreducesim.execution.tasks.WorkTask;
+
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.MsgException;
-
-import mapreducesim.core.MapReduceSimMain;
-import mapreducesim.core.SimProcess;
-import mapreducesim.execution.tasks.WorkTask;
 
 public class SimpleReduceProcess extends WorkerProcess {
 
@@ -20,7 +19,7 @@ public class SimpleReduceProcess extends WorkerProcess {
 	public void main(String[] arg0) throws MsgException {
 		// TODO: fill out with Merge, retrive, write
 		Msg.info(this.getHost().getName() + " starting WorkTask" + task + " at " + this.getTimeElapsed());
-		long timeToWork = task.WORK_AMOUNT / (int) this.getHost().getSpeed();
+		double timeToWork = task.WORK_AMOUNT / (int) this.getHost().getSpeed();
 		while (timeToWork > 0) {
 			timeToWork -= MapReduceSimMain.SIM_STEP;
 		}
