@@ -30,23 +30,25 @@ public class MapReduceSimMain {
 			args[0] = "MapReduceSim_platform.xml";
 			args[1] = "MapReduceSim_deployment.xml";
 			args[2] = "MapReduceSim_config.xml";
-		} else if (args.length != 3) {
+		} else if (args.length < 2) {
 			System.out.print("** ERROR **\n" + "Usage:\nplatform_file deployment_file config_file\n");
-			System.out.print("Example:\nMapReduceSim_platform.xml MapReduceSim_deployment.xml  MapReduceSim_config.xml\n");
+			System.out
+					.print("Example:\nMapReduceSim_platform.xml MapReduceSim_deployment.xml  (optional) MapReduceSim_config.xml\n");
 			System.exit(1);
 		}
 		/* initialize the MSG simulation. Must be done before anything else (even logging). */
 		Msg.init(args);
 		Msg.info("Simulation start...");
-		
-		SmartFile file = new SmartFile(args[2]);
-		XMLNode node = XMLParser.parse(file.read());
-		config = new XMLDocument();
-		if (node instanceof XMLElement) {
-			config.setRoot((XMLElement) node);
-		} else {
-			System.out.print("** ERROR **\n" + "XML config file not \n");
-			System.exit(0);
+		if (args.length > 2) {
+			SmartFile file = new SmartFile(args[2]);
+			XMLNode node = XMLParser.parse(file.read());
+			config = new XMLDocument();
+			if (node instanceof XMLElement) {
+				config.setRoot((XMLElement) node);
+			} else {
+				System.out.print("** ERROR **\n" + "XML config file not \n");
+				System.exit(0);
+			}
 		}
 
 		/* construct the platform and deploy the application */
