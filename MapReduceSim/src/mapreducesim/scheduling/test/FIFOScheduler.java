@@ -16,6 +16,15 @@ import mapreducesim.storage.FileBlockLocation;
 
 import org.simgrid.msg.*;
 
+/**
+ * Task. 
+ * 
+ * input: list of tasks, each with a list of node ids (preferred locations)
+ * 
+ *  @author tdoneal
+ *
+ */
+
 public class FIFOScheduler extends Scheduler {
 	
 	JobStatus currentJob;
@@ -27,6 +36,17 @@ public class FIFOScheduler extends Scheduler {
 	}
 
 	
+	/**
+	 * 
+	 * 1st priority: node-local task
+	 * 2nd priority: rack-local task
+	 * 
+	 * a "level" how many switches tasktracker needs to go through to find the data 
+	 * 
+	 * framework function: given a job, tasktracker, and a locality level, return a task matching the criteria
+	 * or null if none was found
+	 * 
+	 */
 	
 	
 	
