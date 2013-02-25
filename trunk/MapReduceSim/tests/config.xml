@@ -1,3 +1,28 @@
 <config>
-	<TaskTimer name="mapreducesim.execution.SimpleWorkTaskTimer"> </TaskTimer>
+	<timer name="mapreducesim.execution.SimpleWorkTaskTimer"> </timer>
+	
+	<inputJobs>
+		<job taskSpecification="full">
+			<task type="map">
+				<preferredLocation>TaskTracker1</preferredLocation>
+			</task>
+			<task type="map">
+				<preferredLocation>TaskTracker2</preferredLocation>
+			</task>
+			<task type="map">
+				<preferredLocation>TaskTracker3</preferredLocation>
+			</task>
+			<task type="reduce">
+				<preferredLocation>TaskTracker1</preferredLocation>
+			</task>
+			<task type="reduce">
+				<preferredLocation>TaskTracker2</preferredLocation>
+			</task>
+			<task type="reduce">
+				<preferredLocation>TaskTracker3</preferredLocation>
+			</task>
+		</job>
+	
+	</inputJobs>
+	
 </config>
