@@ -7,7 +7,7 @@
  	<host id="TaskTracker1" power="1" state="ON" />
  	<host id="TaskTracker2" power="1" state="ON" />
  	<host id="TaskTracker3" power="1" state="ON" />
- 	<link id="link1" bandwidth="1E7" latency="0.001" />
+ 	<link id="link1" bandwidth="100000" latency="0.1" />
  	<route src="TaskTracker1" dst="Storage">
  		<link_ctn id="link1"/>
  	</route>

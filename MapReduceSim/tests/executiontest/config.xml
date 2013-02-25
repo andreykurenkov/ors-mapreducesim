@@ -1,0 +1,3 @@
+<config>
+	<TaskTimer name="mapreducesim.execution.SimpleWorkTaskTimer"> </TaskTimer>
+</config>

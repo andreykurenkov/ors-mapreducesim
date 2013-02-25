@@ -12,4 +12,6 @@ public abstract class WorkTaskTimer<T extends WorkTask> {
 	}
 	
 	public abstract double estimateComputeDuration(Host onHost, T task);
+
+	// or maybe public double getOperationDuration(Host onHost, T task, int keySize, int valueSize)?-
 }
