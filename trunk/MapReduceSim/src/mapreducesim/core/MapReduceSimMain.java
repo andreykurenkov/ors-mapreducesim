@@ -38,7 +38,7 @@ public class MapReduceSimMain {
 		/* initialize the MSG simulation. Must be done before anything else (even logging). */
 		Msg.init(args);
 		Msg.info("Simulation start...");
-
+		
 		SmartFile file = new SmartFile(args[2]);
 		XMLNode node = XMLParser.parse(file.read());
 		config = new XMLDocument();

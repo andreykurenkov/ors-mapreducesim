@@ -30,14 +30,29 @@ public class TaskTrackerProcess extends SimProcess {
 	private static String CONFIG_TIMER = "TaskTimer";
 	private static WorkTaskTimer workTimer;
 	static {
-		XMLDocument config = MapReduceSimMain.getConfig();
-		XMLElement timer = config.getRoot().getChildByName(CONFIG_TIMER);
-		String name = timer.getAttributeValue("name");
+		String name = null;
+		XMLDocument config;
+		XMLElement timer = null;
+		Msg.info("test static init");
+		try {
+		config = MapReduceSimMain.getConfig();
+		if (config!=null){
+		timer = config.getRoot().getChildByName(CONFIG_TIMER);
+		name = timer.getAttributeValue("name");
+		} else{
+			Msg.info("no name or timer info found. using defaults");
+			name ="defaultName";
+			timer = new XMLElement(CONFIG_TIMER);
+		}
+		} catch (Exception e){
+			Msg.info(e.getMessage());
+		}
 		try {
 			workTimer = ReflectionUtil.attemptConstructorCallAndCast(WorkTaskTimer.class, Class.forName(name), timer);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		Msg.info("done static init");
 	}
 
 	/**
@@ -54,6 +69,7 @@ public class TaskTrackerProcess extends SimProcess {
 
 	@Override
 	public void main(String[] args) {
+		
 		if (args.length > 0)
 			numMapSlots = SafeParsing.safeIntParse(args[0], 2, "args[0] (int numMap) wrong format for TaskTracker at "
 					+ this.getHost());
@@ -68,7 +84,9 @@ public class TaskTrackerProcess extends SimProcess {
 
 		timeUntilNextHeartbeat = 0;
 
+		
 		while (!finished) {
+			
 			try {
 				if (timeUntilNextHeartbeat <= 0) {
 					(new HeartbeatTask(this)).send(JobTrackerInterface.MAILBOX);
@@ -86,8 +104,10 @@ public class TaskTrackerProcess extends SimProcess {
 				timeUntilNextHeartbeat -= MapReduceSimMain.SIM_STEP;
 				Msg.info("waiting...");
 			}
+
 		}
 	}
+	
 	public boolean hasMapSlots() {
 		return numMapSlots > numMapRunning;
 	}
@@ -113,7 +133,7 @@ public class TaskTrackerProcess extends SimProcess {
 	}
 
 	protected void handleTask(Task received) {
-		Msg.info(this.getHost().getName() + " handling " + received);
+		Msg.info(this.getHost().getName() + " handling " + received+" of class "+received.getClass().getSimpleName());
 		if (received instanceof WorkTask) {
 			WorkTask workTask = (WorkTask) received;
 			WorkerProcess process = null;
