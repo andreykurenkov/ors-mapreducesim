@@ -10,12 +10,12 @@ public class WorkTask extends Task {
 		MAP, REDUCE
 	}
 
+	// TODO task attemptID
 	public final FileBlockLocation[] NEEDED_FILES;
 	public final double WORK_AMOUNT;
 	public final Type TYPE;
 	public File output;
 	public boolean finished;
-
 
 	private static int mapCount;
 	private static int reduceCount;

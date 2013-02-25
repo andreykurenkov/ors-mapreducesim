@@ -1,12 +1,11 @@
 package mapreducesim.execution;
 
-import java.lang.reflect.InvocationTargetException;
-
 import mapreducesim.core.MapReduceSimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.interfaces.JobTrackerInterface;
+import mapreducesim.util.ExceptionUtil;
 import mapreducesim.util.ReflectionUtil;
 import mapreducesim.util.SafeParsing;
 import mapreducesim.util.xml.XMLDocument;
@@ -27,32 +26,36 @@ public class TaskTrackerProcess extends SimProcess {
 
 	private int timeUntilNextHeartbeat;
 
+	/* Static initialization of WorkTaskTimer from configuration below */
+	private static String DEFAULT_TIMER = "mapreducesim.exeuction.WorkTaskTimer";
 	private static String CONFIG_TIMER = "TaskTimer";
-	private static WorkTaskTimer workTimer;
+	private static WorkTaskTimer<WorkTask> workTimer;
 	static {
-		String name = null;
+		String name = DEFAULT_TIMER;
 		XMLDocument config;
 		XMLElement timer = null;
 		Msg.info("test static init");
 		try {
-		config = MapReduceSimMain.getConfig();
-		if (config!=null){
-		timer = config.getRoot().getChildByName(CONFIG_TIMER);
-		name = timer.getAttributeValue("name");
-		} else{
-			Msg.info("no name or timer info found. using defaults");
-			name ="defaultName";
-			timer = new XMLElement(CONFIG_TIMER);
-		}
-		} catch (Exception e){
-			Msg.info(e.getMessage());
-		}
-		try {
+			config = MapReduceSimMain.getConfig();
+			if (config != null)
+				timer = config.getRoot().getChildByName(CONFIG_TIMER);
+			if (timer == null) {
+				Msg.info("No timer config found. Using defaults.");
+				timer = new XMLElement(CONFIG_TIMER);
+				timer.setAttribute("name", name);
+			} else
+				name = timer.getAttributeValue("name");
+			if (name == null) {
+				Msg.info("Name attribute of config not found. Using defaults.");
+				name = "mapreducesim.exeuction.WorkTaskTimer";
+				timer.setAttribute("name", name);
+			}
 			workTimer = ReflectionUtil.attemptConstructorCallAndCast(WorkTaskTimer.class, Class.forName(name), timer);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Msg.info("TaskTimer loading failed. Using default. Error below:\n" + ExceptionUtil.getStackTrace(e));
+			workTimer = new SimpleWorkTaskTimer(timer);
 		}
-		Msg.info("done static init");
+		Msg.info("Static init finished.");
 	}
 
 	/**
@@ -69,7 +72,6 @@ public class TaskTrackerProcess extends SimProcess {
 
 	@Override
 	public void main(String[] args) {
-		
 		if (args.length > 0)
 			numMapSlots = SafeParsing.safeIntParse(args[0], 2, "args[0] (int numMap) wrong format for TaskTracker at "
 					+ this.getHost());
@@ -84,9 +86,7 @@ public class TaskTrackerProcess extends SimProcess {
 
 		timeUntilNextHeartbeat = 0;
 
-		
 		while (!finished) {
-			
 			try {
 				if (timeUntilNextHeartbeat <= 0) {
 					(new HeartbeatTask(this)).send(JobTrackerInterface.MAILBOX);
@@ -107,7 +107,7 @@ public class TaskTrackerProcess extends SimProcess {
 
 		}
 	}
-	
+
 	public boolean hasMapSlots() {
 		return numMapSlots > numMapRunning;
 	}
@@ -133,7 +133,7 @@ public class TaskTrackerProcess extends SimProcess {
 	}
 
 	protected void handleTask(Task received) {
-		Msg.info(this.getHost().getName() + " handling " + received+" of class "+received.getClass().getSimpleName());
+		Msg.info(this.getHost().getName() + " handling " + received + " of class " + received.getClass().getSimpleName());
 		if (received instanceof WorkTask) {
 			WorkTask workTask = (WorkTask) received;
 			WorkerProcess process = null;
@@ -164,19 +164,23 @@ public class TaskTrackerProcess extends SimProcess {
 		}
 	}
 
-	/** Boiler plate getters
+	/**
+	 * Boiler plate getters
 	 * 
 	 */
-	public int getNumMapSlots(){
+	public int getNumMapSlots() {
 		return this.numMapSlots;
 	}
-	public int getNumReduceSlots(){
+
+	public int getNumReduceSlots() {
 		return this.numReduceSlots;
 	}
-	public int getNumMapRunning(){
+
+	public int getNumMapRunning() {
 		return this.numMapRunning;
 	}
-	public int getNumReduceRunning(){
+
+	public int getNumReduceRunning() {
 		return this.numReduceRunning;
 	}
 

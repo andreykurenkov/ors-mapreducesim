@@ -29,7 +29,7 @@ public class TestJobTracker extends SimProcess {
 				if (received instanceof HeartbeatTask) {
 					TaskTrackerProcess from = ((HeartbeatTask) received).from;
 					if (from.hasMapSlots()) {
-						(new WorkTask(50, Type.MAP, new FileBlockLocation(1, 1))).send(from.MAILBOX);
+						(new WorkTask(25, Type.MAP, new FileBlockLocation(1, 1))).send(from.MAILBOX);
 						if (totalToMap > 0) {
 							totalToMap--;
 						} else {
