@@ -12,6 +12,7 @@ public class WorkTask extends Task {
 
 	// TODO task attemptID
 	public final FileBlockLocation[] NEEDED_FILES;
+	
 	public final double WORK_AMOUNT;
 	public final Type TYPE;
 	public File output;
