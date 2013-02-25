@@ -35,7 +35,7 @@ public class TaskTrackerProcess extends SimProcess {
 		String name = timer.getAttributeValue("name");
 		try {
 			workTimer = ReflectionUtil.attemptConstructorCallAndCast(WorkTaskTimer.class, Class.forName(name), timer);
-		} catch (InstantiationException | InvocationTargetException | ClassCastException | ClassNotFoundException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
