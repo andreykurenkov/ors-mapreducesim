@@ -24,7 +24,7 @@ public class ReflectionUtil {
 		if (constructor != null) {
 			try {
 				return constructor.newInstance(params);
-			} catch (IllegalArgumentException | IllegalAccessException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
