@@ -10,8 +10,8 @@ import java.util.List;
 public class HadoopJob {
 
 	String name;
-	List<HadoopTaskCacheEntry> mapTasks;
-	List<HadoopTaskCacheEntry> reduceTasks;
+	List<TaskCacheEntry> mapTasks;
+	List<TaskCacheEntry> reduceTasks;
 	
 	
 	

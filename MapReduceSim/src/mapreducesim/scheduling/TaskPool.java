@@ -9,33 +9,37 @@ import org.simgrid.msg.Task;
 
 public class TaskPool {
 
-	private List<HadoopTaskCacheEntry> tasks;
-	private Map<String,List<HadoopTaskCacheEntry>> internal_mapByNode;
-	private Map<HadoopTaskCacheEntry,String> internal_mapByTask;
+	private List<TaskCacheEntry> tasks;
+	private Map<String,List<TaskCacheEntry>> internal_mapByNode;
+	private Map<TaskCacheEntry,String> internal_mapByTask;
 	
 	public TaskPool(){
-		tasks = new LinkedList<HadoopTaskCacheEntry>();
-		internal_mapByNode = new HashMap<String,List<HadoopTaskCacheEntry>>();
-		internal_mapByTask = new HashMap<HadoopTaskCacheEntry,String>();
+		tasks = new LinkedList<TaskCacheEntry>();
+		internal_mapByNode = new HashMap<String,List<TaskCacheEntry>>();
+		internal_mapByTask = new HashMap<TaskCacheEntry,String>();
 	}
 	
-	public List<HadoopTaskCacheEntry> getByPreferredLocation(String preferredLocation){
+	public List<TaskCacheEntry> getByPreferredLocation(String preferredLocation){
 		return internal_mapByNode.get(preferredLocation);
 	}
 	
-	public HadoopTaskCacheEntry getArbitrary(){
+	public List<TaskCacheEntry> getAsList(){
+		return tasks;
+	}
+	
+	public TaskCacheEntry getArbitrary(){
 		return tasks.get(0);
 	}
 	
-	public String getPreferredLocation(HadoopTaskCacheEntry t){
+	public String getPreferredLocation(TaskCacheEntry t){
 		return internal_mapByTask.get(t);
 	}
 	
-	public void addTask(HadoopTaskCacheEntry t, String preferredLocation){
+	public void addTask(TaskCacheEntry t, String preferredLocation){
 		tasks.add(t);
-		List<HadoopTaskCacheEntry> l = internal_mapByNode.get(preferredLocation);
+		List<TaskCacheEntry> l = internal_mapByNode.get(preferredLocation);
 		if (l==null){
-			l = new LinkedList<HadoopTaskCacheEntry>();
+			l = new LinkedList<TaskCacheEntry>();
 			internal_mapByNode.put(preferredLocation, l);
 		}else {
 			l.add(t);
@@ -43,7 +47,7 @@ public class TaskPool {
 		internal_mapByTask.put(t, preferredLocation);
 	}
 	
-	public void removeTask(HadoopTaskCacheEntry t){
+	public void removeTask(TaskCacheEntry t){
 		tasks.remove(t);
 		String preferredLocation = internal_mapByTask.get(t);
 		internal_mapByNode.get(preferredLocation).remove(t);

@@ -18,8 +18,8 @@
                 <argument value="Alive!"/>
         </process>
         
-        <process host="TaskTracker1" function="mapreducesim.execution.TaskTrackerProcess">
-        	
+        <process host="TaskTracker1" function="mapreducesim.scheduling.PrintMessage">
+        	<argument value="hi" />
         </process>
         <process host="TaskTracker2" function="mapreducesim.execution.TaskTrackerProcess">
         	
