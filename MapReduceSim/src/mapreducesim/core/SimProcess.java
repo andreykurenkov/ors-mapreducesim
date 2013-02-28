@@ -1,7 +1,7 @@
 package mapreducesim.core;
 
 import mapreducesim.core.HostData;
-import mapreducesim.core.MapReduceSimMain;
+import mapreducesim.core.SimMain;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.HostFailureException;
@@ -9,6 +9,14 @@ import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Process;
 import org.simgrid.msg.Task;
 
+/**
+ * Extension of Simgrid's process for the simulator's use. As of now no more than a storer of a constant mailbox and
+ * indication of finished state. For consistency and convenience should be the class the simulator's processes extends,
+ * instead of SimGrid Process.
+ * 
+ * @author Andrey Kurenkov
+ * 
+ */
 public abstract class SimProcess extends Process {
 
 	protected boolean finished;
@@ -29,7 +37,8 @@ public abstract class SimProcess extends Process {
 	}
 
 	/**
-	 * Default constructor for Processes needs to be used as part of framework.
+	 * Default constructor for Processes needs to be used as part of framework. In this case, the host name is used as the
+	 * mailbox.
 	 * 
 	 * @param host
 	 * @param name
@@ -40,8 +49,8 @@ public abstract class SimProcess extends Process {
 	}
 
 	protected void elapseTime(double amountOfTIme) throws HostFailureException {
-		sleep(MapReduceSimMain.SIM_STEP);
-		timeElapsed += MapReduceSimMain.SIM_STEP;
+		sleep(SimMain.SIM_STEP);
+		timeElapsed += SimMain.SIM_STEP;
 	}
 
 	protected Task checkTask() throws MsgException {

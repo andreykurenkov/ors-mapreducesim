@@ -1,6 +1,3 @@
-/*
- *  Generated Main Class. Most user won't have to modify it.
- */
 package mapreducesim.core;
 
 import mapreducesim.util.SmartFile;
@@ -12,13 +9,30 @@ import mapreducesim.util.xml.XMLParser;
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.NativeException;
 
-public class MapReduceSimMain {
+public class SimMain {
 	public static final int SIM_STEP = 10;// generic time passing quantity. May be removed in future.
 
 	private static XMLDocument config;
 
 	public static XMLDocument getConfig() {
 		return config;
+	}
+
+	public static String getConfigurationElementText(String elementName, String defaultValue) {
+		if (config.getRoot() != null) {
+			XMLElement child = config.getRoot().getChildByName(elementName);
+			if (child != null)
+				if (child.hasContentText())
+					return child.getContentText();
+		}
+		Msg.info("No value found for " + elementName + " in config file. Using default " + defaultValue);
+		return defaultValue;
+	}
+
+	public static XMLElement getConfigurationElement(String elementName) {
+		if (config.getRoot() != null)
+			return config.getRoot().getChildByName(elementName);
+		return null;
 	}
 
 	public static void main(String[] args) throws NativeException {
@@ -39,16 +53,22 @@ public class MapReduceSimMain {
 		/* initialize the MSG simulation. Must be done before anything else (even logging). */
 		Msg.init(args);
 		Msg.info("Simulation start...");
+		/* Creates the configuration to be used by the rest of the simulation */
+		config = new XMLDocument();
 		if (args.length > 2) {
 			SmartFile file = new SmartFile(args[2]);
-			XMLNode node = XMLParser.parse(file.read());
-			config = new XMLDocument();
-			if (node instanceof XMLElement) {
-				config.setRoot((XMLElement) node);
+			if (file.exists()) {
+				XMLNode node = XMLParser.parse(file.read());
+				if (node instanceof XMLElement) {
+					config.setRoot((XMLElement) node);
+				} else {
+					System.out.print("** ERROR **\n" + "XML config file not \n");
+					System.exit(0);
+				}
 			} else {
-				System.out.print("** ERROR **\n" + "XML config file not \n");
-				System.exit(0);
+				System.err.println("Configuration file at " + file.getAbsolutePath() + " does not exist.");
 			}
+
 		}
 
 		/* construct the platform and deploy the application */

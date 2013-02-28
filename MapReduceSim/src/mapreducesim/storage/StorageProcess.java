@@ -2,23 +2,23 @@ package mapreducesim.storage;
 
 import org.simgrid.msg.*;
 
-import mapreducesim.core.MapReduceSimMain;
+import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
-import mapreducesim.interfaces.StorageInterface;
 import mapreducesim.storage.FileTransferTask.*;
 
 public class StorageProcess extends SimProcess {
 	// private int filesize;
+	public static String STORAGE_MAILBOX = "Storage";
 
 	public StorageProcess(Host host, String name, String[] args) {
-		super(host, name, args);
+		super(host, name, args, STORAGE_MAILBOX);
 	}
 
 	@Override
 	public void main(String[] args) throws TransferFailureException, HostFailureException, TimeoutException {
 		while (!finished) {
 			// get the next task from the storage interface mailbox
-			Task currentTask = Task.receive(StorageInterface.MAILBOX);
+			Task currentTask = Task.receive(MAILBOX);
 			// handle task appropriately
 
 			if (currentTask instanceof WriteFileRequestTask) { // write task
@@ -28,7 +28,7 @@ public class StorageProcess extends SimProcess {
 				// simulate the expense
 				long costRemaining = 6; // dummy value for now.
 				while (costRemaining > 0) {
-					costRemaining -= MapReduceSimMain.SIM_STEP;
+					costRemaining -= SimMain.SIM_STEP;
 				}
 				Msg.info("Finished writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at "
 						+ Msg.getClock());
@@ -41,7 +41,7 @@ public class StorageProcess extends SimProcess {
 				// simulate the expense
 				long costRemaining = 2; // dummy value...
 				while (costRemaining > 0) {
-					costRemaining -= MapReduceSimMain.SIM_STEP;
+					costRemaining -= SimMain.SIM_STEP;
 				}
 				Msg.info("Finished reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at "
 						+ this.getTimeElapsed());

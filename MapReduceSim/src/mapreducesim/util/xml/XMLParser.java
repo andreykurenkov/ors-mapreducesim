@@ -4,7 +4,7 @@ This file is part of the Troy programming language.
 
 All code is copyright 2012 Troy O'Neal.  All rights reserved.
 
-**********/
+ **********/
 package mapreducesim.util.xml;
 
 import java.util.ArrayList;
@@ -14,8 +14,6 @@ import java.util.Stack;
 
 import mapreducesim.util.xml.XMLParser.RootScope.ElementScope;
 import mapreducesim.util.xml.XMLParser.RootScope.ElementScope.TagScope;
-
-
 
 //horrible perf, don't know why yet (UPDATE: FIXED!!)
 public class XMLParser {
@@ -47,9 +45,11 @@ public class XMLParser {
 
 	public static class QuotedTextScope extends Scope {
 		static StringBuilder directBuffer = new StringBuilder(255);
-		public QuotedTextScope(){
-			directBuffer.delete(0,directBuffer.length());
+
+		public QuotedTextScope() {
+			directBuffer.delete(0, directBuffer.length());
 		}
+
 		public String toString() {
 			return super.toString() + "(\"" + directBuffer.toString() + "\")";
 		}
@@ -60,9 +60,10 @@ public class XMLParser {
 		static StringBuilder buffer = new StringBuilder(255);
 		String text;
 
-		public TextScope(){
-			buffer.delete(0,buffer.length());
+		public TextScope() {
+			buffer.delete(0, buffer.length());
 		}
+
 		public void onBeingFolded() {
 			text = buffer.toString();
 		}
@@ -95,8 +96,8 @@ public class XMLParser {
 
 			public static class TagScope extends ParentScope {
 				boolean isStartTag;
-				
-				//if the tag is one of these <br /> with no closing tag
+
+				// if the tag is one of these <br /> with no closing tag
 				boolean isSingleTag = false;
 				String qname;
 				String innerText;
@@ -114,11 +115,11 @@ public class XMLParser {
 				boolean expectingAttribute = false;
 				HashMap<String, String> attributes = new HashMap<String, String>();
 
-				public TagScope(){
-					nameBuffer.delete(0,nameBuffer.length());
-					attributeNameBuffer.delete(0,attributeNameBuffer.length());
+				public TagScope() {
+					nameBuffer.delete(0, nameBuffer.length());
+					attributeNameBuffer.delete(0, attributeNameBuffer.length());
 				}
-				
+
 				public void processCharacter(String rawXML, int i) {
 					char c = rawXML.charAt(i);
 					// check for end tag
@@ -131,7 +132,7 @@ public class XMLParser {
 							isHeader = true;
 							qname = "?xml?";
 						} else {
-							if (attributes.size()==0){
+							if (attributes.size() == 0) {
 								qname = innerText;
 							}
 						}
@@ -142,20 +143,19 @@ public class XMLParser {
 						}
 					}
 					if (!expectingAttribute) {
-						//build up the name/comment of this tag
-						if (isComment){
-							if (!commentEndFound){
-								if (commentStartFound){
-									if (rawXML.charAt(i+1)=='-' && rawXML.charAt(i+2)=='-'){
+						// build up the name/comment of this tag
+						if (isComment) {
+							if (!commentEndFound) {
+								if (commentStartFound) {
+									if (rawXML.charAt(i + 1) == '-' && rawXML.charAt(i + 2) == '-') {
 										commentEndFound = true;
-										
+
 									}
-	
-									
+
 									commentBuilder.append(c);
-								}else {
-									//look for the -- which begins the comment
-									if (c=='-' && rawXML.charAt(i-1)=='-'){
+								} else {
+									// look for the -- which begins the comment
+									if (c == '-' && rawXML.charAt(i - 1) == '-') {
 										commentStartFound = true;
 									}
 								}
@@ -167,9 +167,9 @@ public class XMLParser {
 								expectingAttribute = true;
 							} else {
 								if (!nameFound) {
-									if (nameBuffer.length()==0){
-										if (c=='!'){
-											//consider this an xml comment
+									if (nameBuffer.length() == 0) {
+										if (c == '!') {
+											// consider this an xml comment
 											isComment = true;
 											isSingleTag = true;
 										}
@@ -180,16 +180,16 @@ public class XMLParser {
 						}
 					} else {
 						// if we were expecting attribute text
-						if (c==' '&&attributeNameBuffer.length()==0){
-							//just keep waiting till the attribute name
-						}else{
-							//build up the attribute name
+						if (c == ' ' && attributeNameBuffer.length() == 0) {
+							// just keep waiting till the attribute name
+						} else {
+							// build up the attribute name
 							attributeNameBuffer.append(c);
 						}
-						
-						//if we were expecting attributes and found a "/"
-						if (c=='/'){
-							//then consider this a single tag (e.g, <br />)
+
+						// if we were expecting attributes and found a "/"
+						if (c == '/') {
+							// then consider this a single tag (e.g, <br />)
 							isSingleTag = true;
 						}
 					}
@@ -199,24 +199,19 @@ public class XMLParser {
 					super.fold(subScope);
 					if (subScope instanceof QuotedTextScope) {
 						if (nameFound == false) {
-							throw new RuntimeException(
-									"Name not found, should be found before processing attributes");
+							throw new RuntimeException("Name not found, should be found before processing attributes");
 						}
 						QuotedTextScope qts = (QuotedTextScope) subScope;
 						currAttributeName = attributeNameBuffer.toString();
-						currAttributeName = currAttributeName.substring(0,currAttributeName.length()-1);
+						currAttributeName = currAttributeName.substring(0, currAttributeName.length() - 1);
 						attributeNameBuffer = new StringBuilder();
-						println("Attr: '" + currAttributeName + "' -> '"
-								+ qts.directBuffer.toString() + "'");
-						attributes.put(currAttributeName,
-								qts.directBuffer.toString());
+						println("Attr: '" + currAttributeName + "' -> '" + qts.directBuffer.toString() + "'");
+						attributes.put(currAttributeName, qts.directBuffer.toString());
 					}
 				}
 
 				public String toString() {
-					return "TagScope<" + qname
-							+ (attributes.size() > 0 ? (" " + attributes) : "")
-							+ ">";
+					return "TagScope<" + qname + (attributes.size() > 0 ? (" " + attributes) : "") + ">";
 				}
 
 			}
@@ -243,35 +238,34 @@ public class XMLParser {
 	public XMLNode doParse(String rawXML) {
 
 		rawXML = rawXML.trim();
-		
+
 		println("Parsing: " + rawXML);
 
 		scopeStack = new Stack<Scope>();
 		scopeStack.push(new RootScope());
-		
+
 		int maxStackSize = 0;
 		int prevStackSize = 0;
 		for (int i = 0; i < rawXML.length(); i++) {
 			currChar = rawXML.charAt(i);
 			Scope scopeStackPeek = scopeStack.peek();
-			
-			if (displayProgress){
-				if (scopeStack.size()!=prevStackSize||true){
-					System.out.println("Stack size: "+scopeStack.size());
-					if (scopeStack.size()>maxStackSize){
+
+			if (displayProgress) {
+				if (scopeStack.size() != prevStackSize || true) {
+					System.out.println("Stack size: " + scopeStack.size());
+					if (scopeStack.size() > maxStackSize) {
 						maxStackSize = scopeStack.size();
 					}
 					prevStackSize = scopeStack.size();
 				}
-				System.out.println((i+1)*100.0f/rawXML.length()+"%");
-				System.out.println("Processed characters: "+i+"/"+rawXML.length());
+				System.out.println((i + 1) * 100.0f / rawXML.length() + "%");
+				System.out.println("Processed characters: " + i + "/" + rawXML.length());
 
 			}
-			if (debug && displayProgress){
+			if (debug && displayProgress) {
 				println("Char('" + currChar + "'),stacktop=" + scopeStackPeek);
 			}
-			
-			
+
 			if (scopeStackPeek instanceof RootScope) {
 				if (currChar == '<') {
 					println("pushing element and tag scope on rootscope");
@@ -279,8 +273,7 @@ public class XMLParser {
 					scopeStack.push(new TagScope());
 					continue;
 				}
-			}
-			else if (scopeStackPeek instanceof QuotedTextScope) {
+			} else if (scopeStackPeek instanceof QuotedTextScope) {
 				QuotedTextScope qts = (QuotedTextScope) scopeStackPeek;
 				if (isQuote(currChar)) {
 					fold();
@@ -288,18 +281,17 @@ public class XMLParser {
 				}
 				qts.directBuffer.append(currChar);
 				continue;
-			}
-			else if (scopeStackPeek instanceof TagScope) {
+			} else if (scopeStackPeek instanceof TagScope) {
 				TagScope ts = (TagScope) scopeStackPeek;
 				if (isQuote(currChar)) {
 					scopeStack.push(new QuotedTextScope());
 					continue;
 				}
-				ts.processCharacter(rawXML,i);
-				
+				ts.processCharacter(rawXML, i);
+
 				if (ts.endFound) {
-					
-					//if we had the opening tag, and it wasn't a single tag like <br />
+
+					// if we had the opening tag, and it wasn't a single tag like <br />
 					if (ts.isStartTag && (!ts.isSingleTag)) {
 						// fold tag
 						println("Folding tag");
@@ -310,13 +302,12 @@ public class XMLParser {
 						fold();
 						fold();
 					}
-					
-					//stay on same char
+
+					// stay on same char
 					i--;
 					continue;
 				}
-			}
-			else if (scopeStackPeek instanceof ElementScope) {
+			} else if (scopeStackPeek instanceof ElementScope) {
 				ElementScope es = (ElementScope) scopeStackPeek;
 				if (es.header) {
 					fold();
@@ -341,8 +332,7 @@ public class XMLParser {
 
 					continue;
 				}
-			}
-			else if (scopeStackPeek instanceof TextScope) {
+			} else if (scopeStackPeek instanceof TextScope) {
 				if (currChar == '<') {
 					fold();
 					i--;
@@ -350,30 +340,26 @@ public class XMLParser {
 				}
 				TextScope ts = (TextScope) scopeStackPeek;
 				TextScope.buffer.append(currChar);
-			}else{
-				throw new RuntimeException("Invalid scope: "+scopeStackPeek);
+			} else {
+				throw new RuntimeException("Invalid scope: " + scopeStackPeek);
 			}
 		}
 
-		
-		
-		
-		if (debug){
-			System.out.println("Max stack size: "+maxStackSize);
-			System.out.println("Final stack: "+scopeStack);
+		if (debug) {
+			System.out.println("Max stack size: " + maxStackSize);
+			System.out.println("Final stack: " + scopeStack);
 		}
-		
+
 		return makeDOM(scopeStack.get(0));
 	}
 
 	private boolean isQuote(char c) {
-		return (c=='"'||c=='\'');
+		return (c == '"' || c == '\'');
 	}
 
 	public void fold() {
 		scopeStack.peek().onBeingFolded();
-		((ParentScope) scopeStack.get(scopeStack.size() - 2)).fold(scopeStack
-				.peek());
+		((ParentScope) scopeStack.get(scopeStack.size() - 2)).fold(scopeStack.peek());
 		scopeStack.pop();
 	}
 
@@ -399,38 +385,36 @@ public class XMLParser {
 		if (rs.children.size() == 1) {
 			return makeDOM(rs.children.get(0));
 		} else if (rs.children.size() == 2) {
-			// TODO
-			XMLDocument xmlDocument = new XMLDocument();
-			XMLElement tn = (XMLElement)makeDOM(rs.children.get(1));
-			xmlDocument.setRoot(tn);
+			XMLElement tn = (XMLElement) makeDOM(rs.children.get(1));
+			XMLDocument xmlDocument = new XMLDocument(tn);
 			return xmlDocument;
 		} else {
-			throw new RuntimeException("Invalid root scope.  Num of children: "+rs.children.size());
+			throw new RuntimeException("Invalid root scope.  Num of children: " + rs.children.size());
 		}
 	}
 
 	public XMLNode makeDOM(ElementScope es) {
-		TagScope startTagScope = (TagScope)es.children.get(0);
+		TagScope startTagScope = (TagScope) es.children.get(0);
 		XMLElement node;
-		if (startTagScope.isComment){
+		if (startTagScope.isComment) {
 			return new XMLCommentNode(startTagScope.commentText);
 		}
-		if (startTagScope.isSingleTag){
-			node = new XMLElement(es.qname,false);
-		}else{
-			node = new XMLElement(es.qname,true);
+		if (startTagScope.isSingleTag) {
+			node = new XMLElement(es.qname, false);
+		} else {
+			node = new XMLElement(es.qname, true);
 		}
-		for (String attrName:startTagScope.attributes.keySet()){
-			node.setAttribute(attrName,startTagScope.attributes.get(attrName));
+		for (String attrName : startTagScope.attributes.keySet()) {
+			node.setAttribute(attrName, startTagScope.attributes.get(attrName));
 		}
 		for (int i = 0; i < es.children.size(); i++) {
 			Scope ss = es.children.get(i);
 			if (!(ss instanceof TagScope)) {
-				
-				//do not add empty text scopes
-				if (ss instanceof TextScope){
-					TextScope ts = (TextScope)ss;
-					if (ts.text.length()==0){
+
+				// do not add empty text scopes
+				if (ss instanceof TextScope) {
+					TextScope ts = (TextScope) ss;
+					if (ts.text.length() == 0) {
 						continue;
 					}
 				}

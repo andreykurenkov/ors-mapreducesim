@@ -1,6 +1,6 @@
 package mapreducesim.execution;
 
-import mapreducesim.core.MapReduceSimMain;
+import mapreducesim.core.SimMain;
 import mapreducesim.execution.tasks.WorkTask;
 
 import org.simgrid.msg.Host;
@@ -11,7 +11,7 @@ public class SimpleReduceProcess extends WorkerProcess {
 
 	public final double failureRate = 0.001;
 
-	public SimpleReduceProcess(Host host, String name, String mailbox, TaskTrackerProcess parent, WorkTask task) {
+	public SimpleReduceProcess(Host host, String name, String mailbox, TaskRunnerProcess parent, WorkTask task) {
 		super(host, name, mailbox, parent, task);
 	}
 
@@ -21,7 +21,7 @@ public class SimpleReduceProcess extends WorkerProcess {
 		Msg.info(this.getHost().getName() + " starting WorkTask" + task + " at " + this.getTimeElapsed());
 		double timeToWork = task.WORK_AMOUNT / (int) this.getHost().getSpeed();
 		while (timeToWork > 0) {
-			timeToWork -= MapReduceSimMain.SIM_STEP;
+			timeToWork -= SimMain.SIM_STEP;
 		}
 		Msg.info(this.getHost().getName() + " finishing WorkTask" + task + " at " + this.getTimeElapsed());
 		parent.notifyReduceFinish();
