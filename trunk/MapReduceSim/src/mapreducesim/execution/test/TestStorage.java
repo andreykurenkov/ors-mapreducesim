@@ -1,12 +1,12 @@
 package mapreducesim.execution.test;
 
-import mapreducesim.core.MapReduceSimMain;
+import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
-import mapreducesim.interfaces.StorageInterface;
 import mapreducesim.storage.File;
 import mapreducesim.storage.FileTransferTask;
 import mapreducesim.storage.FileTransferTask.ReadFileRequestTask;
 import mapreducesim.storage.FileTransferTask.WriteFileRequestTask;
+import mapreducesim.storage.StorageProcess;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Msg;
@@ -17,7 +17,7 @@ import org.simgrid.msg.TimeoutException;
 public class TestStorage extends SimProcess {
 
 	public TestStorage(Host host, String name, String[] args) {
-		super(host, name, args, StorageInterface.MAILBOX);
+		super(host, name, args, StorageProcess.STORAGE_MAILBOX);
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class TestStorage extends SimProcess {
 					// simulate the expense
 					long costRemaining = 2; // dummy value...
 					while (costRemaining > 0) {
-						costRemaining -= MapReduceSimMain.SIM_STEP;
+						costRemaining -= SimMain.SIM_STEP;
 					}
 					(new FileTransferTask(new File(null, "yay"))).send(((ReadFileRequestTask) currentTask).originMailbox);
 				}

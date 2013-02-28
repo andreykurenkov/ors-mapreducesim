@@ -1,12 +1,16 @@
 package mapreducesim.execution.test;
 
+import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
-import mapreducesim.execution.TaskTrackerProcess;
+import mapreducesim.execution.TaskRunnerProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.execution.tasks.WorkTask.Type;
-import mapreducesim.interfaces.JobTrackerInterface;
+import mapreducesim.scheduling.SchedulerProcess;
+import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.storage.FileBlockLocation;
+import mapreducesim.util.xml.XMLDocument;
+import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.MsgException;
@@ -16,7 +20,7 @@ import org.simgrid.msg.TimeoutException;
 public class TestJobTracker extends SimProcess {
 
 	public TestJobTracker(Host host, String name, String[] args) {
-		super(host, name, args, JobTrackerInterface.MAILBOX);
+		super(host, name, args, SchedulerProcess.SCHEDULER_MAILBOX);
 	}
 
 	@Override
@@ -25,11 +29,11 @@ public class TestJobTracker extends SimProcess {
 		int totalToMap = 20;
 		while (!finished) {
 			try {
-				Task received = Task.receive(MAILBOX, 150);
+				Task received = Task.receive(SchedulerProcess.SCHEDULER_MAILBOX, 150);
 				if (received instanceof HeartbeatTask) {
-					TaskTrackerProcess from = ((HeartbeatTask) received).from;
+					TaskRunnerProcess from = ((HeartbeatTask) received).from;
 					if (from.hasMapSlots()) {
-						(new WorkTask(25, Type.MAP, new FileBlockLocation(1, 1))).send(from.MAILBOX);
+						(new WorkTask(25, Type.MAP, new InputSplit())).send(from.MAILBOX);
 						if (totalToMap > 0) {
 							totalToMap--;
 						} else {

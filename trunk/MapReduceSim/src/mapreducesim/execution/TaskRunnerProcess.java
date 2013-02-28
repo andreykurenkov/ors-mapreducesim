@@ -1,10 +1,10 @@
 package mapreducesim.execution;
 
-import mapreducesim.core.MapReduceSimMain;
+import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
-import mapreducesim.interfaces.JobTrackerInterface;
+import mapreducesim.scheduling.SchedulerProcess;
 import mapreducesim.util.ExceptionUtil;
 import mapreducesim.util.ReflectionUtil;
 import mapreducesim.util.SafeParsing;
@@ -18,7 +18,7 @@ import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
 
 @SuppressWarnings("unchecked")
-public class TaskTrackerProcess extends SimProcess {
+public class TaskRunnerProcess extends SimProcess {
 	private int numMapSlots, numMapRunning;
 	private int numReduceSlots, numReduceRunning;
 
@@ -36,7 +36,7 @@ public class TaskTrackerProcess extends SimProcess {
 		XMLElement timer = null;
 		Msg.info("test static init");
 		try {
-			config = MapReduceSimMain.getConfig();
+			config = SimMain.getConfig();
 			if (config != null)
 				timer = config.getRoot().getChildByName(CONFIG_TIMER);
 			if (timer == null) {
@@ -65,7 +65,7 @@ public class TaskTrackerProcess extends SimProcess {
 	 * @param name
 	 * @param args
 	 */
-	public TaskTrackerProcess(Host host, String name, String[] args) {
+	public TaskRunnerProcess(Host host, String name, String[] args) {
 		super(host, name, args);
 
 	}
@@ -89,19 +89,19 @@ public class TaskTrackerProcess extends SimProcess {
 		while (!finished) {
 			try {
 				if (timeUntilNextHeartbeat <= 0) {
-					(new HeartbeatTask(this)).send(JobTrackerInterface.MAILBOX);
-					timeUntilNextHeartbeat = JobTrackerInterface.HEARTBEAT_INTERVAL;
+					(new HeartbeatTask(this)).send(SchedulerProcess.SCHEDULER_MAILBOX);
+					timeUntilNextHeartbeat = SchedulerProcess.getHeartbeatInterval();
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 
 			try {
-				Task task = checkTask(MapReduceSimMain.SIM_STEP);
+				Task task = checkTask(SimMain.SIM_STEP);
 				if (task != null)
 					handleTask(task);
 			} catch (MsgException e) { // e.printStackTrace();
-				timeUntilNextHeartbeat -= MapReduceSimMain.SIM_STEP;
+				timeUntilNextHeartbeat -= SimMain.SIM_STEP;
 				Msg.info("waiting...");
 			}
 

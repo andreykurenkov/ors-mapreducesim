@@ -10,11 +10,11 @@ import org.simgrid.msg.Process;
 
 //TODO: error stuff and such
 public abstract class WorkerProcess extends SimProcess {
-	protected TaskTrackerProcess parent;
+	protected TaskRunnerProcess parent;
 	protected WorkTask task;
 	public final double failureRate = 0.001;
 
-	public WorkerProcess(Host host, String name, String mailbox, TaskTrackerProcess parent, WorkTask task) {
+	public WorkerProcess(Host host, String name, String mailbox, TaskRunnerProcess parent, WorkTask task) {
 		super(host, name, null, mailbox);
 		this.parent = parent;
 		this.timeElapsed = parent.getTimeElapsed();

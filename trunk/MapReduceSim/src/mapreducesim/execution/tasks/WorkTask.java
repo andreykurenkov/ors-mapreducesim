@@ -1,18 +1,25 @@
 package mapreducesim.execution.tasks;
 
+import mapreducesim.scheduling.FileSplitter.InputSplit;
+import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.File;
 import mapreducesim.storage.FileBlockLocation;
 
 import org.simgrid.msg.Task;
 
+/**
+ * 
+ * @author Andrey Kurenkov
+ * 
+ */
 public class WorkTask extends Task {
 	public static enum Type {
 		MAP, REDUCE
 	}
 
 	// TODO task attemptID
-	public final FileBlockLocation[] NEEDED_FILES;
-	
+	public final InputSplit NEEDED_DATA;
+
 	public final double WORK_AMOUNT;
 	public final Type TYPE;
 	public File output;
@@ -22,9 +29,9 @@ public class WorkTask extends Task {
 	private static int reduceCount;
 	private String id;
 
-	public WorkTask(double workAmount, Type type, FileBlockLocation... files) {
+	public WorkTask(double workAmount, Type type, InputSplit data) {
 		this.WORK_AMOUNT = workAmount;
-		this.NEEDED_FILES = files;
+		this.NEEDED_DATA = data;
 		this.TYPE = type;
 		if (type == Type.MAP) {
 			id = "Map Task " + (++mapCount);

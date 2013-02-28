@@ -39,16 +39,16 @@ public class FileTransferTask extends Task {
 	}
 
 	public static class ReadFileRequestTask extends Task {
-		private FileBlockLocation location;
+		private DataLocation location;
 		private boolean readDone;
 		public final String originMailbox;
 
-		public ReadFileRequestTask(FileBlockLocation location, String origin) {
+		public ReadFileRequestTask(DataLocation location, String origin) {
 			this.location = location;
 			originMailbox = origin;
 		}
 
-		public FileBlockLocation getFileLocation() {
+		public DataLocation getFileLocation() {
 			return location;
 		}
 
