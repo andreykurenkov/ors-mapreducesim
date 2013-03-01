@@ -32,7 +32,7 @@ public class XMLDocument extends XMLNode {
 
 	public static XMLDocument parseDocument(File file) {
 		SmartFile smart = new SmartFile(file);
-		if (smart.exists() && smart.canRead())
+		if (smart.exists())
 			return parseDocument(smart.read());
 		return null;
 	}
@@ -52,7 +52,7 @@ public class XMLDocument extends XMLNode {
 		this.root = root;
 	}
 
-	public String doToRawXML(boolean formatPretty, int depth) {
+	protected String doToRawXML(boolean formatPretty, int depth) {
 		StringBuilder res = new StringBuilder();
 		String indent;
 		if (formatPretty) {

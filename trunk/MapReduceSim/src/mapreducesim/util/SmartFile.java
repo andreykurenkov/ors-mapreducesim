@@ -1,6 +1,5 @@
 package mapreducesim.util;
 
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -400,16 +399,18 @@ public class SmartFile extends File {
 	/**
 	 * Appends Strings to the end of this file.
 	 * 
+	 * @param write
+	 *            the string to write
 	 * @param append
-	 *            the string to append
+	 *            wherether to append or overwrite the file
 	 * @return true if allowed to write to file and done succesfully, false otherwise
 	 */
-	public boolean append(String append) {
+	public boolean write(String write, boolean append) {
 		if (this.canWrite()) {
 			FileWriter writer;
 			try {
-				writer = new FileWriter(this);
-				writer.append(append);
+				writer = new FileWriter(this, append);
+				writer.append(write);
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
