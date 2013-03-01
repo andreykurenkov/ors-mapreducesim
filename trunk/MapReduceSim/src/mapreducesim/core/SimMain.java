@@ -9,32 +9,43 @@ import mapreducesim.util.xml.XMLParser;
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.NativeException;
 
+/**
+ * The main class of the simulation. This is largely the same as SimGrid's sample main class, but in addition to initialising
+ * SimGrid it also loads the Simulation's own configuration XML file as the third argument.
+ * 
+ * The loaded configuration is static and is accessible everywhere within the simulation through SimConfig. It is encouraged
+ * to access the configuration from SimConfig through its helper methods.
+ * 
+ * Users are allowed to not provide a configuration XML file. In this case, the configuration file is an XMLDocument with a
+ * null root. SimConfig accounts for that possibility, and so should be used.
+ * 
+ * @author Andrey Kurenkov
+ * @version 1.0 Mar 1, 2013
+ */
 public class SimMain {
-	public static final int SIM_STEP = 10;// generic time passing quantity. May be removed in future.
-
+	// the configuration of the current Simulation, to be used in static intialization blocks for init and during the
+	// simulation
 	private static XMLDocument config;
 
-	public static XMLDocument getConfig() {
+	/**
+	 * Simple getter for config
+	 * 
+	 * @return config
+	 */
+	protected static XMLDocument getConfig() {
 		return config;
 	}
 
-	public static String getConfigurationElementText(String elementName, String defaultValue) {
-		if (config.getRoot() != null) {
-			XMLElement child = config.getRoot().getChildByName(elementName);
-			if (child != null)
-				if (child.hasContentText())
-					return child.getContentText();
-		}
-		Msg.info("No value found for " + elementName + " in config file. Using default " + defaultValue);
-		return defaultValue;
-	}
-
-	public static XMLElement getConfigurationElement(String elementName) {
-		if (config.getRoot() != null)
-			return config.getRoot().getChildByName(elementName);
-		return null;
-	}
-
+	/**
+	 * Entry point into simulation
+	 * 
+	 * @param args
+	 *            important parameters indicating the names/paths to XML files for the platform, deployment, and optionally
+	 *            configuration XML files for this simulation (in that order). If args is null, default values are attempted.
+	 *            If args is less than 2 or greater than 4, an input format message is printed and the program exits.
+	 * @throws NativeException
+	 *             thrown by SimGrid in case of native error
+	 */
 	public static void main(String[] args) throws NativeException {
 		/* check usage error and initialize with defaults */
 		if (args.length == 0) {
@@ -44,7 +55,7 @@ public class SimMain {
 			args[0] = "MapReduceSim_platform.xml";
 			args[1] = "MapReduceSim_deployment.xml";
 			args[2] = "MapReduceSim_config.xml";
-		} else if (args.length < 2) {
+		} else if (args.length < 2 || args.length > 2) {
 			System.out.print("** ERROR **\n" + "Usage:\nplatform_file deployment_file config_file\n");
 			System.out
 					.print("Example:\nMapReduceSim_platform.xml MapReduceSim_deployment.xml  (optional) MapReduceSim_config.xml\n");

@@ -12,7 +12,7 @@ public class FileUtil {
 	}
 
 	public static File getProjectFile(String path) {
-		URL fileUrl = DataCollectionUtil.class.getResource(PATH_PREFIX + path);
+		URL fileUrl = SimulationsRunner.class.getResource(PATH_PREFIX + path);
 		if (fileUrl != null) {
 			return new File(fileUrl.getPath().replace("%20", " "));
 		} else {

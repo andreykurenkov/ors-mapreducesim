@@ -10,5 +10,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="simgrid-java/java/simgrid.jar"/>
+	<classpathentry kind="lib" path="res/SurfacePlot.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

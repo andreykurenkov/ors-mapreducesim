@@ -20,9 +20,7 @@ public class SimpleReduceProcess extends WorkerProcess {
 		// TODO: fill out with Merge, retrive, write
 		Msg.info(this.getHost().getName() + " starting WorkTask" + task + " at " + this.getTimeElapsed());
 		double timeToWork = task.WORK_AMOUNT / (int) this.getHost().getSpeed();
-		while (timeToWork > 0) {
-			timeToWork -= SimMain.SIM_STEP;
-		}
+
 		Msg.info(this.getHost().getName() + " finishing WorkTask" + task + " at " + this.getTimeElapsed());
 		parent.notifyReduceFinish();
 	}

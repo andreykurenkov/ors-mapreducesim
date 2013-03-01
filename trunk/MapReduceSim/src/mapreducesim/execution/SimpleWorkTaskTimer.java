@@ -5,7 +5,11 @@ import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
 
-public class SimpleWorkTaskTimer extends WorkTaskTimer<WorkTask> {
+public class SimpleWorkTaskTimer extends WorkTaskTimer {
+
+	public SimpleWorkTaskTimer() {
+		super(null);
+	}
 
 	public SimpleWorkTaskTimer(XMLElement input) {
 		super(input);
