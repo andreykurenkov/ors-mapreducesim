@@ -1,7 +1,5 @@
 package mapreducesim.storage;
 
-import mapreducesim.core.HostData;
-
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Task;
 
@@ -26,8 +24,6 @@ public class FileTransferTask extends Task {
 	public void finishRead(File readFile) {
 		readDone = true;
 		this.transferFile = readFile;
-		HostData hostData = (HostData) this.getSource().getData();
-		hostData.addFile(readFile);
 	}
 
 	public File getTransferFile() {

@@ -42,9 +42,7 @@ public class TestStorage extends SimProcess {
 							+ this.getTimeElapsed());
 					// simulate the expense
 					long costRemaining = 2; // dummy value...
-					while (costRemaining > 0) {
-						costRemaining -= SimMain.SIM_STEP;
-					}
+
 					(new FileTransferTask(new File(null, "yay"))).send(((ReadFileRequestTask) currentTask).originMailbox);
 				}
 			} catch (TimeoutException e) {
