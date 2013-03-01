@@ -14,7 +14,7 @@ public class FileUtil {
 	public static File getProjectFile(String path) {
 		URL fileUrl = DataCollectionUtil.class.getResource(PATH_PREFIX + path);
 		if (fileUrl != null) {
-			return new File(fileUrl.getPath());
+			return new File(fileUrl.getPath().replace("%20", " "));
 		} else {
 			System.err.println("Couldn't find file: " + path);
 			return null;

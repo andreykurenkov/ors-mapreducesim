@@ -1,5 +1,6 @@
 <config>
-	<timer name="mapreducesim.execution.SimpleWorkTaskTimer"> </timer>
+	<TaskTimer name="mapreducesim.execution.SimpleWorkTaskTimer"> </TaskTimer>
+	<heartbeat>50</heartbeat>
 	
 	<inputJobs>
 		<job taskSpecification="full">

@@ -28,7 +28,7 @@ public abstract class SchedulerProcess extends SimProcess {
 	private static int heartbeatInterval = 100;
 
 	static {
-		String beat = SimMain.getConfigurationElementText("Heartbeat", "100");
+		String beat = SimMain.getConfigurationElementText("heartbeat", "100");
 		setHeartbeatInterval(Integer.parseInt(beat));
 	}
 

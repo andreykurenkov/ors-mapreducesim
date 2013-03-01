@@ -3,7 +3,7 @@
 <platform version="3">
         <process host="JobTracker" function="mapreducesim.execution.test.TestJobTracker"></process>
         <process host="Storage" function="mapreducesim.execution.test.TestStorage"></process>
-        <process host="TaskTracker1" function="mapreducesim.execution.TaskTrackerProcess"></process>
-        <process host="TaskTracker2" function="mapreducesim.execution.TaskTrackerProcess"></process>
-        <process host="TaskTracker3" function="mapreducesim.execution.TaskTrackerProcess"></process>
+        <process host="TaskTracker1" function="mapreducesim.execution.TaskRunnerProcess"></process>
+        <process host="TaskTracker2" function="mapreducesim.execution.TaskRunnerProcess"></process>
+        <process host="TaskTracker3" function="mapreducesim.execution.TaskRunnerProcess"></process>
 </platform>

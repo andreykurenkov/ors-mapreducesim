@@ -1,6 +1,3 @@
-/**
- * 
- */
 package mapreducesim.core;
 
 import org.simgrid.msg.Msg;
