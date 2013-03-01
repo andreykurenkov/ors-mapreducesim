@@ -18,6 +18,7 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 	private double[] offsets;
 
 	public ArraysSurfaceModel(double[][] graphValues, double[] offsets, double divisions[], String[] labels) {
+		this.offsets = offsets;
 		this.divisions = divisions;
 		this.labels = labels;
 		values = graphValues;
@@ -27,18 +28,20 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 		mins[1] = (float) offsets[1];
 		maxes[0] = (float) (offsets[0] + divisions[0] * graphValues.length);
 		maxes[1] = (float) (offsets[1] + divisions[1] * graphValues.length);
+
+		float min = Float.MAX_VALUE;
+		float max = -Float.MAX_VALUE;
 		for (int x = 0; x < graphValues.length; x++) {
-			float min = Float.POSITIVE_INFINITY;
-			float max = -Float.NEGATIVE_INFINITY;
 			for (double val : graphValues[x]) {
 				if ((float) val < min)
 					min = (float) val;
 				if ((float) val > max)
 					max = (float) val;
 			}
-			mins[2] = min;
-			maxes[2] = max;
 		}
+
+		mins[2] = min;
+		maxes[2] = max;
 	}
 
 	/*
@@ -48,8 +51,7 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 	 */
 	@Override
 	public float calculateZ(float x, float y) {
-		return (float) values[(int) Math.round((x - offsets[X_INDEX]) / divisions[X_INDEX])][(int) Math
-				.round((y - offsets[Y_INDEX]) / divisions[Y_INDEX])];
+		return (float) values[(int) ((x - offsets[X_INDEX]) / divisions[X_INDEX])][(int) ((y - offsets[Y_INDEX]) / divisions[Y_INDEX])];
 	}
 
 	/*
@@ -95,12 +97,12 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 
 	@Override
 	public float getXMax() {
-		return maxes[X_INDEX];
+		return maxes[X_INDEX] - 1;
 	}
 
 	@Override
 	public float getXMin() {
-		return mins[X_INDEX];
+		return mins[X_INDEX] - 1;
 	}
 
 	@Override
@@ -110,12 +112,12 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 
 	@Override
 	public float getYMax() {
-		return maxes[Y_INDEX];
+		return maxes[Y_INDEX] - 1;
 	}
 
 	@Override
 	public float getYMin() {
-		return mins[Y_INDEX];
+		return mins[Y_INDEX] - 1;
 	}
 
 	@Override

@@ -23,6 +23,7 @@ public class XMLDocument extends XMLNode {
 	}
 
 	public XMLDocument(XMLElement root) {
+		this("UTF8", "1");
 		this.root = root;
 	}
 
@@ -38,9 +39,13 @@ public class XMLDocument extends XMLNode {
 	}
 
 	public static XMLDocument parseDocument(String str) {
-		XMLNode node = XMLParser.parse(str);
-		if (node instanceof XMLElement)
-			return new XMLDocument((XMLElement) node);
+		if (str.contains("encoding"))
+			str = str.substring(str.indexOf("?>") + 2);
+		XMLNode parsed = XMLParser.parse(str);
+		if (parsed instanceof XMLElement)
+			return new XMLDocument((XMLElement) parsed);
+		if (parsed instanceof XMLDocument)
+			return (XMLDocument) parsed;
 		return null;
 	}
 
@@ -52,7 +57,7 @@ public class XMLDocument extends XMLNode {
 		this.root = root;
 	}
 
-	protected String doToRawXML(boolean formatPretty, int depth) {
+	public String doToRawXML(boolean formatPretty, int depth) {
 		StringBuilder res = new StringBuilder();
 		String indent;
 		if (formatPretty) {
@@ -62,9 +67,9 @@ public class XMLDocument extends XMLNode {
 		}
 
 		String ls = System.getProperty("line.separator");
-		if (version != null && encoding != null) {
-			res.append(indent + "<?xml version=\"" + version + "\" encoding=\"" + encoding + "\"?>" + ls);
-		}
+		// if (version != null && encoding != null) {// TODO:fix
+		// res.append(indent + "<?xml version=\"" + version + "\" encoding=\"" + encoding + "\"?>" + ls);
+		// }
 		if (root != null) {
 			res.append(root.doToRawXML(formatPretty, depth + 1));
 		}

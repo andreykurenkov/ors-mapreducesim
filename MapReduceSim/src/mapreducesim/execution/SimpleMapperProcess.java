@@ -40,7 +40,7 @@ public class SimpleMapperProcess extends WorkerProcess {
 		// Write output
 		File outputFile = new File(null, "null");
 		WriteFileRequestTask write = new WriteFileRequestTask(outputFile, this.getHost());
-		write.send(StorageProcess.STORAGE_MAILBOX);
+		// write.send(StorageProcess.STORAGE_MAILBOX);
 		parent.notifyMapFinish();
 
 	}

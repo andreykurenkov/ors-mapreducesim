@@ -55,7 +55,7 @@ public class SimMain {
 			args[0] = "MapReduceSim_platform.xml";
 			args[1] = "MapReduceSim_deployment.xml";
 			args[2] = "MapReduceSim_config.xml";
-		} else if (args.length < 2 || args.length > 2) {
+		} else if (args.length < 2 || args.length > 4) {
 			System.out.print("** ERROR **\n" + "Usage:\nplatform_file deployment_file config_file\n");
 			System.out
 					.print("Example:\nMapReduceSim_platform.xml MapReduceSim_deployment.xml  (optional) MapReduceSim_config.xml\n");
@@ -69,11 +69,12 @@ public class SimMain {
 		if (args.length > 2) {
 			SmartFile file = new SmartFile(args[2]);
 			if (file.exists()) {
-				XMLNode node = XMLParser.parse(file.read());
-				if (node instanceof XMLElement) {
-					config.setRoot((XMLElement) node);
+				XMLDocument parse = XMLDocument.parseDocument(file);
+				if (parse != null) {
+					config = parse;
 				} else {
-					System.out.print("** ERROR **\n" + "XML config file not \n");
+					System.out.print("** ERROR **\n" + "XML config file " + args[2] + " not found or badly formatted:\n"
+							+ file.read());
 					System.exit(0);
 				}
 			} else {
@@ -88,6 +89,7 @@ public class SimMain {
 
 		/* execute the simulation. */
 		Msg.run();
-		Msg.info("Simulation time:" + Msg.getClock());
+		double clock = Msg.getClock();
+		Msg.info("Simulation time:" + clock);
 	}
 }
