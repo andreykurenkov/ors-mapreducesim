@@ -1,5 +1,6 @@
 package mapreducesim.execution.test;
 
+import mapreducesim.core.SimConfig;
 import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.execution.TaskRunnerProcess;
@@ -18,6 +19,10 @@ import org.simgrid.msg.Task;
 import org.simgrid.msg.TimeoutException;
 
 public class TestJobTracker extends SimProcess {
+	private static int tasklength;
+	static {
+		tasklength = Integer.parseInt(SimConfig.getConfigurationElementText("tasklength", "25"));
+	}
 
 	public TestJobTracker(Host host, String name, String[] args) {
 		super(host, name, args, SchedulerProcess.SCHEDULER_MAILBOX);
@@ -33,7 +38,7 @@ public class TestJobTracker extends SimProcess {
 				if (received instanceof HeartbeatTask) {
 					TaskRunnerProcess from = ((HeartbeatTask) received).from;
 					if (from.hasMapSlots()) {
-						(new WorkTask(25, Type.MAP, new InputSplit())).send(from.MAILBOX);
+						(new WorkTask(tasklength, Type.MAP, new InputSplit())).send(from.MAILBOX);
 						if (totalToMap > 0) {
 							totalToMap--;
 						} else {

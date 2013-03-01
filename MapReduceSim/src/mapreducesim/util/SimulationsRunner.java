@@ -41,13 +41,29 @@ public class SimulationsRunner {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		SimulationsRunner util = new SimulationsRunner(new File("data.csv"));
+		SimulationsRunner runner = new SimulationsRunner(new File("data.csv"), "heartbeat", "task length");
 		File platFile = FileUtil.getProjectFile("plat.xml");
 		File deplFile = FileUtil.getProjectFile("depl.xml");
 		File configFile = FileUtil.getProjectFile("config.xml");
-		File outFile = new File("out.txt");
-		util.runSimulation(platFile, deplFile, configFile, outFile);
-		util.runSimulation(platFile, deplFile, configFile, outFile);
+		XMLDocument plat = XMLDocument.parseDocument(platFile);
+		XMLDocument depl = XMLDocument.parseDocument(deplFile);
+		XMLDocument config = XMLDocument.parseDocument(configFile);
+		XMLElement heartbeat = config.getRoot().getChildByName("heartbeat");
+		XMLElement tasklength = config.getRoot().getChildByName("tasklength");
+		String[] heartbeats = getValueRange(10, 1010, 20);
+		String[] tasklengths = getValueRange(10, 1010, 20);
+		double[][] results = new double[50][50];
+		for (int heatbeatIndex = 0; heatbeatIndex < 50; heatbeatIndex++) {
+			String heartbeatStr = heartbeats[heatbeatIndex];
+			heartbeat.setContentText(heartbeatStr);
+			for (int tasklengthIndex = 0; tasklengthIndex < 50; tasklengthIndex++) {
+				String tasklengthStr = tasklengths[50];
+				tasklength.setContentText(tasklengthStr);
+				results[heatbeatIndex][tasklengthIndex] = runner.runSimulation(plat, depl, config, new File("./logs/log "
+						+ runner.getSimulationCount()), heartbeatStr, tasklengthStr);
+
+			}
+		}
 
 	}
 
@@ -188,7 +204,7 @@ public class SimulationsRunner {
 			String[] simArgs = { platform.getAbsolutePath(), deployment.getAbsolutePath(), configuration.getAbsolutePath() };
 			ProcessBuilder builder = new ProcessBuilder("java", "-cp", ".:./java/simgrid.jar", "mapreducesim/core/SimMain",
 					simArgs[0], simArgs[1], simArgs[2]);
-			builder.directory(new File("./bin"));
+			builder.directory(new File("./"));
 			if (logOut != null) {
 				builder.redirectOutput(logOut);
 				builder.redirectError(logOut);

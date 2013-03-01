@@ -27,9 +27,7 @@ public class StorageProcess extends SimProcess {
 						+ this.getTimeElapsed());
 				// simulate the expense
 				long costRemaining = 6; // dummy value for now.
-				while (costRemaining > 0) {
-					costRemaining -= SimMain.SIM_STEP;
-				}
+
 				Msg.info("Finished writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at "
 						+ Msg.getClock());
 
@@ -40,9 +38,7 @@ public class StorageProcess extends SimProcess {
 				Msg.info("Reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at " + this.getTimeElapsed());
 				// simulate the expense
 				long costRemaining = 2; // dummy value...
-				while (costRemaining > 0) {
-					costRemaining -= SimMain.SIM_STEP;
-				}
+
 				Msg.info("Finished reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at "
 						+ this.getTimeElapsed());
 				((ReadFileRequestTask) currentTask).cancel(); // mark task complete (?)

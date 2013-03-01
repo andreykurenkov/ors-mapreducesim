@@ -11,6 +11,7 @@ import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
 import org.simgrid.msg.TimeoutException;
 
+import mapreducesim.core.SimConfig;
 import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.execution.TaskRunnerProcess;
@@ -28,7 +29,7 @@ public abstract class SchedulerProcess extends SimProcess {
 	private static int heartbeatInterval = 100;
 
 	static {
-		String beat = SimMain.getConfigurationElementText("heartbeat", "100");
+		String beat = SimConfig.getConfigurationElementText("heartbeat", "100");
 		setHeartbeatInterval(Integer.parseInt(beat));
 	}
 

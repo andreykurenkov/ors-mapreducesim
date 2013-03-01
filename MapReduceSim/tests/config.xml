@@ -1,6 +1,7 @@
 <config>
 	<TaskTimer name="mapreducesim.execution.SimpleWorkTaskTimer"> </TaskTimer>
 	<heartbeat>50</heartbeat>
+   <tasklength>25</tasklength>
 	
 	<inputJobs>
 		<job taskSpecification="full">

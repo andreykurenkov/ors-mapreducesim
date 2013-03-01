@@ -2,20 +2,20 @@ package mapreducesim.util.graphing;
 
 import java.awt.BorderLayout;
 
+import org.sf.surfaceplot.ISurfacePlotModel;
 import org.sf.surfaceplot.SurfaceCanvas;
 
 /**
  * 
  * @author siva
  */
-public class Example extends javax.swing.JFrame {
+public class GraphingFrame extends javax.swing.JFrame {
 
 	/** Creates new form Example */
-	public Example() {
+	public GraphingFrame(ISurfacePlotModel model) {
 		initComponents();
 
 		setSize(1000, 800);
-		ExampleSurfaceModel model = new ExampleSurfaceModel();
 		SurfaceCanvas canvas = new SurfaceCanvas();
 		canvas.setModel(model);
 		centerPanel.add(canvas, BorderLayout.CENTER);
@@ -58,18 +58,6 @@ public class Example extends javax.swing.JFrame {
 
 		pack();
 	}// </editor-fold>//GEN-END:initComponents
-
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
-	public static void main(String args[]) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new Example().setVisible(true);
-			}
-		});
-	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JPanel centerPanel;

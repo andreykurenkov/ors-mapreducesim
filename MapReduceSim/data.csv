@@ -1,3 +1,1 @@
-test number,platform file,deployment file,configuration file,runtime
-1,plat.xml,depl.xml,config.xml,549.7189999999998
-2,plat.xml,depl.xml,config.xml,549.7189999999998
+heartbeat,task length,runtime
