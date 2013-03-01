@@ -41,7 +41,7 @@ public class TestStorage extends SimProcess {
 					Msg.info("Reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at "
 							+ this.getTimeElapsed());
 					// simulate the expense
-					long costRemaining = 2; // dummy value...
+					// long costRemaining = 2; // dummy value...
 
 					(new FileTransferTask(new File(null, "yay"))).send(((ReadFileRequestTask) currentTask).originMailbox);
 				}

@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
+ <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
 <platform version="3">
         <process host="JobTracker" function="mapreducesim.execution.test.TestJobTracker"></process>
         <process host="Storage" function="mapreducesim.execution.test.TestStorage"></process>

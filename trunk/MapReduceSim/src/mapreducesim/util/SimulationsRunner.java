@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import mapreducesim.core.SimMain;
+import mapreducesim.util.graphing.ArraysSurfaceModel;
+import mapreducesim.util.graphing.GraphingFrame;
 import mapreducesim.util.xml.XMLDocument;
 import mapreducesim.util.xml.XMLElement;
 import mapreducesim.util.xml.XMLNode;
@@ -45,25 +47,29 @@ public class SimulationsRunner {
 		File platFile = FileUtil.getProjectFile("plat.xml");
 		File deplFile = FileUtil.getProjectFile("depl.xml");
 		File configFile = FileUtil.getProjectFile("config.xml");
-		XMLDocument plat = XMLDocument.parseDocument(platFile);
-		XMLDocument depl = XMLDocument.parseDocument(deplFile);
+		// runner.runSimulation(platFile, deplFile, configFile, new File("./logs/log " + runner.getSimulationCount()));
 		XMLDocument config = XMLDocument.parseDocument(configFile);
+		// runner.runSimulation(platFile, deplFile, config, new File("./logs/log " + runner.getSimulationCount()));
+
 		XMLElement heartbeat = config.getRoot().getChildByName("heartbeat");
 		XMLElement tasklength = config.getRoot().getChildByName("tasklength");
-		String[] heartbeats = getValueRange(10, 1010, 20);
-		String[] tasklengths = getValueRange(10, 1010, 20);
-		double[][] results = new double[50][50];
-		for (int heatbeatIndex = 0; heatbeatIndex < 50; heatbeatIndex++) {
+		String[] heartbeats = getValueRange(10, 1010, 50);
+		String[] tasklengths = getValueRange(10, 1010, 50);
+		double[][] results = new double[20][20];
+		for (int heatbeatIndex = 0; heatbeatIndex < 20; heatbeatIndex++) {
 			String heartbeatStr = heartbeats[heatbeatIndex];
 			heartbeat.setContentText(heartbeatStr);
-			for (int tasklengthIndex = 0; tasklengthIndex < 50; tasklengthIndex++) {
-				String tasklengthStr = tasklengths[50];
+			for (int tasklengthIndex = 0; tasklengthIndex < 20; tasklengthIndex++) {
+				String tasklengthStr = tasklengths[tasklengthIndex];
 				tasklength.setContentText(tasklengthStr);
-				results[heatbeatIndex][tasklengthIndex] = runner.runSimulation(plat, depl, config, new File("./logs/log "
-						+ runner.getSimulationCount()), heartbeatStr, tasklengthStr);
+				results[heatbeatIndex][tasklengthIndex] = runner.runSimulation(platFile, deplFile, config, null,
+						heartbeatStr, tasklengthStr);
 
 			}
 		}
+		ArraysSurfaceModel model = new ArraysSurfaceModel(results, new double[] { 10, 10 }, new double[] { 50, 50 },
+				new String[] { "h", "l", "r" });
+		GraphingFrame f = new GraphingFrame(model);
 
 	}
 
@@ -126,27 +132,17 @@ public class SimulationsRunner {
 	 *            of the row)
 	 * @return double which is the runtime of the simulation or -1 if problem was encountered
 	 */
-	public double runSimulation(XMLDocument platform, XMLDocument deployment, XMLDocument configuration, File logOut,
-			String... csvValues) {
+	public double runSimulation(File platform, File deployment, XMLDocument configuration, File logOut, String... csvValues) {
 		try {
-			File directory = new File("");
-			XMLDocument[] documents = { platform, deployment, configuration };
-			String[] fileNames = { "tempPlatform.xml", "tempDeployment.xml", "tempConfiguration.xml" };
-			SmartFile[] tempFiles = new SmartFile[3];
-			String[] simArgs = new String[3];
-			for (int i = 0; i < 3; i++) {
-				tempFiles[i] = new SmartFile(directory, fileNames[i]);
-				tempFiles[i].createNewFile();// TODO: use boolean?
-				String content = documents[i].toRawXML(XMLNode.PRETTYFORMAT);
-				tempFiles[i].write(content, false);
-				simArgs[i] = tempFiles[i].getAbsolutePath();
-			}
+			SmartFile tempFile = new SmartFile("tempConfiguration.xml");
+			tempFile.createNewFile();// TODO: use boolean?
+			String content = configuration.toRawXML(XMLNode.PRETTYFORMAT);
+			tempFile.write(content, false);
 
-			double time = runSimulation(tempFiles[0], tempFiles[1], tempFiles[2], logOut, csvValues);
+			double time = runSimulation(platform, deployment, tempFile, logOut, csvValues);
 
-			for (int i = 0; i < 3; i++) {
-				tempFiles[i].delete();
-			}
+			tempFile.delete();
+
 			return time;
 
 		} catch (Exception e) {
@@ -173,7 +169,7 @@ public class SimulationsRunner {
 	 *            file to write log to. Permitted to be null (in which case log will not be stored).
 	 * @return double which is the runtime of the simulation or -1 if problem was encountered
 	 */
-	public double runSimulation(XMLDocument platform, XMLDocument deployment, XMLDocument configuration, File logOut) {
+	public double runSimulation(File platform, File deployment, XMLDocument configuration, File logOut) {
 		return runSimulation(platform, deployment, configuration, logOut, (String[]) null);
 	}
 
@@ -204,25 +200,43 @@ public class SimulationsRunner {
 			String[] simArgs = { platform.getAbsolutePath(), deployment.getAbsolutePath(), configuration.getAbsolutePath() };
 			ProcessBuilder builder = new ProcessBuilder("java", "-cp", ".:./java/simgrid.jar", "mapreducesim/core/SimMain",
 					simArgs[0], simArgs[1], simArgs[2]);
-			builder.directory(new File("./"));
+			builder.directory(new File("./bin"));
+
+			File tempFile = new File("temp.txt");
+			if (logOut == null)
+				logOut = tempFile;
 			if (logOut != null) {
 				builder.redirectOutput(logOut);
 				builder.redirectError(logOut);
 			}
 			Process process = builder.start();
-			SimMain.main(simArgs);
-			double runtime = Msg.getClock();
+
+			boolean done = false;
+			// TODO: consider launching many Processes in parallel and then reading results.
+			double runtime = -1;
+			String lastLine = null;
+			Scanner scan = new Scanner(logOut);
+
+			while (!done) {
+				try {
+					process.exitValue();
+					done = true;
+				} catch (Exception e) {
+					done = false;
+				}
+			}
+
+			while (scan.hasNextLine())
+				lastLine = scan.nextLine();
+			scan.close();
+			if (tempFile != null)
+				tempFile.delete();
+			if (lastLine != null && lastLine.contains("Simulation time:"))
+				runtime = Double.parseDouble(lastLine.substring(lastLine.indexOf(":") + 1));
+
 			runtimes.add(runtime);
-			Msg.clean();
-			/*
-			 * Note: much faster to execute locally than to read file (at low level of simulation) boolean done = false;
-			 * TODO: consider launching many Processes in parallel and then reading results. while (!done) { try {
-			 * process.exitValue(); done = true; } catch (Exception e) { done = false; } } String lastLine = null; Scanner
-			 * scan = new Scanner(logOut); while (scan.hasNextLine()) lastLine = scan.nextLine(); scan.close();
-			 * System.out.println(lastLine); if (tempFile != null) tempFile.delete(); String runtime =
-			 * "Error;runtime could not be found"; if (lastLine != null && lastLine.contains("Simulation time:")) runtime =
-			 * lastLine.substring(lastLine.indexOf(":") + 1);
-			 */
+			System.out.println("Finished simulation " + simulationCount + " at " + runtime);
+
 			if (csvValues != null) {
 				StringBuilder allValues = new StringBuilder();
 				for (String str : csvValues)
@@ -334,7 +348,7 @@ public class SimulationsRunner {
 		String[] toReturn = new String[(int) Math.round(Math.abs((end - start) / add)) + addToLength];
 		int counter = 0;
 		for (double val = start; val >= start && val <= end; val += add) {
-			toReturn[counter++] = String.valueOf(val);
+			toReturn[counter++] = String.valueOf((int) val);
 		}
 		return toReturn;
 	}

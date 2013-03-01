@@ -32,22 +32,26 @@ public class TestJobTracker extends SimProcess {
 	public void main(String[] arg0) throws MsgException {
 
 		int totalToMap = 20;
+		int runnersfinished = 0;
 		while (!finished) {
 			try {
-				Task received = Task.receive(SchedulerProcess.SCHEDULER_MAILBOX, 150);
+				Task received = Task.receive(SchedulerProcess.SCHEDULER_MAILBOX, SchedulerProcess.getHeartbeatInterval());
 				if (received instanceof HeartbeatTask) {
 					TaskRunnerProcess from = ((HeartbeatTask) received).from;
 					if (from.hasMapSlots()) {
-						(new WorkTask(tasklength, Type.MAP, new InputSplit())).send(from.MAILBOX);
 						if (totalToMap > 0) {
 							totalToMap--;
 						} else {
+							runnersfinished++;
 							from.finish();
 						}
+						(new WorkTask(tasklength, Type.MAP, new InputSplit())).send(from.MAILBOX);
+
 					}
 				}
 			} catch (TimeoutException e) {
-				this.finish();
+				if (runnersfinished == 3)
+					this.finish();
 			}
 		}
 

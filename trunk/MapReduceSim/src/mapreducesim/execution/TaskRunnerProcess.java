@@ -61,7 +61,7 @@ public class TaskRunnerProcess extends SimProcess {
 			numMapSlots = SafeParsing.safeIntParse(args[0], 2, "args[0] (int numMap) wrong format for TaskTracker at "
 					+ this.getHost());
 		else
-			numMapSlots = 20;
+			numMapSlots = 3;
 
 		if (args.length > 1)
 			numReduceSlots = SafeParsing.safeIntParse(args[1], 2, "args[1] (int numReduce) wrong format for TaskTracker at "
@@ -82,12 +82,11 @@ public class TaskRunnerProcess extends SimProcess {
 			}
 
 			try {
-				Task task = checkTask(10);
+				Task task = checkTask(SchedulerProcess.getHeartbeatInterval());
 				if (task != null)
 					handleTask(task);
 			} catch (MsgException e) { // e.printStackTrace();
-				timeUntilNextHeartbeat -= 10;
-				Msg.info("waiting...");
+				timeUntilNextHeartbeat -= SchedulerProcess.getHeartbeatInterval();
 			}
 
 		}
@@ -110,11 +109,11 @@ public class TaskRunnerProcess extends SimProcess {
 	}
 
 	protected void notifyMapFinish() {
-		mapCount--;
+		numMapRunning--;
 	}
 
 	protected void notifyReduceFinish() {
-		mapCount--;
+		numReduceRunning--;
 	}
 
 	protected void handleTask(Task received) {

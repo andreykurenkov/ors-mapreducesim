@@ -3,11 +3,9 @@ package mapreducesim.storage;
 import java.util.ArrayList;
 
 /**
- * The basic unit of a data tree. A tree can be represented by a DataTree
- * object, which basically just points to the root DataTreeNode, or on its own
- * by its root node. The DataTreeNode has a name and has an array of children
- * and a single parent defined by the constructor. To hold data it must be
- * extended (e.g., File/Directory)
+ * The basic unit of a data tree. A tree can be represented by a DataTree object, which basically just points to the root
+ * DataTreeNode, or on its own by its root node. The DataTreeNode has a name and has an array of children and a single parent
+ * defined by the constructor. To hold data it must be extended (e.g., File/Directory)
  * 
  * @author Matthew O'Shaughnessy
  */
@@ -35,14 +33,21 @@ public class DataTreeNode {
 	 * Creates a node as a child of specified node with specified name
 	 * 
 	 * @param parent
+	 *            if parent is null then treated as root
 	 * @param name
 	 */
 	public DataTreeNode(DataTreeNode parent, String name) {
 		super();
 		this.parent = parent;
 		this.name = name;
-		isRoot = false;
-		this.level = parent.getLevel() + 1;
+
+		if (parent != null) {
+			this.level = parent.getLevel() + 1;
+			isRoot = false;
+		} else {
+			level = 0;
+			isRoot = true;
+		}
 	}
 
 	/**
@@ -176,8 +181,7 @@ public class DataTreeNode {
 	}
 
 	/**
-	 * Recursively checks itself and children and returns if this DataTreeNode
-	 * is a parent of the query DataTreeNode
+	 * Recursively checks itself and children and returns if this DataTreeNode is a parent of the query DataTreeNode
 	 * 
 	 * @param query
 	 * @return Is the query a child of this node?
@@ -227,8 +231,7 @@ public class DataTreeNode {
 	}
 
 	/**
-	 * Changes this node from a root node to a normal node. Alters the name to
-	 * the specified new name
+	 * Changes this node from a root node to a normal node. Alters the name to the specified new name
 	 * 
 	 * @param name
 	 */
@@ -285,8 +288,7 @@ public class DataTreeNode {
 	}
 
 	/**
-	 * Recursively creates a string of the path to this node. Ends when it finds
-	 * the root
+	 * Recursively creates a string of the path to this node. Ends when it finds the root
 	 * 
 	 * @return String
 	 */
