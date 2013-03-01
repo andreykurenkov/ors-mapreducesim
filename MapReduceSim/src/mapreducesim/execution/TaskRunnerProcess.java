@@ -1,5 +1,7 @@
 package mapreducesim.execution;
 
+import mapreducesim.core.ConfigurableClass;
+import mapreducesim.core.SimConfig;
 import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
@@ -17,6 +19,13 @@ import org.simgrid.msg.Msg;
 import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
 
+/**
+ * A parallel to Hadoop's TaskTracker, this communicates with Scheduler (paralleling JobTracker) and handles the running of
+ * map/reduce tasks.
+ * 
+ * @author Andrey Kurenkov
+ * @version 1.0 Mar 1, 2013
+ */
 @SuppressWarnings("unchecked")
 public class TaskRunnerProcess extends SimProcess {
 	private int numMapSlots, numMapRunning;
@@ -27,34 +36,10 @@ public class TaskRunnerProcess extends SimProcess {
 	private int timeUntilNextHeartbeat;
 
 	/* Static initialization of WorkTaskTimer from configuration below */
-	private static String DEFAULT_TIMER = "mapreducesim.exeuction.WorkTaskTimer";
-	private static String CONFIG_TIMER = "TaskTimer";
-	private static WorkTaskTimer<WorkTask> workTimer;
+	private static WorkTaskTimer defaultTimer = new SimpleWorkTaskTimer();
+	private static WorkTaskTimer workTimer;
 	static {
-		String name = DEFAULT_TIMER;
-		XMLDocument config;
-		XMLElement timer = null;
-		Msg.info("test static init");
-		try {
-			config = SimMain.getConfig();
-			if (config != null)
-				timer = config.getRoot().getChildByName(CONFIG_TIMER);
-			if (timer == null) {
-				Msg.info("No timer config found. Using defaults.");
-				timer = new XMLElement(CONFIG_TIMER);
-				timer.setAttribute("name", name);
-			} else
-				name = timer.getAttributeValue("name");
-			if (name == null) {
-				Msg.info("Name attribute of config not found. Using defaults.");
-				name = "mapreducesim.exeuction.WorkTaskTimer";
-				timer.setAttribute("name", name);
-			}
-			workTimer = ReflectionUtil.attemptConstructorCallAndCast(WorkTaskTimer.class, Class.forName(name), timer);
-		} catch (Exception e) {
-			Msg.info("TaskTimer loading failed. Using default. Error below:\n" + ExceptionUtil.getStackTrace(e));
-			workTimer = new SimpleWorkTaskTimer(timer);
-		}
+		workTimer = ConfigurableClass.instantiateFromSimConfig(WorkTaskTimer.class, defaultTimer);
 		Msg.info("Static init finished.");
 	}
 
@@ -97,11 +82,11 @@ public class TaskRunnerProcess extends SimProcess {
 			}
 
 			try {
-				Task task = checkTask(SimMain.SIM_STEP);
+				Task task = checkTask(10);
 				if (task != null)
 					handleTask(task);
 			} catch (MsgException e) { // e.printStackTrace();
-				timeUntilNextHeartbeat -= SimMain.SIM_STEP;
+				timeUntilNextHeartbeat -= 10;
 				Msg.info("waiting...");
 			}
 

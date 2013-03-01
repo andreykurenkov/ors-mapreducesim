@@ -1,6 +1,5 @@
 package mapreducesim.core;
 
-import mapreducesim.core.HostData;
 import mapreducesim.core.SimMain;
 
 import org.simgrid.msg.Host;
@@ -17,19 +16,26 @@ import org.simgrid.msg.Task;
  * @author Andrey Kurenkov
  * 
  */
+/**
+ * @author Andrey Kurenkov
+ * @version 1.0 Mar 1, 2013
+ */
 public abstract class SimProcess extends Process {
 
 	protected boolean finished;
-	// this is meant to store how much time was spent working in any Process
+	// this is meant to store how much time was spent working in any Process for easy retrieval at end.
+	// However, Task.execute should be avoided if this is to be up to date
 	protected double timeElapsed;
 	public final String MAILBOX;
 
 	/**
-	 * Default constructor for Processes needs to be used as part of framework.
+	 * Default constructor for Processes needs to be used as part of framework. Also takes in a mailbox to set MAILBOX equal
+	 * to.
 	 * 
 	 * @param host
 	 * @param name
 	 * @param args
+	 * @param mailbox
 	 */
 	public SimProcess(Host host, String name, String[] args, String mailbox) {
 		super(host, name, args);
@@ -38,7 +44,7 @@ public abstract class SimProcess extends Process {
 
 	/**
 	 * Default constructor for Processes needs to be used as part of framework. In this case, the host name is used as the
-	 * mailbox.
+	 * mailbox with host.getName().
 	 * 
 	 * @param host
 	 * @param name
@@ -48,29 +54,63 @@ public abstract class SimProcess extends Process {
 		this(host, name, args, host.getName());
 	}
 
-	protected void elapseTime(double amountOfTIme) throws HostFailureException {
-		sleep(SimMain.SIM_STEP);
-		timeElapsed += SimMain.SIM_STEP;
+	/**
+	 * Sleeps for amountOfTime and add that to timeElapsed
+	 * 
+	 * @param amountOfTime
+	 * @throws HostFailureException
+	 */
+	protected void elapseTime(long amountOfTime) throws HostFailureException {
+		sleep(amountOfTime);
+		timeElapsed += amountOfTime;
 	}
 
+	/**
+	 * Checks to receive an Item to MAILBOX, blocks until a task is received.
+	 * 
+	 * @return task from Task.receive(MAILBOX), blocks until done
+	 * @throws MsgException
+	 */
 	protected Task checkTask() throws MsgException {
 		Task received = Task.receive(MAILBOX);
 		return received;
 	}
 
+	/**
+	 * Checks to receive an Item to MAILBOX, blocks until a task is received or timeout is expired.
+	 * 
+	 * @param timeout
+	 *            limit for blocking time
+	 * @return task from Task.receive(MAILBOX,timeout), blocks until done or timeout
+	 * @throws MsgException
+	 *             thrown if timeout occurs
+	 */
 	protected Task checkTask(double timeout) throws MsgException {
 		Task received = Task.receive(MAILBOX, timeout);
 		return received;
 	}
 
+	/**
+	 * Sets finished equal to true.
+	 */
 	public void finish() {
 		finished = true;
 	}
 
+	/**
+	 * Getter for finished
+	 * 
+	 * @return finished
+	 */
 	public boolean isFinished() {
 		return finished;
 	}
 
+	/**
+	 * Getter for timeElapsed
+	 * 
+	 * @return timeElapsed
+	 */
 	public double getTimeElapsed() {
 		return timeElapsed;
 	}
