@@ -16,19 +16,21 @@ public class XMLDocument extends XMLNode {
 	String encoding = "";
 	String version = "";
 	XMLElement root;
+	XMLElement doctype = null;
 
-	public XMLDocument(String encoding, String version) {
+	public XMLDocument(String encoding, String version,
+			XMLElement doctypeDeclaration) {
 		this.encoding = encoding;
 		this.version = version;
+		this.doctype = doctype;
 	}
 
 	public XMLDocument(XMLElement root) {
-		this("UTF8", "1");
 		this.root = root;
 	}
 
 	public XMLDocument() {
-		this(null);
+
 	}
 
 	public static XMLDocument parseDocument(File file) {
@@ -67,9 +69,10 @@ public class XMLDocument extends XMLNode {
 		}
 
 		String ls = System.getProperty("line.separator");
-		// if (version != null && encoding != null) {// TODO:fix
-		// res.append(indent + "<?xml version=\"" + version + "\" encoding=\"" + encoding + "\"?>" + ls);
-		// }
+		if (version != null && encoding != null) {
+			res.append(indent + "<?xml version=\"" + version + "\" encoding=\""
+					+ encoding + "\"?>" + ls);
+		}
 		if (root != null) {
 			res.append(root.doToRawXML(formatPretty, depth + 1));
 		}
@@ -77,7 +80,7 @@ public class XMLDocument extends XMLNode {
 	}
 
 	public XMLDocument deepCopy() {
-		XMLDocument xmlDocument = new XMLDocument(encoding, version);
+		XMLDocument xmlDocument = new XMLDocument(encoding, version, doctype);
 		xmlDocument.setRoot(getRoot().deepCopy());
 		return xmlDocument;
 	}

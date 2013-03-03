@@ -27,7 +27,8 @@ public class TaskCacheEntry {
 	public final Type type;
 	public Status status;
 
-	public TaskCacheEntry(String preferredLocation, Type type, StatusType initialStatus) {
+	public TaskCacheEntry(String preferredLocation, Type type,
+			StatusType initialStatus) {
 		this.preferredLocation = preferredLocation;
 		this.type = type;
 		this.status = new Status();

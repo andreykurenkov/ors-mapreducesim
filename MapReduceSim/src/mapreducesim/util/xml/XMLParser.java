@@ -18,7 +18,7 @@ import mapreducesim.util.xml.XMLParser.RootScope.ElementScope.TagScope;
 //horrible perf, don't know why yet (UPDATE: FIXED!!)
 public class XMLParser {
 
-	public static final boolean debug = false;
+	public static final boolean debug = true;
 	public static final boolean displayProgress = false;
 
 	public static abstract class Scope {
@@ -77,14 +77,14 @@ public class XMLParser {
 
 		public static class ElementScope extends ParentScope {
 			String qname;
-			boolean header = false;
+			boolean isHeader = false;
 
 			public void fold(Scope subScope) {
 				super.fold(subScope);
 				if (subScope instanceof TagScope) {
 					TagScope ts = (TagScope) subScope;
 					if (ts.isHeader) {
-						header = true;
+						isHeader = true;
 					}
 					if (ts.qname != null) {
 						if (ts.isStartTag) {
@@ -103,6 +103,7 @@ public class XMLParser {
 				String innerText;
 				String commentText;
 				boolean isHeader = false;
+				boolean isDoctype = false;
 				boolean isComment = false;
 				boolean commentStartFound = false;
 				boolean commentEndFound = false;
@@ -144,10 +145,25 @@ public class XMLParser {
 					}
 					if (!expectingAttribute) {
 						// build up the name/comment of this tag
+
+						System.out.println("nbl = " + nameBuffer.length()
+								+ ", c = " + c);
+						// check for !doctype declarations
+						if (nameBuffer.length() == 0 && c == '!'
+								&& rawXML.charAt(i + 1) == 'D') {
+							// we found a doctype declaration
+							isDoctype = true;
+							isSingleTag = true;
+							nameFound = true;
+
+							System.out.println("Found doctype at pos " + i);
+						}
+
 						if (isComment) {
 							if (!commentEndFound) {
 								if (commentStartFound) {
-									if (rawXML.charAt(i + 1) == '-' && rawXML.charAt(i + 2) == '-') {
+									if (rawXML.charAt(i + 1) == '-'
+											&& rawXML.charAt(i + 2) == '-') {
 										commentEndFound = true;
 
 									}
@@ -160,6 +176,8 @@ public class XMLParser {
 									}
 								}
 							}
+						} else if (isDoctype) {
+							// no - op
 						} else {
 							if (c == ' ') {
 								qname = nameBuffer.toString();
@@ -199,19 +217,30 @@ public class XMLParser {
 					super.fold(subScope);
 					if (subScope instanceof QuotedTextScope) {
 						if (nameFound == false) {
-							throw new RuntimeException("Name not found, should be found before processing attributes");
+							throw new RuntimeException(
+									"Name not found, should be found before folding up the tag");
 						}
 						QuotedTextScope qts = (QuotedTextScope) subScope;
-						currAttributeName = attributeNameBuffer.toString();
-						currAttributeName = currAttributeName.substring(0, currAttributeName.length() - 1);
+						if (isDoctype) {
+							// the only quoted scope is the dtd place
+							currAttributeName = "dtdurl";
+						} else {
+							currAttributeName = attributeNameBuffer.toString();
+							currAttributeName = currAttributeName.substring(0,
+									currAttributeName.length() - 1);
+						}
 						attributeNameBuffer = new StringBuilder();
-						println("Attr: '" + currAttributeName + "' -> '" + qts.directBuffer.toString() + "'");
-						attributes.put(currAttributeName, qts.directBuffer.toString());
+						println("Attr: '" + currAttributeName + "' -> '"
+								+ qts.directBuffer.toString() + "'");
+						attributes.put(currAttributeName, qts.directBuffer
+								.toString());
 					}
 				}
 
 				public String toString() {
-					return "TagScope<" + qname + (attributes.size() > 0 ? (" " + attributes) : "") + ">";
+					return "TagScope<" + qname
+							+ (attributes.size() > 0 ? (" " + attributes) : "")
+							+ ">";
 				}
 
 			}
@@ -241,6 +270,10 @@ public class XMLParser {
 
 		println("Parsing: " + rawXML);
 
+		if (rawXML.length() == 0) {
+			throw new RuntimeException("Input XML was blank, cannot parse");
+		}
+
 		scopeStack = new Stack<Scope>();
 		scopeStack.push(new RootScope());
 
@@ -259,7 +292,8 @@ public class XMLParser {
 					prevStackSize = scopeStack.size();
 				}
 				System.out.println((i + 1) * 100.0f / rawXML.length() + "%");
-				System.out.println("Processed characters: " + i + "/" + rawXML.length());
+				System.out.println("Processed characters: " + i + "/"
+						+ rawXML.length());
 
 			}
 			if (debug && displayProgress) {
@@ -291,7 +325,8 @@ public class XMLParser {
 
 				if (ts.endFound) {
 
-					// if we had the opening tag, and it wasn't a single tag like <br />
+					// if we had the opening tag, and it wasn't a single tag
+					// like <br />
 					if (ts.isStartTag && (!ts.isSingleTag)) {
 						// fold tag
 						println("Folding tag");
@@ -309,7 +344,7 @@ public class XMLParser {
 				}
 			} else if (scopeStackPeek instanceof ElementScope) {
 				ElementScope es = (ElementScope) scopeStackPeek;
-				if (es.header) {
+				if (es.isHeader) {
 					fold();
 					continue;
 				}
@@ -339,7 +374,7 @@ public class XMLParser {
 					continue;
 				}
 				TextScope ts = (TextScope) scopeStackPeek;
-				TextScope.buffer.append(currChar);
+				ts.buffer.append(currChar);
 			} else {
 				throw new RuntimeException("Invalid scope: " + scopeStackPeek);
 			}
@@ -359,7 +394,8 @@ public class XMLParser {
 
 	public void fold() {
 		scopeStack.peek().onBeingFolded();
-		((ParentScope) scopeStack.get(scopeStack.size() - 2)).fold(scopeStack.peek());
+		((ParentScope) scopeStack.get(scopeStack.size() - 2)).fold(scopeStack
+				.peek());
 		scopeStack.pop();
 	}
 
@@ -381,16 +417,75 @@ public class XMLParser {
 		return new XMLTextNode(ts.text);
 	}
 
+	public boolean isHeader(Scope s) {
+		if (s instanceof ElementScope) {
+			ElementScope es = (ElementScope) s;
+			return es.isHeader;
+		}
+		return false;
+	}
+
+	public boolean isDoctypeDeclaration(Scope s) {
+		if (s instanceof ElementScope) {
+			ElementScope es = (ElementScope) s;
+			if (es.children.size() == 1) {
+				Scope ss = es.children.get(0);
+				if (ss instanceof TagScope) {
+					TagScope ts = (TagScope) ss;
+					if (ts.isDoctype) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	public XMLNode makeDOM(RootScope rs) {
+
+		// check for header
+
 		if (rs.children.size() == 1) {
 			return makeDOM(rs.children.get(0));
-		} else if (rs.children.size() == 2) {
-			XMLElement tn = (XMLElement) makeDOM(rs.children.get(1));
-			XMLDocument xmlDocument = new XMLDocument(tn);
-			return xmlDocument;
 		} else {
-			throw new RuntimeException("Invalid root scope.  Num of children: " + rs.children.size());
+
+			// // handle awkward xml document declaration stuff
+
+			String version = null, encoding = null;
+			XMLElement dtdDecl = null;
+			for (int i = 0; i < 2; i++) {
+				if (rs.children.size() >= i) {
+					Scope c = rs.children.get(i);
+					if (isHeader(c)) {
+						ElementScope es = (ElementScope) c;
+						// extract header data
+						// TODO: actually get encoding and version stuff here
+					} else if (isDoctypeDeclaration(c)) {
+						// extract doctype data
+						dtdDecl = (XMLElement) makeDOM(c);
+					}
+				}
+			}
+			// the last child must be the actual root
+			Scope lastC = rs.children.get(rs.children.size() - 1);
+			if (isHeader(lastC) || isDoctypeDeclaration(lastC)) {
+				throw new RuntimeException(
+						"Empty xml body (only headers declared, no content)");
+			}
+			XMLElement body = (XMLElement) makeDOM(lastC);
+			XMLDocument xmld = new XMLDocument(encoding, version, dtdDecl);
+			xmld.setRoot(body);
+			return xmld;
 		}
+
+		/*
+		 * else if (rs.children.size() == 2) { // TODO XMLDocument xmlDocument =
+		 * new XMLDocument(); XMLElement tn =
+		 * (XMLElement)makeDOM(rs.children.get(1)); xmlDocument.setRoot(tn);
+		 * return xmlDocument; } else { throw new
+		 * RuntimeException("Invalid root scope.  Num of children: "
+		 * +rs.children.size()); }
+		 */
 	}
 
 	public XMLNode makeDOM(ElementScope es) {
