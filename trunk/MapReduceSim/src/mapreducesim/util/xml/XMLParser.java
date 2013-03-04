@@ -18,7 +18,7 @@ import mapreducesim.util.xml.XMLParser.RootScope.ElementScope.TagScope;
 //horrible perf, don't know why yet (UPDATE: FIXED!!)
 public class XMLParser {
 
-	public static final boolean debug = true;
+	public static final boolean debug = false;
 	public static final boolean displayProgress = false;
 
 	public static abstract class Scope {
@@ -146,8 +146,6 @@ public class XMLParser {
 					if (!expectingAttribute) {
 						// build up the name/comment of this tag
 
-						System.out.println("nbl = " + nameBuffer.length()
-								+ ", c = " + c);
 						// check for !doctype declarations
 						if (nameBuffer.length() == 0 && c == '!'
 								&& rawXML.charAt(i + 1) == 'D') {
@@ -156,7 +154,6 @@ public class XMLParser {
 							isSingleTag = true;
 							nameFound = true;
 
-							System.out.println("Found doctype at pos " + i);
 						}
 
 						if (isComment) {
