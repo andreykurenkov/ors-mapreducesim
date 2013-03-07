@@ -27,7 +27,7 @@ public abstract class SchedulerProcess extends SimProcess {
 	public static String SCHEDULER_MAILBOX = "JobTracker";
 
 	private static int heartbeatInterval = 100;
-
+	protected static JobMaker jobMaker;
 	static {
 		String beat = SimConfig.getConfigurationElementText("heartbeat", "100");
 		setHeartbeatInterval(Integer.parseInt(beat));
