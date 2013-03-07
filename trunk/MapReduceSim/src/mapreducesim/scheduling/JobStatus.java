@@ -4,11 +4,13 @@ public class JobStatus {
 
 	public TaskPool tasks;
 	private final String jobName;
-	public JobStatus(String jobName,TaskPool tasks){
+
+	public JobStatus(String jobName, TaskPool tasks) {
 		this.tasks = tasks;
 		this.jobName = jobName;
 	}
-	public String getJobName(){
+
+	public String getJobName() {
 		return jobName;
 	}
 }
