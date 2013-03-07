@@ -2,6 +2,7 @@ package mapreducesim.execution;
 
 import mapreducesim.scheduling.FileSplitter;
 import mapreducesim.scheduling.FileSplitter.InputSplit;
+import mapreducesim.storage.KeyValuePair;
 
 /**
  * Simple class to convert an InputSplit into a series of Key/Values to work on. Modeled on Hadoop's RecordReader. Unlike
@@ -12,7 +13,7 @@ import mapreducesim.scheduling.FileSplitter.InputSplit;
  * 
  */
 // TODO: javadoc
-public abstract class KeyValueReader<KeyType, ValueType> {
+public abstract class KeyValueReader {
 	protected InputSplit mySplit;
 
 	/**
@@ -28,13 +29,7 @@ public abstract class KeyValueReader<KeyType, ValueType> {
 	 * 
 	 * @return
 	 */
-	public abstract KeyType getCurrentKey();
-
-	/**
-	 * 
-	 * @return
-	 */
-	public abstract ValueType getCurrentValue();
+	public abstract KeyValuePair getCurrentKeyValue();
 
 	/**
 	 * 

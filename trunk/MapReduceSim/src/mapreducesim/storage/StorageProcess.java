@@ -41,7 +41,6 @@ public class StorageProcess extends SimProcess {
 
 				Msg.info("Finished reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at "
 						+ this.getTimeElapsed());
-				((ReadFileRequestTask) currentTask).cancel(); // mark task complete (?)
 			}
 
 		}
