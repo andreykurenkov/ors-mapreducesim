@@ -25,7 +25,12 @@ public abstract class FileSplitter extends ConfigurableClass {
 		super(input);
 	}
 
-	public abstract KeyValueReader<?, ?> getKeyValueReader(InputSplit split);
+	/**
+	 * 
+	 * @param split
+	 * @return
+	 */
+	public abstract KeyValueReader getKeyValueReader(InputSplit split);
 
 	/**
 	 * Gets the splits of processing data for the given Job.
