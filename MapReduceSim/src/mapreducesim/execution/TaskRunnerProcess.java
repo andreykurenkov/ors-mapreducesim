@@ -26,7 +26,6 @@ import org.simgrid.msg.Task;
  * @author Andrey Kurenkov
  * @version 1.0 Mar 1, 2013
  */
-@SuppressWarnings("unchecked")
 public class TaskRunnerProcess extends SimProcess {
 	private int numMapSlots, numMapRunning;
 	private int numReduceSlots, numReduceRunning;
@@ -35,12 +34,14 @@ public class TaskRunnerProcess extends SimProcess {
 
 	private int timeUntilNextHeartbeat;
 
-	/* Static initialization of WorkTaskTimer from configuration below */
-	private static WorkTaskTimer defaultTimer = new SimpleWorkTaskTimer();
 	private static WorkTaskTimer workTimer;
 	static {
-		workTimer = ConfigurableClass.instantiateFromSimConfig(WorkTaskTimer.class, defaultTimer);
+		workTimer = ConfigurableClass.instantiateFromSimConfig(WorkTaskTimer.class, new SimpleWorkTaskTimer());
 		Msg.info("Static init finished.");
+	}
+
+	protected static WorkTaskTimer getTimer() {
+		return workTimer;
 	}
 
 	/**

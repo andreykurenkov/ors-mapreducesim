@@ -3,10 +3,12 @@ package mapreducesim.execution;
 import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.File;
+import mapreducesim.storage.FileBlock;
 import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.storage.FileTransferTask;
 import mapreducesim.storage.FileTransferTask.ReadRequestTask;
 import mapreducesim.storage.FileTransferTask.WriteRequestTask;
+import mapreducesim.storage.KeyValuePair;
 import mapreducesim.storage.StorageProcess;
 
 import org.simgrid.msg.Host;
@@ -24,7 +26,8 @@ public class SimpleMapperProcess extends WorkerProcess {
 
 	@Override
 	public void main(String[] args) throws MsgException {
-		// read needed files
+		Msg.info(this.getHost().getName() + " starting " + task + " for " + task.getComputeDuration() + " expected time.");
+
 		for (DataLocation dataLocation : task.NEEDED_DATA.getLocations()) {
 			ReadRequestTask read = new ReadRequestTask(dataLocation, MAILBOX);
 			read.send(StorageProcess.STORAGE_MAILBOX);
@@ -32,17 +35,16 @@ public class SimpleMapperProcess extends WorkerProcess {
 			while (!(transferTask instanceof FileTransferTask)) {
 				transferTask = Task.receive(this.MAILBOX);
 			}
+			for (FileBlock block : ((FileTransferTask) transferTask).getTransferData()) {
+				for (KeyValuePair pair : block.getPairs()) {
+					task.OUT.collectOutput(pair);
+					this.waitFor(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, pair));
+				}
+			}
 		}
-		// Do map task
-		Msg.info(this.getHost().getName() + " starting " + task + " for " + task.getComputeDuration() + " expected time.");
-		task.execute();
 		Msg.info(this.getHost().getName() + " finishing " + task);
-		// Write output
-		File outputFile = new File(null, "null");
-		WriteRequestTask write = new WriteRequestTask(outputFile, this.getHost());
-		// write.send(StorageProcess.STORAGE_MAILBOX);
+		// TODO: simulate spills
 		parent.notifyMapFinish();
 
 	}
-
 }

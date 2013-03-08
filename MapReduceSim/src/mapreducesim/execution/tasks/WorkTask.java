@@ -1,5 +1,6 @@
 package mapreducesim.execution.tasks;
 
+import mapreducesim.execution.DummyOutputCollector;
 import mapreducesim.execution.OutputCollector;
 import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.storage.DataLocation;
@@ -43,7 +44,7 @@ public class WorkTask extends Task {
 	}
 
 	public WorkTask(double workAmount, Type type, InputSplit data) {
-		this(workAmount, type, data, null);
+		this(workAmount, type, data, new DummyOutputCollector());
 	}
 
 	public String getID() {
