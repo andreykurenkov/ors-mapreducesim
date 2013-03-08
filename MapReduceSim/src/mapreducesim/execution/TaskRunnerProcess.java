@@ -106,7 +106,8 @@ public class TaskRunnerProcess extends SimProcess {
 	}
 
 	protected WorkerProcess getReducerProcess(Host host, String name, WorkTask workTask) {
-		return new SimpleReduceProcess(host, name, "Reducer for " + workTask.getID(), this, workTask);
+		return new SimpleReduceProcess(host, name, "Reducer for " + workTask.getID(), this, workTask,
+				new SimpleShuffleSorter());
 	}
 
 	protected void notifyMapFinish() {

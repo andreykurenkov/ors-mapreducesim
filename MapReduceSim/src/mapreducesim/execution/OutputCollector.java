@@ -13,5 +13,7 @@ public abstract class OutputCollector {
 
 	public abstract double collectOutput(KeyValuePair out);
 
+	public abstract List<KeyValuePair> getOutput();
+
 	public abstract List<InputSplit> writeOutput();
 }

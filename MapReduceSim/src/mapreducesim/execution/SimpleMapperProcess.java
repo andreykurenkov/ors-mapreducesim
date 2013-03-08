@@ -19,9 +19,14 @@ import org.simgrid.msg.Task;
 //TODO: handle excepptions
 public class SimpleMapperProcess extends WorkerProcess {
 	public final double failureRate = 0.001;
+	private boolean simulatePerPair = true;
 
 	public SimpleMapperProcess(Host host, String name, String mailbox, TaskRunnerProcess parent, WorkTask workTask) {
 		super(host, name, mailbox, parent, workTask);
+	}
+
+	protected void setSimulatePerPair(boolean setTo) {
+		simulatePerPair = setTo;
 	}
 
 	@Override
@@ -35,16 +40,20 @@ public class SimpleMapperProcess extends WorkerProcess {
 			while (!(transferTask instanceof FileTransferTask)) {
 				transferTask = Task.receive(this.MAILBOX);
 			}
-			for (FileBlock block : ((FileTransferTask) transferTask).getTransferData()) {
-				for (KeyValuePair pair : block.getPairs()) {
-					task.OUT.collectOutput(pair);
-					this.waitFor(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, pair));
+			if (simulatePerPair) {
+				for (FileBlock block : ((FileTransferTask) transferTask).getTransferData()) {
+					for (KeyValuePair pair : block.getPairs()) {
+						task.OUT.collectOutput(pair);
+						this.waitFor(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, pair));
+					}
 				}
 			}
 		}
+		if (!simulatePerPair) {
+			task.execute();
+		}
 		Msg.info(this.getHost().getName() + " finishing " + task);
-		// TODO: simulate spills
 		parent.notifyMapFinish();
-
+		this.suspend();
 	}
 }

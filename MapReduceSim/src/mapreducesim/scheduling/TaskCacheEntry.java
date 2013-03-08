@@ -29,6 +29,7 @@ public class TaskCacheEntry {
 
 	public TaskCacheEntry(String preferredLocation, Type type,
 			StatusType initialStatus) {
+		taskData = new InputSplit();
 		this.preferredLocation = preferredLocation;
 		this.type = type;
 		this.status = new Status();

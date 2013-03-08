@@ -1,14 +1,15 @@
 package mapreducesim.scheduling.test;
 
+import mapreducesim.core.SimProcess;
 import mapreducesim.scheduling.JobSubmission;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.MsgException;
 
-public class JobSubmitter extends org.simgrid.msg.Process{
+public class JobSubmitterProcess extends SimProcess{
 
-	public JobSubmitter(Host host, String name, String[] args) {
-		super(host, name, args);
+	public JobSubmitterProcess(Host host, String name, String[] args) {
+		super(host, name, args,"JobSubmitter");
 	}
 	
 	@Override

@@ -52,7 +52,7 @@ public abstract class SchedulerProcess extends SimProcess {
 			onTaskReceived(taskReceived);
 			// continue receiving tasks, or exit if no more tasks received within 0.5s
 			try {
-				taskReceived = Task.receive(getHost().getName(), 0.5);
+				taskReceived = Task.receive(getHost().getName(), heartbeatInterval * 2);
 
 			} catch (TimeoutException te) {
 				Msg.info("Scheduler hasn't received any messages in 0.5s.  Exiting.");
