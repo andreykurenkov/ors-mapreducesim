@@ -5,6 +5,11 @@ public class StorageInternalTest {
 	public static void main(String[] args) {
 		System.out.print("StorageTest begin.\n\n");
 
+		// Create the tree
+		// System.out.print("Creating datatree...");
+		// DataTree<DataTreeNode> tree = new DataTree<DataTreeNode>();
+		// System.out.print("complete.\n");
+
 		// Add the root node to the tree
 		System.out.println("Adding a root node...");
 		Directory dataTreeRoot = new Directory();
@@ -46,16 +51,6 @@ public class StorageInternalTest {
 		File File9 = new File(dir3, "fileX");
 		System.out.println("Directory 2 contains 'fileX':"
 				+ dir2.contains(File9) + ".");
-
-		// Create a rack with datanodes
-		Rack rack1 = new Rack("rack1");
-		DataNode dn1 = new DataNode(rack1, "datanode1");
-		DataNode dn2 = new DataNode(rack1, "datanode2");
-		DataNode dn3 = new DataNode(rack1, "datanode3");
-		dn1.addBlocks(File1.getBlocks());
-
-		// Print...
-		dn1.printContents();
 
 		System.out.println("\nStorageTest end.");
 
