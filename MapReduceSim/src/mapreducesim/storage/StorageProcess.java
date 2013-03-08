@@ -21,25 +21,25 @@ public class StorageProcess extends SimProcess {
 			Task currentTask = Task.receive(MAILBOX);
 			// handle task appropriately
 
-			if (currentTask instanceof WriteFileRequestTask) { // write task
+			if (currentTask instanceof WriteRequestTask) { // write task
 				// update the actual filesystem, etc.
-				Msg.info("Writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at "
+				Msg.info("Writing file '" + ((WriteRequestTask) currentTask).getFile().getName() + "' at "
 						+ this.getTimeElapsed());
 				// simulate the expense
 				long costRemaining = 6; // dummy value for now.
 
-				Msg.info("Finished writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at "
+				Msg.info("Finished writing file '" + ((WriteRequestTask) currentTask).getFile().getName() + "' at "
 						+ Msg.getClock());
 
 			}
 
-			if (currentTask instanceof ReadFileRequestTask) { // read task
+			if (currentTask instanceof ReadRequestTask) { // read task
 				// update the actual filesystem, etc. (metadata for read)
-				Msg.info("Reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at " + this.getTimeElapsed());
+				Msg.info("Reading file '" + ((ReadRequestTask) currentTask).getName() + "' at " + this.getTimeElapsed());
 				// simulate the expense
 				long costRemaining = 2; // dummy value...
 
-				Msg.info("Finished reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at "
+				Msg.info("Finished reading file '" + ((ReadRequestTask) currentTask).getName() + "' at "
 						+ this.getTimeElapsed());
 			}
 

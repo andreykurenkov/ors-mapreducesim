@@ -4,8 +4,8 @@ import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.storage.File;
 import mapreducesim.storage.FileTransferTask;
-import mapreducesim.storage.FileTransferTask.ReadFileRequestTask;
-import mapreducesim.storage.FileTransferTask.WriteFileRequestTask;
+import mapreducesim.storage.FileTransferTask.ReadRequestTask;
+import mapreducesim.storage.FileTransferTask.WriteRequestTask;
 import mapreducesim.storage.StorageProcess;
 
 import org.simgrid.msg.Host;
@@ -28,22 +28,22 @@ public class TestStorage extends SimProcess {
 				Task currentTask = Task.receive(MAILBOX, 150);
 				// handle task appropriately
 
-				if (currentTask instanceof WriteFileRequestTask) { // write task
+				if (currentTask instanceof WriteRequestTask) { // write task
 					// update the actual filesystem, etc.
-					Msg.info("Writing file '" + ((WriteFileRequestTask) currentTask).getFile().getName() + "' at "
+					Msg.info("Writing file '" + ((WriteRequestTask) currentTask).getFile().getName() + "' at "
 							+ this.getTimeElapsed());
 					// currentTask.execute();
 					// simulate the expense
 				}
 
-				if (currentTask instanceof ReadFileRequestTask) { // read task
+				if (currentTask instanceof ReadRequestTask) { // read task
 					// update the actual filesystem, etc. (metadata for read)
-					Msg.info("Reading file '" + ((ReadFileRequestTask) currentTask).getName() + "' at "
+					Msg.info("Reading file '" + ((ReadRequestTask) currentTask).getName() + "' at "
 							+ this.getTimeElapsed());
 					// simulate the expense
 					// long costRemaining = 2; // dummy value...
 
-					(new FileTransferTask(new File(null, "yay"))).send(((ReadFileRequestTask) currentTask).originMailbox);
+					(new FileTransferTask(new File(null, "yay"))).send(((ReadRequestTask) currentTask).originMailbox);
 				}
 			} catch (TimeoutException e) {
 				this.finish();

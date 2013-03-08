@@ -1,14 +1,16 @@
 package mapreducesim.storage;
 
+import java.util.List;
+
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Task;
 
 public class FileTransferTask extends Task {
 	private int timeTaken;
-	private File transferFile;
+	private List<FileBlock> transferFile;
 	private boolean readDone;
 
-	public FileTransferTask(File transferFile) {
+	public FileTransferTask(List<FileBlock> transferFile) {
 		this.timeTaken = 0;
 		this.transferFile = transferFile;
 	}
@@ -21,12 +23,12 @@ public class FileTransferTask extends Task {
 		this.timeTaken = timeTaken;
 	}
 
-	public void finishRead(File readFile) {
+	public void finishRead(List<FileBlock> readFile) {
 		readDone = true;
 		this.transferFile = readFile;
 	}
 
-	public File getTransferFile() {
+	public List<FileBlock> getTransferData() {
 		return transferFile;
 	}
 
@@ -34,12 +36,12 @@ public class FileTransferTask extends Task {
 		return readDone;
 	}
 
-	public static class ReadFileRequestTask extends Task {
+	public static class ReadRequestTask extends Task {
 		private DataLocation location;
 		private boolean readDone;
 		public final String originMailbox;
 
-		public ReadFileRequestTask(DataLocation location, String origin) {
+		public ReadRequestTask(DataLocation location, String origin) {
 			this.location = location;
 			originMailbox = origin;
 		}
@@ -53,12 +55,12 @@ public class FileTransferTask extends Task {
 		}
 	}
 
-	public static class WriteFileRequestTask extends Task {
+	public static class WriteRequestTask extends Task {
 		private int timeTaken;
 		private File file;
 		private Host destination;
 
-		public WriteFileRequestTask(File file, Host destination) {
+		public WriteRequestTask(File file, Host destination) {
 			this.timeTaken = 0;
 			this.file = file;
 			this.destination = destination;

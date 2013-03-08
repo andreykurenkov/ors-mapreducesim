@@ -3,7 +3,6 @@ package mapreducesim.scheduling;
 import java.util.List;
 
 import mapreducesim.core.ConfigurableClass;
-import mapreducesim.execution.KeyValueReader;
 import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.util.xml.XMLElement;
@@ -24,13 +23,6 @@ public abstract class FileSplitter extends ConfigurableClass {
 	public FileSplitter(XMLElement input) {
 		super(input);
 	}
-
-	/**
-	 * 
-	 * @param split
-	 * @return
-	 */
-	public abstract KeyValueReader getKeyValueReader(InputSplit split);
 
 	/**
 	 * Gets the splits of processing data for the given Job.

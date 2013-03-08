@@ -5,8 +5,8 @@ import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.File;
 import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.storage.FileTransferTask;
-import mapreducesim.storage.FileTransferTask.ReadFileRequestTask;
-import mapreducesim.storage.FileTransferTask.WriteFileRequestTask;
+import mapreducesim.storage.FileTransferTask.ReadRequestTask;
+import mapreducesim.storage.FileTransferTask.WriteRequestTask;
 import mapreducesim.storage.StorageProcess;
 
 import org.simgrid.msg.Host;
@@ -26,7 +26,7 @@ public class SimpleMapperProcess extends WorkerProcess {
 	public void main(String[] args) throws MsgException {
 		// read needed files
 		for (DataLocation dataLocation : task.NEEDED_DATA.getLocations()) {
-			ReadFileRequestTask read = new ReadFileRequestTask(dataLocation, MAILBOX);
+			ReadRequestTask read = new ReadRequestTask(dataLocation, MAILBOX);
 			read.send(StorageProcess.STORAGE_MAILBOX);
 			Task transferTask = Task.receive(this.MAILBOX);
 			while (!(transferTask instanceof FileTransferTask)) {
@@ -39,7 +39,7 @@ public class SimpleMapperProcess extends WorkerProcess {
 		Msg.info(this.getHost().getName() + " finishing " + task);
 		// Write output
 		File outputFile = new File(null, "null");
-		WriteFileRequestTask write = new WriteFileRequestTask(outputFile, this.getHost());
+		WriteRequestTask write = new WriteRequestTask(outputFile, this.getHost());
 		// write.send(StorageProcess.STORAGE_MAILBOX);
 		parent.notifyMapFinish();
 
