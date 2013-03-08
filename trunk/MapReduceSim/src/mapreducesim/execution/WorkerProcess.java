@@ -13,12 +13,17 @@ public abstract class WorkerProcess extends SimProcess {
 	protected TaskRunnerProcess parent;
 	protected WorkTask task;
 	public final double failureRate = 0.001;
+	protected double progress;
 
 	public WorkerProcess(Host host, String name, String mailbox, TaskRunnerProcess parent, WorkTask task) {
 		super(host, name, null, mailbox);
 		this.parent = parent;
 		this.timeElapsed = parent.getTimeElapsed();
 		this.task = task;
+	}
+
+	public double getProgress() {
+		return progress;
 	}
 
 }
