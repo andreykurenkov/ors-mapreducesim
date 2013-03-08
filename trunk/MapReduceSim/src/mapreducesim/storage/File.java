@@ -11,14 +11,11 @@ import java.util.ArrayList;
  * @author Matthew O'Shaughnessy
  */
 
-public class File extends DataTreeNode {
-
-	public class FileLocation {
-
-	}
+public class File extends Node {
 
 	private ArrayList<FileBlock> blocks;
 	private static final int SPLIT_SIZE = 128;
+	private int size;
 
 	/**
 	 * Default constructor
@@ -26,11 +23,23 @@ public class File extends DataTreeNode {
 	 * @param parent
 	 * @param name
 	 */
-	public File(DataTreeNode parent, String name) {
+	public File(Node parent, String name) {
 		super(parent, name);
 		this.blocks = new ArrayList<FileBlock>();
-		blocks.add(new FileBlock(this, 0, File.SPLIT_SIZE,
-				new FileBlockLocation(0, 0)));
+		split();
 	}
 
+	public void split() {
+		int i = 0;
+		for (int written = 0; written < size; written += File.SPLIT_SIZE) {
+			FileBlock split = new FileBlock(this, i, File.SPLIT_SIZE,
+					new FileBlockLocation(0, 0));
+			this.blocks.add(split);
+			i++;
+		}
+	}
+
+	public ArrayList<FileBlock> getBlocks() {
+		return blocks;
+	}
 }

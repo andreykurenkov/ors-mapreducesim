@@ -8,7 +8,7 @@ package mapreducesim.storage;
  * 
  */
 
-public class Directory extends DataTreeNode {
+public class Directory extends Node {
 
 	/**
 	 * No-args constructor represents the root directory
@@ -24,7 +24,7 @@ public class Directory extends DataTreeNode {
 	 * @param parent
 	 * @param name
 	 */
-	public Directory(DataTreeNode parent, String name) {
+	public Directory(Node parent, String name) {
 		super(parent, name);
 	}
 
