@@ -31,4 +31,14 @@ public class DummyOutputCollector extends OutputCollector {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mapreducesim.execution.OutputCollector#getOutput()
+	 */
+	@Override
+	public List<KeyValuePair> getOutput() {
+		return null;
+	}
+
 }

@@ -50,7 +50,8 @@ public class FIFOScheduler extends SchedulerProcess {
 				+ process.getHost().getName());
 
 		// simple scheduling algorithm
-
+		boolean mapTasksLeft = true;
+		boolean reduceTasksLeft = true;
 		// for each map slot available on the task tracker
 		for (int i = 0; i < process.getNumMapSlots()
 				- process.getNumMapRunning(); i++) {
@@ -58,7 +59,7 @@ public class FIFOScheduler extends SchedulerProcess {
 			TaskCacheEntry mapTask = pickMapTask();
 			// assign task to that tasktracker
 			if (mapTask == null) {
-				// no more map tasks left
+				mapTasksLeft = false;
 			} else {
 
 				WorkTask wt = new WorkTask(0.0, WorkTask.Type.MAP,
@@ -94,7 +95,7 @@ public class FIFOScheduler extends SchedulerProcess {
 			TaskCacheEntry reduceTask = pickReduceTask();
 			// assign task to that tasktracker
 			if (reduceTask == null) {
-				// no more reduce tasks left
+				reduceTasksLeft = false;
 			} else {
 				WorkTask wt = new WorkTask(0.0, WorkTask.Type.REDUCE,
 						reduceTask.taskData);
@@ -120,6 +121,8 @@ public class FIFOScheduler extends SchedulerProcess {
 					e.printStackTrace();
 				}
 			}
+			if (!reduceTasksLeft && !mapTasksLeft)
+				process.finish();
 
 		}
 

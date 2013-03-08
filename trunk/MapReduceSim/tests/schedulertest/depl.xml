@@ -5,7 +5,7 @@
         
         <!-- Andrey, please use the execution test folder to write test deployments for your code -->
         
-        <process host="JobSubmitter" function="mapreducesim.scheduling.test.JobSubmitter">
+        <process host="JobSubmitter" function="mapreducesim.scheduling.test.JobSubmitterProcess">
         	<!-- job name -->
         		<argument value="job0" />
         	<!-- num map tasks -->
@@ -21,10 +21,10 @@
         <process host="TaskTracker1" function="mapreducesim.scheduling.PrintMessage">
         	<argument value="hi" />
         </process>
-        <process host="TaskTracker2" function="mapreducesim.execution.TaskTrackerProcess">
+        <process host="TaskTracker2" function="mapreducesim.execution.TaskRunnerProcess">
         	
         </process>
-        <process host="TaskTracker3" function="mapreducesim.execution.TaskTrackerProcess">
+        <process host="TaskTracker3" function="mapreducesim.execution.TaskRunnerProcess">
         	
         </process>
  </platform>
