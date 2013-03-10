@@ -3,6 +3,8 @@ package mapreducesim.scheduling;
 import java.util.ArrayList;
 import java.util.List;
 
+import mapreducesim.core.ConfigurableClass;
+
 import org.simgrid.msg.Task;
 
 public class JobSubmission extends Task {
@@ -13,8 +15,13 @@ public class JobSubmission extends Task {
 	}
 
 	public static JobSubmission constructFromXML(String jobName) {
-		return new JobSubmission(MapReduceJobSpecification
-				.constructFromXML(jobName));
+		// get the JobMaker, and use it to grab a MapReduceJobSpecification
+		// object
+		JobMaker jm = ConfigurableClass
+				.getDefaultInstance(ConfigurableClass.JOB_MAKER);
+		MapReduceJobSpecification spec = jm.getJob(jobName);
+		return new JobSubmission(spec);
+
 	}
 
 }

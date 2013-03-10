@@ -5,7 +5,7 @@
 	
 	
 	
-	<inputJobs>
+	<JobMaker>
 		<job name="job0" taskSpecification="full">
 			<task type="map" preferredLocation="TaskTracker1" />
 			<task type="map" preferredLocation="TaskTracker2" />
@@ -15,6 +15,6 @@
 			<task type="reduce" preferredLocation="TaskTracker3" />
 		</job>
 	
-	</inputJobs>
+	</JobMaker>
 	
 </config>

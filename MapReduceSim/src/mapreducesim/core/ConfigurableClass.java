@@ -5,6 +5,7 @@ import org.simgrid.msg.Msg;
 import mapreducesim.execution.SimpleWorkTaskTimer;
 import mapreducesim.execution.WorkTaskTimer;
 import mapreducesim.scheduling.SimpleFileSplitter;
+import mapreducesim.scheduling.SimpleJobMaker;
 import mapreducesim.util.ExceptionUtil;
 import mapreducesim.util.ReflectionUtil;
 import mapreducesim.util.xml.XMLDocument;
@@ -38,6 +39,9 @@ import mapreducesim.util.xml.XMLElement;
 public abstract class ConfigurableClass {
 	protected XMLElement input;
 	public static final String CLASS_ATTRIBUTE_KEY = "classname";
+
+	public static final String JOB_MAKER = "JobMaker";
+	public static final String FILE_SPLITTER = "FileSplitter";
 
 	/**
 	 * Does nothing more than store the XMLElement. Subclasses should then use
@@ -148,8 +152,14 @@ public abstract class ConfigurableClass {
 	public static <A extends ConfigurableClass> A getDefaultInstance(
 			String xmlNodeName) {
 
-		if (xmlNodeName.equalsIgnoreCase("filesplitter")) {
+		XMLElement xmlEle = SimConfig.CONFIG.getRoot().getChildByName(
+				xmlNodeName);
+
+		if (xmlNodeName.equalsIgnoreCase(FILE_SPLITTER)) {
 			return (A) new SimpleFileSplitter();
+		}
+		if (xmlNodeName.equalsIgnoreCase(JOB_MAKER)) {
+			return (A) new SimpleJobMaker(xmlEle);
 		}
 
 		throw new RuntimeException(
