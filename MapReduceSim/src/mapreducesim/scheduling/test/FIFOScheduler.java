@@ -48,12 +48,27 @@ public class FIFOScheduler extends SchedulerProcess {
 	 */
 
 	public void assignTasks(TaskRunnerProcess process) {
+		String src = process.getHost().getName();
 		Msg.info("FIFOScheduler received heartbeat from: "
 				+ process.getHost().getName());
+
+		int availMapSlots = process.getNumMapSlots()
+				- process.getNumMapRunning();
+		int availReduceSlots = process.getNumReduceSlots()
+				- process.getNumReduceRunning();
+
+		Msg.info(src + " has " + availMapSlots + " map slots available and "
+				+ availReduceSlots + " reduce slots available");
+		Msg.info("The current job has "
+				+ this.currentJob.tasks.getNumNotStartedMap()
+				+ " map tasks and "
+				+ this.currentJob.tasks.getNumNotStartedReduce()
+				+ " reduce tasks not started");
 
 		// simple scheduling algorithm
 		boolean mapTasksLeft = true;
 		boolean reduceTasksLeft = true;
+		boolean assignedAny = false;
 
 		// for each map slot available on the task tracker
 		for (int i = 0; i < process.getNumMapSlots()
@@ -77,6 +92,8 @@ public class FIFOScheduler extends SchedulerProcess {
 					mapTask.status.statusType = TaskCacheEntry.StatusType.ASSIGNED;
 					mapTask.status.taskTrackerRunningOn = process.getHost()
 							.getName();
+
+					assignedAny = true;
 
 				} catch (TransferFailureException e) {
 					// TODO Auto-generated catch block
@@ -113,6 +130,9 @@ public class FIFOScheduler extends SchedulerProcess {
 					reduceTask.status.statusType = TaskCacheEntry.StatusType.ASSIGNED;
 					reduceTask.status.taskTrackerRunningOn = process.getHost()
 							.getName();
+
+					assignedAny = true;
+
 				} catch (TransferFailureException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -126,7 +146,9 @@ public class FIFOScheduler extends SchedulerProcess {
 			}
 
 			// if no more map or reduce tasks left, notify the task tracker
-			if (!reduceTasksLeft && !mapTasksLeft) {
+			if (!assignedAny) {
+				Msg.info("Notifying task tracker " + src
+						+ " that there are no more tasks available");
 				NotifyNoMoreTasks notify = new NotifyNoMoreTasks();
 				try {
 					notify.send(process.MAILBOX);
