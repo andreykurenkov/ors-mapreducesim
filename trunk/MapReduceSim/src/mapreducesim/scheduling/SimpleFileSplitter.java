@@ -11,10 +11,12 @@ import mapreducesim.util.xml.XMLElement;
  * 
  */
 public class SimpleFileSplitter extends FileSplitter {
+	public SimpleFileSplitter(XMLElement element) {
+		super(element);
+	}
 
 	public SimpleFileSplitter() {
-		// no additional config
-		super(null);
+		this(null);
 	}
 
 	@Override

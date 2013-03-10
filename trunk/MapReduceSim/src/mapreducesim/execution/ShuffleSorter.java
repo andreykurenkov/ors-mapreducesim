@@ -9,7 +9,7 @@ import org.simgrid.msg.TransferFailureException;
 
 import mapreducesim.core.ConfigurableClass;
 import mapreducesim.scheduling.FileSplitter.InputSplit;
-import mapreducesim.storage.KeyValuePair;
+import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.util.xml.XMLElement;
 
 /**
@@ -25,7 +25,7 @@ public abstract class ShuffleSorter extends ConfigurableClass {
 		super(input);
 	}
 
-	public abstract Map<String, List<KeyValuePair>> doShuffleSort(InputSplit splitl, WorkerProcess process)
+	public abstract List<KeyValuePairs> doShuffleSort(InputSplit splitl, WorkerProcess process)
 			throws TransferFailureException, HostFailureException, TimeoutException;
 
 }

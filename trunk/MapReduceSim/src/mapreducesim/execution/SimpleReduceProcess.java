@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import mapreducesim.core.SimMain;
 import mapreducesim.execution.tasks.WorkTask;
-import mapreducesim.storage.KeyValuePair;
+import mapreducesim.storage.KeyValuePairs;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Msg;
@@ -27,12 +27,10 @@ public class SimpleReduceProcess extends WorkerProcess {
 	public void main(String[] arg0) throws MsgException {
 		Msg.info(this.getHost().getName() + " starting WorkTask" + task + " at " + this.getTimeElapsed());
 
-		Map<String, List<KeyValuePair>> pairs = sorter.doShuffleSort(task.NEEDED_DATA, this);
-		for (Entry<String, List<KeyValuePair>> entry : pairs.entrySet()) {
-			for (KeyValuePair pair : entry.getValue()) {
-				this.waitFor(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, pair));
-				task.OUT.collectOutput(pair);
-			}
+		List<KeyValuePairs> pairs = sorter.doShuffleSort(task.NEEDED_DATA, this);
+		for (KeyValuePairs pair : pairs) {
+			this.waitFor(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, pair));
+			task.OUT.collectOutput(pair);
 		}
 		task.OUT.writeOutput();
 		Msg.info(this.getHost().getName() + " finishing WorkTask" + task + " at " + this.getTimeElapsed());

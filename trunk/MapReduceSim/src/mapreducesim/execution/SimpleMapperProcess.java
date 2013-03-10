@@ -8,7 +8,7 @@ import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.storage.FileTransferTask;
 import mapreducesim.storage.FileTransferTask.ReadRequestTask;
 import mapreducesim.storage.FileTransferTask.WriteRequestTask;
-import mapreducesim.storage.KeyValuePair;
+import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.storage.StorageProcess;
 
 import org.simgrid.msg.Host;
@@ -42,7 +42,7 @@ public class SimpleMapperProcess extends WorkerProcess {
 			}
 			if (simulatePerPair) {
 				for (FileBlock block : ((FileTransferTask) transferTask).getTransferData()) {
-					for (KeyValuePair pair : block.getPairs()) {
+					for (KeyValuePairs pair : block.getPairs()) {
 						task.OUT.collectOutput(pair);
 						this.waitFor(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, pair));
 					}
