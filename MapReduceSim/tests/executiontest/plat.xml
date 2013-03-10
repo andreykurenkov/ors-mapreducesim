@@ -1,6 +1,4 @@
-<?xml version='1.0'?>
- <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
- <platform version="3">
+<platform version="3">
  	<AS id="main" routing="Full">
  	<host id="JobTracker" power="10000" state="ON" />
  	<host id="Storage" power="1" state="ON" />
