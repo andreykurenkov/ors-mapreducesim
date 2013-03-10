@@ -14,10 +14,7 @@ import java.util.List;
 
 public class File extends Node {
 
-	public class FileLocation {
-
-	}
-
+	private int size;
 	private List<FileBlock> blocks;
 	private static final int SPLIT_SIZE = 128;
 
@@ -30,8 +27,7 @@ public class File extends Node {
 	public File(Node parent, String name) {
 		super(parent, name);
 		this.blocks = new ArrayList<FileBlock>();
-		blocks.add(new FileBlock(this, 0, File.SPLIT_SIZE,
-				new FileBlockLocation(0, 0)));
+
 	}
 
 	/**
@@ -40,5 +36,23 @@ public class File extends Node {
 	public File(String name) {
 		super();
 		this.setName(name);
+	}
+
+	public void makeSplits() {
+		int splitNumber = 0;
+		int currentSize = 0;
+		int remainingSize = this.size;
+		FileBlock currentSplit;
+
+		while (remainingSize > 0) {
+			if (remainingSize > File.SPLIT_SIZE)
+				currentSize = File.SPLIT_SIZE;
+			else
+				currentSize = remainingSize;
+			currentSplit = new FileBlock(this, splitNumber, currentSize);
+			this.blocks.add(currentSplit);
+			remainingSize -= currentSize;
+			splitNumber++;
+		}
 	}
 }
