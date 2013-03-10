@@ -6,12 +6,8 @@
         <!-- Andrey, please use the execution test folder to write test deployments for your code -->
         
         <process host="JobSubmitter" function="mapreducesim.scheduling.test.JobSubmitterProcess">
-        	<!-- job name -->
+        	<!-- job name (from config.xml) -->
         		<argument value="job0" />
-        	<!-- num map tasks -->
-        		<argument value="4" />
-        	<!-- num reduce tasks -->
-        		<argument value="5" />
         </process>
         
         <process host="JobTracker" function="mapreducesim.scheduling.test.FIFOScheduler">

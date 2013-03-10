@@ -4,25 +4,13 @@
    <tasklength>25</tasklength>
 	
 	<inputJobs>
-		<job taskSpecification="full">
-			<task type="map">
-				<preferredLocation>TaskTracker1</preferredLocation>
-			</task>
-			<task type="map">
-				<preferredLocation>TaskTracker2</preferredLocation>
-			</task>
-			<task type="map">
-				<preferredLocation>TaskTracker3</preferredLocation>
-			</task>
-			<task type="reduce">
-				<preferredLocation>TaskTracker1</preferredLocation>
-			</task>
-			<task type="reduce">
-				<preferredLocation>TaskTracker2</preferredLocation>
-			</task>
-			<task type="reduce">
-				<preferredLocation>TaskTracker3</preferredLocation>
-			</task>
+		<job name="job0" taskSpecification="full">
+			<task type="map" preferredLocation="TaskTracker1" />
+			<task type="map" preferredLocation="TaskTracker2" />
+			<task type="map" preferredLocation="TaskTracker3" />
+			<task type="reduce" preferredLocation="TaskTracker1" />
+			<task type="reduce" preferredLocation="TaskTracker2" />
+			<task type="reduce" preferredLocation="TaskTracker3" />
 		</job>
 	
 	</inputJobs>

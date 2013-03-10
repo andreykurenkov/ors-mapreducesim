@@ -1,18 +1,20 @@
 package mapreducesim.scheduling;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.simgrid.msg.Task;
 
-public class JobSubmission extends Task{
-	public final String jobName;
-	public final int numMapTasks;
-	public final int numReduceTasks;
-	public JobSubmission(String jobName,int numMapTasks, int numReduceTasks){
-		this.jobName = jobName;
-		this.numMapTasks = numMapTasks;
-		this.numReduceTasks = numReduceTasks;
+public class JobSubmission extends Task {
+	public MapReduceJobSpecification jobToRun;
+
+	public JobSubmission(MapReduceJobSpecification jobToRun) {
+		this.jobToRun = jobToRun;
 	}
-	
-	public String getJobName(){
-		return this.jobName;
+
+	public static JobSubmission constructFromXML(String jobName) {
+		return new JobSubmission(MapReduceJobSpecification
+				.constructFromXML(jobName));
 	}
+
 }
