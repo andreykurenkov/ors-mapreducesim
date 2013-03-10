@@ -17,8 +17,7 @@ public class JobSubmission extends Task {
 	public static JobSubmission constructFromXML(String jobName) {
 		// get the JobMaker, and use it to grab a MapReduceJobSpecification
 		// object
-		JobMaker jm = ConfigurableClass
-				.getDefaultInstance(ConfigurableClass.JOB_MAKER);
+		JobMaker jm = ConfigurableClass.instantiateFromSimConfig(JobMaker.class);
 		MapReduceJobSpecification spec = jm.getJob(jobName);
 		return new JobSubmission(spec);
 

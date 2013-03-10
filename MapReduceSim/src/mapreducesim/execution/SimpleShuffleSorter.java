@@ -1,5 +1,6 @@
 package mapreducesim.execution;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,12 +13,13 @@ import org.simgrid.msg.Task;
 import org.simgrid.msg.TimeoutException;
 import org.simgrid.msg.TransferFailureException;
 
+import mapreducesim.core.ConfigurableClass;
 import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.FileBlock;
 import mapreducesim.storage.FileTransferTask;
 import mapreducesim.storage.FileTransferTask.ReadRequestTask;
-import mapreducesim.storage.KeyValuePair;
+import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.storage.StorageProcess;
 import mapreducesim.util.xml.XMLElement;
 
@@ -26,19 +28,22 @@ import mapreducesim.util.xml.XMLElement;
  * @version 1.0 Mar 7, 2013
  */
 public class SimpleShuffleSorter extends ShuffleSorter {
-	private final double CONVERSION;
+	private double conversion;
+	private double percentSameKey;
 
 	/**
 	 * @param input
 	 */
 	public SimpleShuffleSorter(XMLElement input) {
 		super(input);
-		CONVERSION = 5;// TODO:get from input
+		conversion = ConfigurableClass.parseDoubleAttribute(input, "conversion", 5);
+		percentSameKey = ConfigurableClass.parseDoubleAttribute(input, "percentSameKey", 0.1);
 	}
 
 	public SimpleShuffleSorter() {
 		super(null);
-		CONVERSION = 5;
+		conversion = 5;
+		percentSameKey = 0.1;
 	}
 
 	/*
@@ -47,9 +52,9 @@ public class SimpleShuffleSorter extends ShuffleSorter {
 	 * @see mapreducesim.execution.ShuffleSorter#doShuffleSort(mapreducesim.scheduling.FileSplitter.InputSplit)
 	 */
 	@Override
-	public Map<String, List<KeyValuePair>> doShuffleSort(InputSplit split, WorkerProcess process)
-			throws TransferFailureException, HostFailureException, TimeoutException {
-		HashMap<String, List<KeyValuePair>> map = new HashMap<String, List<KeyValuePair>>();
+	public List<KeyValuePairs> doShuffleSort(InputSplit split, WorkerProcess process) throws TransferFailureException,
+			HostFailureException, TimeoutException {
+		ArrayList<KeyValuePairs> pairs = new ArrayList<KeyValuePairs>();
 		for (DataLocation location : split.getLocations()) {
 			ReadRequestTask task = new ReadRequestTask(location, process.MAILBOX);
 			task.send(StorageProcess.STORAGE_MAILBOX);
@@ -59,16 +64,14 @@ public class SimpleShuffleSorter extends ShuffleSorter {
 			} while (!(response instanceof FileTransferTask));
 			List<FileBlock> blocks = ((FileTransferTask) response).getTransferData();
 			for (FileBlock block : blocks) {
-				for (KeyValuePair pair : block.getPairs()) {
-					if (!map.containsKey(pair.getKey()))
-						map.put(pair.getKey(), new LinkedList<KeyValuePair>());
-					map.get(pair.getKey()).add(pair);
+				for (KeyValuePairs pair : block.getPairs()) {
+					pairs.add(pair);
 				}
-
-				process.waitFor(block.getSize() / process.getHost().getSpeed() * CONVERSION);
+				// NlogN type stuff
+				process.waitFor(block.getSize() / process.getHost().getSpeed() * conversion);
 			}
 		}
-		return map;
+		return pairs;
 	}
 
 }

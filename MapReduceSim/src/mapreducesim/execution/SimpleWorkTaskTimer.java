@@ -1,7 +1,7 @@
 package mapreducesim.execution;
 
 import mapreducesim.execution.tasks.WorkTask;
-import mapreducesim.storage.KeyValuePair;
+import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
@@ -26,17 +26,15 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * mapreducesim.execution.WorkTaskTimer#estimateComputeDuration(org.simgrid
-	 * .msg.Host, mapreducesim.storage.KeyValuePair)
+	 * @see mapreducesim.execution.WorkTaskTimer#estimateComputeDuration(org.simgrid .msg.Host,
+	 * mapreducesim.storage.KeyValuePair)
 	 */
 	@Override
-	public double estimateComputeDuration(Host onHost, WorkTask task,
-			KeyValuePair pair) {
+	public double estimateComputeDuration(Host onHost, WorkTask task, KeyValuePairs pairs) {
 		if (task.TYPE == WorkTask.Type.MAP)
-			return mapWork * pair.getSize() / onHost.getSpeed();
+			return mapWork * pairs.getTotalSize() / onHost.getSpeed();
 		else
-			return reduceWork * pair.getSize() / onHost.getSpeed();
+			return reduceWork * pairs.getTotalSize() / onHost.getSpeed();
 
 	}
 

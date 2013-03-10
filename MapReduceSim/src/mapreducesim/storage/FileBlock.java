@@ -13,8 +13,7 @@ public class FileBlock {
 	private int index;
 	private int size;
 	private List<DataNode> locations;
-	// private FileBlockLocation location;
-	private List<KeyValuePair> pairs;
+	private List<KeyValuePairs> pairs;
 
 	/**
 	 * Default constructor.
@@ -22,83 +21,45 @@ public class FileBlock {
 	 * @param owner
 	 *            the represented file the FileBlock is a part of
 	 * @param index
-	 *            the index of the FileBlock. For example, if a File is 400MB
-	 *            and the split size is 128MB, the FileBlock containing 256-384
-	 *            would be at index 2
+	 *            the index of the FileBlock. For example, if a File is 400MB and the split size is 128MB, the FileBlock
+	 *            containing 256-384 would be at index 2
+	 * @param locations
+	 *            DataNode locations associated with this file block
 	 * @param pairs
 	 *            The KeyValue that are part of this FileBlock
 	 */
-	public FileBlock(File owner, int index, List<KeyValuePair> pairs) {
-		this.owner = owner;
-		this.index = index;
-		this.locations = null;
-		this.pairs = pairs;
-		for (KeyValuePair pair : pairs)
-			size += pair.getSize();
-	}
-
-	/**
-	 * Default constructor.
-	 * 
-	 * @param owner
-	 *            the represented file the FileBlock is a part of
-	 * @param index
-	 *            the index of the FileBlock. For example, if a File is 400MB
-	 *            and the split size is 128MB, the FileBlock containing 256-384
-	 *            would be at index 2
-	 * @param pairs
-	 *            The KeyValue that are part of this FileBlock
-	 */
-	public FileBlock(File owner, int index, List<DataNode> locations,
-			List<KeyValuePair> pairs) {
+	public FileBlock(File owner, int index, List<DataNode> locations, List<KeyValuePairs> pairs) {
 		this.owner = owner;
 		this.index = index;
 		this.locations = locations;
 		this.pairs = pairs;
-		for (KeyValuePair pair : pairs)
-			size += pair.getSize();
+		for (KeyValuePairs pair : pairs)
+			size += pair.getNumPairs() * pair.getSizeOfPair();
 	}
 
 	/**
-	 * Default constructor.
+	 * Constructor that sets DataNodes to null
 	 * 
 	 * @param owner
 	 *            the represented file the FileBlock is a part of
 	 * @param index
-	 *            the index of the FileBlock. For example, if a File is 400MB
-	 *            and the split size is 128MB, the FileBlock containing 256-384
-	 *            would be at index 2
-	 * @param size
-	 *            Will be the same SPLIT_SIZE unless it is the last split. E.g.,
-	 *            in a 400MB File with SPLIT_SIZE=128, the final FileBlock size
-	 *            will be 16.
+	 *            the index of the FileBlock. For example, if a File is 400MB and the split size is 128MB, the FileBlock
+	 *            containing 256-384 would be at index 2
+	 * @param pairs
+	 *            The KeyValue that are part of this FileBlock
 	 */
-	public FileBlock(File owner, int index, int size, List<DataNode> locations) {
-		this.setOwner(owner);
-		this.setIndex(index);
-		this.setSize(size);
-		this.setLocations(locations);
+	public FileBlock(File owner, int index, List<KeyValuePairs> pairs) {
+		this(owner, index, null, pairs);
 	}
 
 	/**
-	 * Default constructor.
-	 * 
-	 * @param owner
-	 *            the represented file the FileBlock is a part of
-	 * @param index
-	 *            the index of the FileBlock. For example, if a File is 400MB
-	 *            and the split size is 128MB, the FileBlock containing 256-384
-	 *            would be at index 2
-	 * @param size
-	 *            Will be the same SPLIT_SIZE unless it is the last split. E.g.,
-	 *            in a 400MB File with SPLIT_SIZE=128, the final FileBlock size
-	 *            will be 16.
+	 * @param file
+	 * @param splitNumber
+	 * @param currentSize
 	 */
-	public FileBlock(File owner, int index, int size) {
-		this.setOwner(owner);
-		this.setIndex(index);
-		this.setSize(size);
-		this.locations = null;
+	public FileBlock(File file, int splitNumber, int currentSize) {
+		this(file, splitNumber, new ArrayList<DataNode>(), new ArrayList<KeyValuePairs>());
+		this.size = currentSize;
 	}
 
 	/**
@@ -107,7 +68,7 @@ public class FileBlock {
 	 * @param pair
 	 *            the pair to add
 	 */
-	public void addKeyValue(KeyValuePair pair) {
+	public void addKeyValuePairs(KeyValuePairs pair) {
 		this.pairs.add(pair);
 	}
 
@@ -116,16 +77,15 @@ public class FileBlock {
 	 * 
 	 * @return the pairs
 	 */
-	public List<KeyValuePair> getPairs() {
+	public List<KeyValuePairs> getPairs() {
 		return pairs;
 	}
 
 	/**
 	 * @param pairs
-	 *            value of type ArrayList<KeyValuePair> that pairs will be set
-	 *            to
+	 *            value of type ArrayList<KeyValuePair> that pairs will be set to
 	 */
-	public void setPairs(ArrayList<KeyValuePair> pairs) {
+	public void setPairs(ArrayList<KeyValuePairs> pairs) {
 		this.pairs = pairs;
 	}
 

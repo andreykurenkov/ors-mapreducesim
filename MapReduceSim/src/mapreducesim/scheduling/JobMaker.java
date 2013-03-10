@@ -10,6 +10,9 @@ import mapreducesim.util.xml.XMLElement;
  * @version 1.0 Mar 7, 2013
  */
 public abstract class JobMaker extends ConfigurableClass {
+	static {
+		ConfigurableClass.addDefaultInstance(JobMaker.class, new SimpleJobMaker(null));
+	}
 
 	/**
 	 * The XML element from which to make the object (see ConfigurableClass)

@@ -3,7 +3,7 @@ package mapreducesim.execution;
 import java.util.List;
 
 import mapreducesim.scheduling.FileSplitter.InputSplit;
-import mapreducesim.storage.KeyValuePair;
+import mapreducesim.storage.KeyValuePairs;
 
 /**
  * @author Andrey Kurenkov
@@ -11,9 +11,9 @@ import mapreducesim.storage.KeyValuePair;
  */
 public abstract class OutputCollector {
 
-	public abstract double collectOutput(KeyValuePair out);
+	public abstract double collectOutput(KeyValuePairs out);
 
-	public abstract List<KeyValuePair> getOutput();
+	public abstract List<KeyValuePairs> getOutput();
 
 	public abstract List<InputSplit> writeOutput();
 }

@@ -2,7 +2,7 @@ package mapreducesim.execution;
 
 import mapreducesim.core.ConfigurableClass;
 import mapreducesim.execution.tasks.WorkTask;
-import mapreducesim.storage.KeyValuePair;
+import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
@@ -22,5 +22,5 @@ public abstract class WorkTaskTimer extends ConfigurableClass {
 
 	public abstract double estimateComputeDuration(Host onHost, WorkTask task);
 
-	public abstract double estimateComputeDuration(Host onHost, WorkTask task, KeyValuePair pair);
+	public abstract double estimateComputeDuration(Host onHost, WorkTask task, KeyValuePairs pair);
 }
