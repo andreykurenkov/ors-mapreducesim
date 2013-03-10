@@ -8,8 +8,8 @@ import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.util.xml.XMLElement;
 
 /**
- * Responsible for generating the set of input locations that map operations will be performed on. Modeled on Hadoop's
- * InputFormat.
+ * Responsible for generating the set of input locations that map operations
+ * will be performed on. Modeled on Hadoop's InputFormat.
  * 
  * @author Andrey Kurenkov
  * 
@@ -31,10 +31,11 @@ public abstract class FileSplitter extends ConfigurableClass {
 	 *            the job to get processing data for.
 	 * @return List<InputSplits> to work on in this simulation
 	 */
-	public abstract List<InputSplit> getInputSlits(JobSubmission job);
+	public abstract List<InputSplit> getInputSlits(MapReduceJobSpecification job);
 
 	/**
-	 * Hadoop-esque class to store locations of data to be processed by a Mapper.
+	 * Hadoop-esque class to store locations of data to be processed by a
+	 * Mapper.
 	 * 
 	 * @author Andrey Kurenkov
 	 * 
@@ -55,7 +56,8 @@ public abstract class FileSplitter extends ConfigurableClass {
 		}
 
 		/**
-		 * Empty constructor that creates an inputsplit containing no data locations.
+		 * Empty constructor that creates an inputsplit containing no data
+		 * locations.
 		 */
 		public InputSplit() {
 			locations = new DataLocation[0];
