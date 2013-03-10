@@ -7,7 +7,7 @@
         
         <process host="JobSubmitter" function="mapreducesim.scheduling.test.JobSubmitterProcess">
         	<!-- job name (from config.xml) -->
-        		<argument value="job0" />
+        		<argument value="job0" ></argument>
         </process>
         
         <process host="JobTracker" function="mapreducesim.scheduling.test.FIFOScheduler">
@@ -15,7 +15,7 @@
         </process>
         
         <process host="TaskTracker1" function="mapreducesim.scheduling.PrintMessage">
-        	<argument value="hi" />
+        	<argument value="hi" ></argument>
         </process>
         <process host="TaskTracker2" function="mapreducesim.execution.TaskRunnerProcess">
         	

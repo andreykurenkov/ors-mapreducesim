@@ -1,0 +1,28 @@
+<?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">	<platform version="3">
+		<process host="JobSubmitter" function="mapreducesim.scheduling.test.JobSubmitterProcess">
+			<argument value="job0">
+			</argument>
+		</process>
+		<process host="JobTracker" function="mapreducesim.scheduling.test.FIFOScheduler">
+		</process>
+		<process host="TaskTracker0" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker1" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker2" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker3" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker4" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker5" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker6" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker7" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker8" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker9" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+	</platform>
