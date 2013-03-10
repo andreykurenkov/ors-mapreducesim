@@ -8,7 +8,7 @@ package mapreducesim.storage;
  */
 public class DataTree<T> {
 
-	private DataTreeNode rootElement;
+	private Node rootElement;
 
 	/**
 	 * Constructor without defining the root
@@ -22,7 +22,7 @@ public class DataTree<T> {
 	 * 
 	 * @param rootElement
 	 */
-	public DataTree(DataTreeNode rootElement) {
+	public DataTree(Node rootElement) {
 		super();
 		this.rootElement = rootElement;
 	}
@@ -32,7 +32,7 @@ public class DataTree<T> {
 	 * 
 	 * @param rootElement
 	 */
-	public void setRootElement(DataTreeNode rootElement) {
+	public void setRootElement(Node rootElement) {
 		this.rootElement = rootElement;
 	}
 
@@ -41,7 +41,7 @@ public class DataTree<T> {
 	 * 
 	 * @return DataTreeNode rootElement
 	 */
-	public DataTreeNode getRootElement() {
+	public Node getRootElement() {
 		return rootElement;
 	}
 

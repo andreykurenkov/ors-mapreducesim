@@ -3,26 +3,30 @@ package mapreducesim.storage;
 import java.util.ArrayList;
 
 /**
- * The basic unit of a data tree. A tree can be represented by a DataTree object, which basically just points to the root
- * DataTreeNode, or on its own by its root node. The DataTreeNode has a name and has an array of children and a single parent
- * defined by the constructor. To hold data it must be extended (e.g., File/Directory)
+ * The basic unit of a data tree. A tree can be represented by a DataTree
+ * object, which basically just points to the root Node, or on its own by its
+ * root node. The Node has a name and has an array of children and a single
+ * parent defined by the constructor. To hold data it must be extended (e.g.,
+ * File/Directory)
+ * 
+ * Was DataTreeNode.
  * 
  * @author Matthew O'Shaughnessy
  */
 
 // TODO Exception handling
 
-public class DataTreeNode {
+public class Node {
 	private String name;
-	private ArrayList<DataTreeNode> children;
-	private DataTreeNode parent;
+	private ArrayList<Node> children;
+	private Node parent;
 	private Boolean isRoot;
 	private int level; //
 
 	/**
 	 * No-args constructor creates the root
 	 */
-	public DataTreeNode() {
+	public Node() {
 		super();
 		isRoot = true;
 		this.level = 0;
@@ -36,7 +40,7 @@ public class DataTreeNode {
 	 *            if parent is null then treated as root
 	 * @param name
 	 */
-	public DataTreeNode(DataTreeNode parent, String name) {
+	public Node(Node parent, String name) {
 		super();
 		this.parent = parent;
 		this.name = name;
@@ -55,7 +59,7 @@ public class DataTreeNode {
 	 * 
 	 * @param children
 	 */
-	public void setChildren(ArrayList<DataTreeNode> children) {
+	public void setChildren(ArrayList<Node> children) {
 		this.children = children;
 	}
 
@@ -64,9 +68,9 @@ public class DataTreeNode {
 	 * 
 	 * @param child
 	 */
-	public void addChild(DataTreeNode child) {
+	public void addChild(Node child) {
 		if (this.children == null) {
-			this.children = new ArrayList<DataTreeNode>();
+			this.children = new ArrayList<Node>();
 		}
 		children.add(child);
 	}
@@ -77,7 +81,7 @@ public class DataTreeNode {
 	 * @param child
 	 * @param position
 	 */
-	public void addChildAtPosition(DataTreeNode child, int position) {
+	public void addChildAtPosition(Node child, int position) {
 		children.add(position, child);
 	}
 
@@ -96,7 +100,7 @@ public class DataTreeNode {
 	 * @param position
 	 * @return DataTreeNode
 	 */
-	public DataTreeNode getChildAtPosition(int position) {
+	public Node getChildAtPosition(int position) {
 		return children.get(position);
 	}
 
@@ -105,9 +109,9 @@ public class DataTreeNode {
 	 * 
 	 * @return ArrayList<DataTreeNode>
 	 */
-	public ArrayList<DataTreeNode> getChildren() {
+	public ArrayList<Node> getChildren() {
 		if (this.children == null) {
-			return new ArrayList<DataTreeNode>();
+			return new ArrayList<Node>();
 		}
 		return this.children;
 	}
@@ -117,7 +121,7 @@ public class DataTreeNode {
 	 * 
 	 * @param parent
 	 */
-	public void setParent(DataTreeNode parent) {
+	public void setParent(Node parent) {
 		this.parent = parent;
 	}
 
@@ -126,7 +130,7 @@ public class DataTreeNode {
 	 * 
 	 * @return DataTreeNode
 	 */
-	public DataTreeNode getParent() {
+	public Node getParent() {
 		if (this.isRoot) {
 			return null;
 		} else {
@@ -141,8 +145,8 @@ public class DataTreeNode {
 	 * @param node2
 	 * @return an integer with the number of steps between node1 and node2
 	 */
-	public int distanceBetween(DataTreeNode node1, DataTreeNode node2) {
-		DataTreeNode n1, n2;
+	public int distanceBetween(Node node1, Node node2) {
+		Node n1, n2;
 		int l1, l2;
 		int distance = 0;
 		n1 = node1;
@@ -181,12 +185,13 @@ public class DataTreeNode {
 	}
 
 	/**
-	 * Recursively checks itself and children and returns if this DataTreeNode is a parent of the query DataTreeNode
+	 * Recursively checks itself and children and returns if this DataTreeNode
+	 * is a parent of the query DataTreeNode
 	 * 
 	 * @param query
 	 * @return Is the query a child of this node?
 	 */
-	public boolean contains(DataTreeNode query) {
+	public boolean contains(Node query) {
 		// checks itself
 		if (this.equals(query)) {
 			return true;
@@ -231,7 +236,8 @@ public class DataTreeNode {
 	}
 
 	/**
-	 * Changes this node from a root node to a normal node. Alters the name to the specified new name
+	 * Changes this node from a root node to a normal node. Alters the name to
+	 * the specified new name
 	 * 
 	 * @param name
 	 */
@@ -288,7 +294,8 @@ public class DataTreeNode {
 	}
 
 	/**
-	 * Recursively creates a string of the path to this node. Ends when it finds the root
+	 * Recursively creates a string of the path to this node. Ends when it finds
+	 * the root
 	 * 
 	 * @return String
 	 */
