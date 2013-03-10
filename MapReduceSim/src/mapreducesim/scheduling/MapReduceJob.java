@@ -21,7 +21,8 @@ public class MapReduceJob {
 	 * @param mapTasks
 	 * @param reduceTasks
 	 */
-	public MapReduceJob(String name, List<TaskCacheEntry> mapTasks, List<TaskCacheEntry> reduceTasks) {
+	public MapReduceJob(String name, List<TaskCacheEntry> mapTasks,
+			List<TaskCacheEntry> reduceTasks) {
 		super();
 		this.name = name;
 		this.mapTasks = mapTasks;
@@ -30,7 +31,7 @@ public class MapReduceJob {
 		TaskPool pool = new TaskPool();
 		allTasks.addAll(reduceTasks);
 		for (TaskCacheEntry task : allTasks)
-			pool.addTask(task, task.preferredLocation);
+			pool.addTask(task, task.preferredNode);
 		status = new JobStatus(name, pool);
 	}
 

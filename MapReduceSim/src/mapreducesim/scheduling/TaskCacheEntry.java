@@ -23,14 +23,15 @@ public class TaskCacheEntry {
 		NOTSTARTED, ASSIGNED, COMPLETED;
 	}
 
-	public String preferredLocation = null;
+	public String preferredNode = null;
 	public final Type type;
 	public Status status;
 
 	public TaskCacheEntry(String preferredLocation, Type type,
 			StatusType initialStatus) {
+
 		taskData = new InputSplit();
-		this.preferredLocation = preferredLocation;
+		this.preferredNode = preferredLocation;
 		this.type = type;
 		this.status = new Status();
 		this.status.statusType = initialStatus;

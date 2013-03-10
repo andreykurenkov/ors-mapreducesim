@@ -26,12 +26,14 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see mapreducesim.execution.WorkTaskTimer#estimateComputeDuration(org.simgrid.msg.Host,
-	 * mapreducesim.storage.KeyValuePair)
+	 * @see
+	 * mapreducesim.execution.WorkTaskTimer#estimateComputeDuration(org.simgrid
+	 * .msg.Host, mapreducesim.storage.KeyValuePair)
 	 */
 	@Override
-	public double estimateComputeDuration(Host onHost, WorkTask task, KeyValuePair pair) {
-		if (task.TYPE == MAP)
+	public double estimateComputeDuration(Host onHost, WorkTask task,
+			KeyValuePair pair) {
+		if (task.TYPE == WorkTask.Type.MAP)
 			return mapWork * pair.getSize() / onHost.getSpeed();
 		else
 			return reduceWork * pair.getSize() / onHost.getSpeed();
