@@ -13,7 +13,14 @@ import org.simgrid.msg.Msg;
 public class DataNode extends Node {
 
 	private List<FileBlock> blocks;
+	private int capacity;
 
+	/**
+	 * Constructor defines the name of the DataBlock and its parent
+	 * 
+	 * @param parent
+	 * @param name
+	 */
 	public DataNode(Rack parent, String name) {
 		super(parent, name);
 	}
@@ -64,10 +71,40 @@ public class DataNode extends Node {
 		this.blocks = blocks;
 	}
 
+	/**
+	 * Returns the number of blocks present on this DataNode.
+	 * 
+	 * @return int
+	 */
 	public int numBlocks() {
 		return this.blocks.size();
 	}
 
+	public int getCapacity() {
+		return this.capacity;
+	}
+
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+
+	/**
+	 * Calculates the amount of free space on the DataNode by iterating through
+	 * the blocks and subtracting each block's size from the DataNode capacity.
+	 * 
+	 * @return amount of free space
+	 */
+	public int freeSpace() {
+		int usedSpace = 0;
+		for (int i = 0; i < numBlocks(); i++) {
+			usedSpace += this.blocks.get(i).getSize();
+		}
+		return (capacity - usedSpace);
+	}
+
+	/**
+	 * Prints the FileSplits on this DataNode to the terminal.
+	 */
 	public void printContentsToTerminal() {
 		System.out.println("Contents of DataBlock '" + this.getName()
 				+ "': (format: File:Split#)");
@@ -78,6 +115,9 @@ public class DataNode extends Node {
 		System.out.print("\b\b\n");
 	}
 
+	/**
+	 * Prints the FileSplits present on this DataNode.
+	 */
 	public void printContents() {
 		Msg.info("Contents of DataBlock '" + this.getName()
 				+ "': (format: File:Split#)\n\t");
@@ -87,4 +127,36 @@ public class DataNode extends Node {
 		}
 		Msg.info("\b\b\n");
 	}
+
+	/**
+	 * Returns the parent of the DataNode. For non-nested DataNodes.
+	 * 
+	 * @return (Rack) the parent of this DataNode.
+	 */
+	public Rack getRack() {
+		return (Rack) this.getParent();
+	}
+
+	/**
+	 * Is this DataNode a child of the same rack as the comparison DataNode?
+	 * 
+	 * @param node2
+	 *            the comparison node
+	 * @return true if on same rack. False if not.
+	 */
+	public boolean isOnSameRackAs(DataNode node2) {
+		if (this.getRack() == node2.getRack())
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * For nested DataNodes. Shouldn't be necessary right now.
+	 */
+	/*
+	 * public Rack getRack() { Node currentNode = this; // climb until the
+	 * parent is a Rack. while (!(currentNode instanceof Rack)) { currentNode =
+	 * currentNode.getParent(); } return (Rack) currentNode; }
+	 */
 }

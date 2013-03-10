@@ -2,8 +2,7 @@ package mapreducesim.storage;
 
 public class Rack extends Node {
 
-	public Rack(String name) {
-		super();
-		this.setName(name);
+	public Rack(Root root, String name) {
+		super(root, name);
 	}
 }

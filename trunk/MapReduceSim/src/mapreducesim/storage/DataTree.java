@@ -2,8 +2,8 @@ package mapreducesim.storage;
 
 /**
  * 
- * Holds the root element for a tree. Not really needed, but I'm not sure I want
- * to get rid of it yet.
+ * Holds the root element for a data tree. Makes it easier to maintain the
+ * seperation between the fs tree and topology tree.
  * 
  */
 public class DataTree<T> {
@@ -32,7 +32,7 @@ public class DataTree<T> {
 	 * 
 	 * @param rootElement
 	 */
-	public void setRootElement(Node rootElement) {
+	public void setRoot(Node rootElement) {
 		this.rootElement = rootElement;
 	}
 
@@ -41,7 +41,7 @@ public class DataTree<T> {
 	 * 
 	 * @return DataTreeNode rootElement
 	 */
-	public Node getRootElement() {
+	public Node getRoot() {
 		return rootElement;
 	}
 
