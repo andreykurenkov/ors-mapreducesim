@@ -28,6 +28,26 @@ public class Directory extends Node {
 		super(parent, name);
 	}
 
+	public void addFile(File file) {
+		super.addChild(file);
+	}
+
+	public void removeDirectory(Directory dirToRemove) {
+		for (int i = 0; i < this.getChildren().size(); i++) {
+			if (this.getChildAtPosition(i) == dirToRemove) {
+				this.removeChildNumber(i);
+			}
+		}
+	}
+
+	public void removeFile(File fileToRemove) {
+		for (int i = 0; i < this.getChildren().size(); i++) {
+			if (this.getChildAtPosition(i) == fileToRemove) {
+				this.removeChildNumber(i);
+			}
+		}
+	}
+
 	/**
 	 * Like its namesake, prints a list of the files in the current directory to
 	 * the terminal, separated with newlines

@@ -24,10 +24,11 @@ public class File extends Node {
 	 * @param parent
 	 * @param name
 	 */
-	public File(Node parent, String name) {
+	public File(Node parent, String name, int size) {
 		super(parent, name);
+		this.size = size;
 		this.blocks = new ArrayList<FileBlock>();
-
+		makeSplits();
 	}
 
 	/**
@@ -38,6 +39,15 @@ public class File extends Node {
 		this.setName(name);
 	}
 
+	/**
+	 * Input: a newly-created file with a size and a set split_size
+	 * 
+	 * Output: blocks field populated with FileBlock s.
+	 * 
+	 * Example: new file created with size 300MB, SPLIT_SIZE=128 --
+	 * this.blocks[0] (size=128) -- this.blocks[1] (size=128) -- this.blocks[2]
+	 * (size=44)
+	 */
 	public void makeSplits() {
 		int splitNumber = 0;
 		int currentSize = 0;
@@ -51,6 +61,7 @@ public class File extends Node {
 				currentSize = remainingSize;
 			currentSplit = new FileBlock(this, splitNumber, currentSize);
 			this.blocks.add(currentSplit);
+			// TODO: Assign blocks to DataNodes
 			remainingSize -= currentSize;
 			splitNumber++;
 		}
