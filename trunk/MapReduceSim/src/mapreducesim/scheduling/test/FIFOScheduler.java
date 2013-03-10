@@ -1,10 +1,12 @@
 package mapreducesim.scheduling.test;
 
+import java.util.List;
 import java.util.Set;
 
 import mapreducesim.execution.TaskRunnerProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
+import mapreducesim.scheduling.NotifyNoMoreTasks;
 import mapreducesim.scheduling.TaskCacheEntry;
 import mapreducesim.scheduling.JobStatus;
 import mapreducesim.scheduling.JobSubmission;
@@ -122,11 +124,38 @@ public class FIFOScheduler extends SchedulerProcess {
 					e.printStackTrace();
 				}
 			}
-			if (!reduceTasksLeft && !mapTasksLeft)
-				process.finish();
+
+			// if no more map or reduce tasks left, notify the task tracker
+			if (!reduceTasksLeft && !mapTasksLeft) {
+				NotifyNoMoreTasks notify = new NotifyNoMoreTasks();
+				try {
+					notify.send(process.MAILBOX);
+				} catch (TransferFailureException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (HostFailureException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (TimeoutException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
 
 		}
 
+		dumpTaskPool();
+
+	}
+
+	private void dumpTaskPool() {
+		Msg.info("FIFO scheduler task pool:");
+		List<TaskCacheEntry> tasks = this.currentJob.tasks.getAsList();
+		for (int i = 0; i < tasks.size(); i++) {
+			TaskCacheEntry tce = tasks.get(i);
+			Msg.info(tce + "");
+		}
 	}
 
 	/** bare-bones task picker **/

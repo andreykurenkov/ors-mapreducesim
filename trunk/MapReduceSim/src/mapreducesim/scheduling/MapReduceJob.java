@@ -49,7 +49,7 @@ public class MapReduceJob {
 	 * 
 	 * @return the mapTasks
 	 */
-	public List<TaskCacheEntry> getMapTasks() {
+	public List<TaskCacheEntry> getOriginalMapTasks() {
 		return mapTasks;
 	}
 
@@ -58,7 +58,7 @@ public class MapReduceJob {
 	 * 
 	 * @return the reduceTasks
 	 */
-	public List<TaskCacheEntry> getReduceTasks() {
+	public List<TaskCacheEntry> getOriginalReduceTasks() {
 		return reduceTasks;
 	}
 

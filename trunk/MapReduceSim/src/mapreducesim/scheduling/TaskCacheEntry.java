@@ -17,6 +17,10 @@ public class TaskCacheEntry {
 	public static class Status {
 		public String taskTrackerRunningOn = null;
 		public StatusType statusType = StatusType.NOTSTARTED;
+
+		public String toString() {
+			return "status " + statusType + " on " + taskTrackerRunningOn;
+		}
 	}
 
 	public static enum StatusType {
@@ -39,5 +43,9 @@ public class TaskCacheEntry {
 
 	public TaskCacheEntry(Type type, StatusType initialStatus) {
 		this(null, type, initialStatus);
+	}
+
+	public String toString() {
+		return this.type + " " + this.status;
 	}
 }
