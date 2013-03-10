@@ -3,6 +3,8 @@
 	<heartbeat>50</heartbeat>
    <tasklength>25</tasklength>
 	
+	
+	
 	<inputJobs>
 		<job name="job0" taskSpecification="full">
 			<task type="map" preferredLocation="TaskTracker1" />

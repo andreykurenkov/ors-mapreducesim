@@ -2,6 +2,7 @@ package mapreducesim.scheduling;
 
 import java.util.List;
 
+import mapreducesim.core.ConfigurableClass;
 import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.storage.FileBlock;
 import mapreducesim.storage.FileBlockLocation;
@@ -61,6 +62,12 @@ public class TaskCacheEntry {
 			throw new RuntimeException("Invalid type on task node: " + typeStr);
 		}
 		// TODO: construct input splits
+
+		// get the FileSplitter
+		FileSplitter fs = ConfigurableClass
+				.instantiateFromSimConfig("FileSplitter");
+
+		// use the filesplitter to get the input split
 
 		// get preferred location
 		String preferredLoc = taskNode.getAttributeValue("preferredLocation");
