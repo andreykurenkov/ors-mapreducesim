@@ -17,4 +17,8 @@
 	
 	</JobMaker>
 	
+	<TaskTrackerDefaultMapSlots>2</TaskTrackerDefaultMapSlots>
+	<TaskTrackerDefaultReduceSlots>2</TaskTrackerDefaultReduceSlots>
+	
+	
 </config>

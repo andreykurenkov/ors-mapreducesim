@@ -64,15 +64,23 @@ public class TaskRunnerProcess extends SimProcess {
 			numMapSlots = SafeParsing.safeIntParse(args[0], 2,
 					"args[0] (int numMap) wrong format for TaskTracker at "
 							+ this.getHost());
-		else
-			numMapSlots = 3;
+		else {
+			// use default map slots from config.xml
+			numMapSlots = Integer.parseInt(SimConfig.getSimpleValue(
+					"TaskTrackerDefaultMapSlots", "3"));
+
+		}
 
 		if (args.length > 1)
 			numReduceSlots = SafeParsing.safeIntParse(args[1], 2,
 					"args[1] (int numReduce) wrong format for TaskTracker at "
 							+ this.getHost());
-		else
-			numReduceSlots = 5;
+		else {
+			// use default reduce slots from config.xml
+			numReduceSlots = Integer.parseInt(SimConfig.getSimpleValue(
+					"TaskTrackerDefaultReduceSlots", "3"));
+
+		}
 
 		timeUntilNextHeartbeat = 0;
 
