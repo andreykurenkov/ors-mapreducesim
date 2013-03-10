@@ -9,6 +9,10 @@ package mapreducesim.storage;
  * now there are two "levels" of location: dataNode and rack. Rack is
  * higher-level. Hosts act as the data nodes so ultimately the location will be
  * based on these.
+ * 
+ * Important: FileBlockLocations should be represented as the DataNode locations
+ * field of a FileBlock.
+ * 
  */
 public class FileBlockLocation {
 	private int rack;
