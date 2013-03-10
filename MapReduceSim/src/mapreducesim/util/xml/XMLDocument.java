@@ -13,8 +13,8 @@ import mapreducesim.util.SmartFile;
 
 public class XMLDocument extends XMLNode {
 
-	String encoding = "";
-	String version = "";
+	String encoding = null;
+	String version = null;
 	XMLElement root;
 	XMLElement doctype = null;
 
