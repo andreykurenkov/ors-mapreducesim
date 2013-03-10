@@ -70,7 +70,8 @@ public class MapReduceJobSpecification {
 	 * @param jobName
 	 * @return
 	 */
-	public static MapReduceJobSpecification constructFromXML(String jobName) {
+	public static MapReduceJobSpecification constructFromXML(
+			XMLElement jobListElement, String jobName) {
 
 		if (SimConfig.CONFIG == null) {
 			throw new RuntimeException(
@@ -79,8 +80,7 @@ public class MapReduceJobSpecification {
 
 		try {
 			// get the inputjobs element
-			XMLElement inputJobs = SimConfig.CONFIG.getRoot()
-					.getChildrenByName("inputJobs").get(0);
+			XMLElement inputJobs = jobListElement;
 
 			// go through the jobs, looking for the appropriately named one
 			List<XMLNode> nodes = inputJobs.getChildren();
@@ -100,9 +100,9 @@ public class MapReduceJobSpecification {
 					+ "' not found in xml.  Double-check your spelling");
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException(
-					"Error parsing xml for input jobs.  Double-check your syntax");
+					"Error parsing xml for input jobs.  Double-check your syntax",
+					e);
 		}
 
 	}
