@@ -58,9 +58,9 @@ public class FileTransferTask extends Task {
 	public static class WriteRequestTask extends Task {
 		private int timeTaken;
 		private File file;
-		private Host destination;
+		private String destination;
 
-		public WriteRequestTask(File file, Host destination) {
+		public WriteRequestTask(File file, String destination) {
 			this.timeTaken = 0;
 			this.file = file;
 			this.destination = destination;
@@ -78,7 +78,7 @@ public class FileTransferTask extends Task {
 			return file;
 		}
 
-		public Host getDestination() {
+		public String getDestination() {
 			return destination;
 		}
 

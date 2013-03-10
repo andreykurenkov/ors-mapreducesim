@@ -30,7 +30,9 @@ public class TestStorage extends SimProcess {
 
 				if (currentTask instanceof WriteRequestTask) { // write task
 					// update the actual filesystem, etc.
-					Msg.info("Writing file '" + ((WriteRequestTask) currentTask).getFile().getName() + "' at "
+					Msg.info("Writing file '"
+							+ ((WriteRequestTask) currentTask).getFile()
+									.getName() + "' at "
 							+ this.getTimeElapsed());
 					// currentTask.execute();
 					// simulate the expense
@@ -38,12 +40,14 @@ public class TestStorage extends SimProcess {
 
 				if (currentTask instanceof ReadRequestTask) { // read task
 					// update the actual filesystem, etc. (metadata for read)
-					Msg.info("Reading file '" + ((ReadRequestTask) currentTask).getName() + "' at "
-							+ this.getTimeElapsed());
+					Msg.info("Reading file '"
+							+ ((ReadRequestTask) currentTask).getName()
+							+ "' at " + this.getTimeElapsed());
 					// simulate the expense
 					// long costRemaining = 2; // dummy value...
-
-					(new FileTransferTask(new File(null, "yay"))).send(((ReadRequestTask) currentTask).originMailbox);
+					String loc = ((ReadRequestTask) currentTask).originMailbox;
+					(new FileTransferTask.WriteRequestTask(
+							new File(null, "yay"), loc)).send(loc);
 				}
 			} catch (TimeoutException e) {
 				this.finish();

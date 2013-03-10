@@ -52,6 +52,7 @@ public class FIFOScheduler extends SchedulerProcess {
 		// simple scheduling algorithm
 		boolean mapTasksLeft = true;
 		boolean reduceTasksLeft = true;
+
 		// for each map slot available on the task tracker
 		for (int i = 0; i < process.getNumMapSlots()
 				- process.getNumMapRunning(); i++) {
