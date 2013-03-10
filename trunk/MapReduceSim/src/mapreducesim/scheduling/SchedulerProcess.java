@@ -20,7 +20,8 @@ import mapreducesim.execution.tasks.HeartbeatTask;
 public abstract class SchedulerProcess extends SimProcess {
 
 	/**
-	 * Maintained by the scheduler, keeps track of known TaskTrackers in the simulation
+	 * Maintained by the scheduler, keeps track of known TaskTrackers in the
+	 * simulation
 	 */
 	private Map<String, TaskTrackerCacheEntry> taskTrackerCache;
 
@@ -44,18 +45,22 @@ public abstract class SchedulerProcess extends SimProcess {
 
 	@Override
 	public void main(String[] arg0) throws MsgException {
-		Msg.info("Jobtracker waiting for simgrid tasks on mailbox '" + getHost().getName() + "'");
+		Msg.info("Jobtracker waiting for simgrid tasks on mailbox '"
+				+ getHost().getName() + "'");
 		// receive first task
 		Task taskReceived = Task.receive(getHost().getName());
 
 		while (true) {
 			onTaskReceived(taskReceived);
-			// continue receiving tasks, or exit if no more tasks received within 0.5s
+			// continue receiving tasks, or exit if no more tasks received
+			// within 0.5s
 			try {
-				taskReceived = Task.receive(getHost().getName(), heartbeatInterval * 2);
+				taskReceived = Task.receive(getHost().getName(),
+						heartbeatInterval * 2);
 
 			} catch (TimeoutException te) {
-				Msg.info("Scheduler hasn't received any messages in 0.5s.  Exiting.");
+				Msg
+						.info("Scheduler hasn't received any messages in 0.5s.  Exiting.");
 				break;
 			}
 		}
@@ -64,7 +69,8 @@ public abstract class SchedulerProcess extends SimProcess {
 	public void onTaskReceived(Task task) {
 		if (task instanceof JobSubmission) {
 			JobSubmission js = (JobSubmission) task;
-			Msg.info("Job tracker received job submission: " + js.getJobName());
+			Msg.info("Job tracker received job submission: "
+					+ js.jobToRun.getName());
 			onJobSubmissionReceived((JobSubmission) js);
 		} else if (task instanceof HeartbeatTask) {
 
@@ -79,7 +85,8 @@ public abstract class SchedulerProcess extends SimProcess {
 	}
 
 	void onHeartbeatReceived(HeartbeatTask task) {
-		Msg.info("Job tracker received heartbeat from " + task.getSource().getName());
+		Msg.info("Job tracker received heartbeat from "
+				+ task.getSource().getName());
 		HeartbeatTask hb = (HeartbeatTask) task;
 
 		// // maintain the tasktracker cache
@@ -87,8 +94,8 @@ public abstract class SchedulerProcess extends SimProcess {
 		// if this task tracker wasn't in the cache
 		if (!taskTrackerCache.containsKey(sourceName)) {
 			// add it to the cache
-			taskTrackerCache.put(sourceName,
-					new TaskTrackerCacheEntry(sourceName, hb.numMapSlotsLeft, hb.numReduceSlotsLeft));
+			taskTrackerCache.put(sourceName, new TaskTrackerCacheEntry(
+					sourceName, hb.numMapSlotsLeft, hb.numReduceSlotsLeft));
 			Msg.info("Current task tracker cache: " + taskTrackerCache);
 		}
 		// now, update the cached information

@@ -20,6 +20,6 @@ public abstract class JobMaker extends ConfigurableClass {
 		super(input);
 	}
 
-	public abstract MapReduceJob getJob();
+	public abstract MapReduceJobSpecification getJob();
 
 }

@@ -6,9 +6,9 @@ import java.util.Set;
 import mapreducesim.execution.TaskRunnerProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
+import mapreducesim.scheduling.MapReduceJobSpecification;
 import mapreducesim.scheduling.NotifyNoMoreTasks;
 import mapreducesim.scheduling.TaskCacheEntry;
-import mapreducesim.scheduling.JobStatus;
 import mapreducesim.scheduling.JobSubmission;
 import mapreducesim.scheduling.SchedulerProcess;
 import mapreducesim.scheduling.TaskPool;
@@ -28,7 +28,7 @@ import org.simgrid.msg.*;
 
 public class FIFOScheduler extends SchedulerProcess {
 
-	JobStatus currentJob;
+	SimpleJobStatus currentJob;
 
 	public FIFOScheduler(Host host, String name, String[] args) {
 		super(host, name, args);
@@ -204,21 +204,28 @@ public class FIFOScheduler extends SchedulerProcess {
 		return null;
 	}
 
-	public JobStatus createNewJobStatus(JobSubmission js) {
+	/**
+	 * Creates a jobstatus object given a jobsubmission object
+	 * 
+	 * @param j
+	 * @return
+	 */
+	public SimpleJobStatus createNewJobStatus(JobSubmission j) {
 		TaskPool taskPool = new TaskPool();
+		MapReduceJobSpecification mrj = j.jobToRun;
 		// add the map tasks
-		for (int i = 0; i < js.numMapTasks; i++) {
+		for (int i = 0; i < mrj.getOriginalMapTasks().size(); i++) {
 			// add the task with no preferred location for now
 			taskPool.addTask(new TaskCacheEntry(TaskCacheEntry.Type.MAP,
 					TaskCacheEntry.StatusType.NOTSTARTED), null);
 		}
 		// add the reduce tasks
-		for (int i = 0; i < js.numReduceTasks; i++) {
+		for (int i = 0; i < mrj.getOriginalReduceTasks().size(); i++) {
 			// add the task with no preferred location for now
 			taskPool.addTask(new TaskCacheEntry(TaskCacheEntry.Type.REDUCE,
 					TaskCacheEntry.StatusType.NOTSTARTED), null);
 		}
-		JobStatus retVal = new JobStatus(js.jobName, taskPool);
+		SimpleJobStatus retVal = new SimpleJobStatus(mrj.getName(), taskPool);
 		return retVal;
 	}
 
