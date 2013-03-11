@@ -24,14 +24,13 @@ public class WorkTask extends Task {
 
 	public final double WORK_AMOUNT;
 	public final Type TYPE;
-	public final OutputCollector OUT;
 	public boolean finished;
 
 	private static int mapCount;
 	private static int reduceCount;
 	private String id;
 
-	public WorkTask(double workAmount, Type type, InputSplit data, OutputCollector collector) {
+	public WorkTask(double workAmount, Type type, InputSplit data) {
 		this.WORK_AMOUNT = workAmount;
 		this.NEEDED_DATA = data;
 		this.TYPE = type;
@@ -40,11 +39,6 @@ public class WorkTask extends Task {
 		} else {
 			id = "Reduce Task " + (++reduceCount);
 		}
-		OUT = collector;
-	}
-
-	public WorkTask(double workAmount, Type type, InputSplit data) {
-		this(workAmount, type, data, new DummyOutputCollector());
 	}
 
 	public String getID() {

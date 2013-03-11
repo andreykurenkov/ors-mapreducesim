@@ -13,7 +13,7 @@ import org.simgrid.msg.Task;
 import org.simgrid.msg.TimeoutException;
 import org.simgrid.msg.TransferFailureException;
 
-import mapreducesim.core.ConfigurableClass;
+import mapreducesim.core.SimConfig;
 import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.FileBlock;
@@ -36,8 +36,8 @@ public class SimpleShuffleSorter extends ShuffleSorter {
 	 */
 	public SimpleShuffleSorter(XMLElement input) {
 		super(input);
-		conversion = ConfigurableClass.parseDoubleAttribute(input, "conversion", 5);
-		percentSameKey = ConfigurableClass.parseDoubleAttribute(input, "percentSameKey", 0.1);
+		conversion = SimConfig.parseDoubleAttribute(input, "conversion", 5);
+		percentSameKey = SimConfig.parseDoubleAttribute(input, "percentSameKey", 0.1);
 	}
 
 	public SimpleShuffleSorter() {
