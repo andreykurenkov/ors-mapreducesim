@@ -6,6 +6,7 @@ import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
+import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.scheduling.NotifyNoMoreTasks;
 import mapreducesim.scheduling.SchedulerProcess;
 import mapreducesim.util.ExceptionUtil;
@@ -21,8 +22,8 @@ import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
 
 /**
- * A parallel to Hadoop's TaskTracker, this communicates with Scheduler
- * (paralleling JobTracker) and handles the running of map/reduce tasks.
+ * A parallel to Hadoop's TaskTracker, this communicates with Scheduler (which is similar to JobTracker) and handles the
+ * running of map/reduce tasks.
  * 
  * @author Andrey Kurenkov
  * @version 1.0 Mar 1, 2013
@@ -37,8 +38,7 @@ public class TaskRunnerProcess extends SimProcess {
 
 	private static WorkTaskTimer workTimer;
 	static {
-		workTimer = ConfigurableClass.instantiateFromSimConfig(
-				WorkTaskTimer.class, new SimpleWorkTaskTimer());
+		workTimer = ConfigurableClass.instantiateFromSimConfig(WorkTaskTimer.class, new SimpleWorkTaskTimer());
 		Msg.info("Static init finished.");
 	}
 
@@ -61,24 +61,20 @@ public class TaskRunnerProcess extends SimProcess {
 	@Override
 	public void main(String[] args) {
 		if (args.length > 0)
-			numMapSlots = SafeParsing.safeIntParse(args[0], 2,
-					"args[0] (int numMap) wrong format for TaskTracker at "
-							+ this.getHost());
+			numMapSlots = SafeParsing.safeIntParse(args[0], 2, "args[0] (int numMap) wrong format for TaskTracker at "
+					+ this.getHost());
 		else {
 			// use default map slots from config.xml
-			numMapSlots = Integer.parseInt(SimConfig.getSimpleValue(
-					"TaskTrackerDefaultMapSlots", "3"));
+			numMapSlots = Integer.parseInt(SimConfig.getSimpleValue("TaskTrackerDefaultMapSlots", "3"));
 
 		}
 
 		if (args.length > 1)
-			numReduceSlots = SafeParsing.safeIntParse(args[1], 2,
-					"args[1] (int numReduce) wrong format for TaskTracker at "
-							+ this.getHost());
+			numReduceSlots = SafeParsing.safeIntParse(args[1], 2, "args[1] (int numReduce) wrong format for TaskTracker at "
+					+ this.getHost());
 		else {
 			// use default reduce slots from config.xml
-			numReduceSlots = Integer.parseInt(SimConfig.getSimpleValue(
-					"TaskTrackerDefaultReduceSlots", "3"));
+			numReduceSlots = Integer.parseInt(SimConfig.getSimpleValue("TaskTrackerDefaultReduceSlots", "3"));
 
 		}
 
@@ -87,10 +83,8 @@ public class TaskRunnerProcess extends SimProcess {
 		while (!finished) {
 			try {
 				if (timeUntilNextHeartbeat <= 0) {
-					(new HeartbeatTask(this))
-							.send(SchedulerProcess.SCHEDULER_MAILBOX);
-					timeUntilNextHeartbeat = SchedulerProcess
-							.getHeartbeatInterval();
+					(new HeartbeatTask(this)).send(SchedulerProcess.SCHEDULER_MAILBOX);
+					timeUntilNextHeartbeat = SchedulerProcess.getHeartbeatInterval();
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -101,8 +95,7 @@ public class TaskRunnerProcess extends SimProcess {
 				if (task != null)
 					handleTask(task);
 			} catch (MsgException e) { // e.printStackTrace();
-				timeUntilNextHeartbeat -= SchedulerProcess
-						.getHeartbeatInterval();
+				timeUntilNextHeartbeat -= SchedulerProcess.getHeartbeatInterval();
 			}
 
 		}
@@ -116,29 +109,27 @@ public class TaskRunnerProcess extends SimProcess {
 		return numMapSlots > numReduceRunning;
 	}
 
-	protected WorkerProcess getMapperProcess(Host host, String name,
-			WorkTask workTask) {
-		return new SimpleMapperProcess(host, name, "Mapper for "
-				+ workTask.getID(), this, workTask);
+	protected WorkerProcess getMapperProcess(Host host, String name, WorkTask workTask) {
+		return new SimpleMapperProcess(host, name, "Mapper for " + workTask.getID(), this, workTask);
 	}
 
-	protected WorkerProcess getReducerProcess(Host host, String name,
-			WorkTask workTask) {
-		return new SimpleReduceProcess(host, name, "Reducer for "
-				+ workTask.getID(), this, workTask, new SimpleShuffleSorter());
+	protected WorkerProcess getReducerProcess(Host host, String name, WorkTask workTask) {
+		return new SimpleReduceProcess(host, name, "Reducer for " + workTask.getID(), this, workTask,
+				new SimpleShuffleSorter());
 	}
 
-	protected void notifyMapFinish() {
+	protected void notifyMapFinish(InputSplit out) {
+		// TODO use
 		numMapRunning--;
 	}
 
-	protected void notifyReduceFinish() {
+	protected void notifyReduceFinish(InputSplit out) {
+		// TODO use
 		numReduceRunning--;
 	}
 
 	protected void handleTask(Task received) {
-		Msg.info(this.getHost().getName() + " handling " + received
-				+ " of class " + received.getClass().getSimpleName());
+		Msg.info(this.getHost().getName() + " handling " + received + " of class " + received.getClass().getSimpleName());
 		if (received instanceof WorkTask) {
 			WorkTask workTask = (WorkTask) received;
 			WorkerProcess process = null;
@@ -147,23 +138,20 @@ public class TaskRunnerProcess extends SimProcess {
 				if (hasMapSlots()) {
 					numMapRunning++;
 					mapCount++;
-					process = getMapperProcess(host, this.getHost().getName()
-							+ " Mapper " + mapCount, workTask);
+					process = getMapperProcess(host, this.getHost().getName() + " Mapper " + mapCount, workTask);
 				}
 				break;
 			case REDUCE:
 				if (hasMapSlots()) {
 					numReduceRunning++;
 					reduceCount++;
-					process = getReducerProcess(host, this.getHost().getName()
-							+ " Reducer " + reduceCount, workTask);
+					process = getReducerProcess(host, this.getHost().getName() + " Reducer " + reduceCount, workTask);
 				}
 				break;
 			}
 			if (process != null) {
 				try {
-					workTask.setComputeDuration(workTimer
-							.estimateComputeDuration(this.getHost(), workTask));
+					workTask.setComputeDuration(workTimer.estimateComputeDuration(this.getHost(), workTask));
 					process.start();
 				} catch (HostNotFoundException e) {
 					e.printStackTrace();

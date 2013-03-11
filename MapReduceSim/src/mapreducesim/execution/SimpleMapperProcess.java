@@ -43,7 +43,6 @@ public class SimpleMapperProcess extends WorkerProcess {
 			if (simulatePerPair) {
 				for (FileBlock block : ((FileTransferTask) transferTask).getTransferData()) {
 					for (KeyValuePairs pair : block.getPairs()) {
-						task.OUT.collectOutput(pair);
 						this.waitFor(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, pair));
 					}
 				}
@@ -53,7 +52,7 @@ public class SimpleMapperProcess extends WorkerProcess {
 			task.execute();
 		}
 		Msg.info(this.getHost().getName() + " finishing " + task);
-		parent.notifyMapFinish();
+		parent.notifyMapFinish(null);// TODO
 		this.suspend();
 	}
 }

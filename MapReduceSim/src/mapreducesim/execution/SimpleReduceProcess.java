@@ -30,11 +30,9 @@ public class SimpleReduceProcess extends WorkerProcess {
 		List<KeyValuePairs> pairs = sorter.doShuffleSort(task.NEEDED_DATA, this);
 		for (KeyValuePairs pair : pairs) {
 			this.waitFor(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, pair));
-			task.OUT.collectOutput(pair);
 		}
-		task.OUT.writeOutput();
 		Msg.info(this.getHost().getName() + " finishing WorkTask" + task + " at " + this.getTimeElapsed());
-		parent.notifyReduceFinish();
+		parent.notifyReduceFinish(null);// TODO
 		this.suspend();
 	}
 

@@ -59,7 +59,6 @@ public abstract class ConfigurableClass {
 	 */
 	public static <A extends ConfigurableClass> A getDefaultInstance(Class<A> forClass) {
 		return forClass.cast(defaults.get(forClass));
-
 	}
 
 	/**
@@ -74,8 +73,49 @@ public abstract class ConfigurableClass {
 	}
 
 	/**
+	 * Method that handles reflexive instantiation from MapReduceSimMain's configuration file given the desired subclass of
+	 * configurable file, a default value, and the XMLElement to supply to the new class. This method should be used in cases
+	 * where the node containing the configurable class is not a direct child of the root node - otherwise,
+	 * instantiateFromSimConfig should be used.
+	 * 
+	 * @param classType
+	 *            the type of the class to be instantiated (same as [class name].class)
+	 * @param defaultInstance
+	 *            The default instance to be used in case no specification is given in the Configuration file.
+	 * @return An instance of the wanted class, either reflexively instantiated or the default.
+	 * @todo throw exception on invalid input/handle reflection errors better?
+	 */
+	public static <A extends ConfigurableClass> A instantiateFromXMLElement(Class<A> classType, A defaultInstance,
+			XMLElement element) {
+		A toReturn = null;
+		try {
+			if (element != null) {
+				String nameOfA = element.getAttributeValue(CLASS_ATTRIBUTE_KEY);
+				// with XMLElement param
+				toReturn = ReflectionUtil.attemptConstructorCallAndCast(classType, Class.forName(nameOfA), element);
+				// if did not work, with no param
+				if (toReturn == null)
+					toReturn = ReflectionUtil.attemptConstructorCallAndCast(classType, Class.forName(nameOfA));
+				if (toReturn == null) {
+					toReturn = defaultInstance;
+					Msg.info(classType.getSimpleName() + " loading failed. Using default");
+				}
+			} else {
+				Msg.info("Null XMLElement for " + classType.getSimpleName() + " given. Using default of "
+						+ defaultInstance.getClass().getSimpleName());
+				toReturn = defaultInstance;
+			}
+		} catch (Exception e) {
+			Msg.info(classType.getSimpleName() + " loading failed. Error below:\n" + ExceptionUtil.getStackTrace(e));
+		}
+		return toReturn;
+	}
+
+	/**
 	 * Method that handles reflexive instantiation from MapReduceSimMain's configuration file given the name of the node
-	 * within the XML file for the desired subclass of ConfigurableFile.
+	 * within the XML file for the desired subclass of ConfigurableFile. It is preffered to use instantiateFromSimConfig
+	 * without a provided nameOfNode and write the XML config to have the name of the node be the name of the abstract class
+	 * needed.
 	 * 
 	 * @param nameOfNode
 	 *            the name of the needed XMLElement
@@ -95,16 +135,7 @@ public abstract class ConfigurableClass {
 			if (config != null)
 				element = config.getRoot().getChildByName(nameOfNode);
 			if (element != null) {
-				String nameOfA = element.getAttributeValue(CLASS_ATTRIBUTE_KEY);
-				// with XMLElement param
-				toReturn = ReflectionUtil.attemptConstructorCallAndCast(classType, Class.forName(nameOfA), element);
-				// if did not work, with no param
-				if (toReturn == null)
-					toReturn = ReflectionUtil.attemptConstructorCallAndCast(classType, Class.forName(nameOfA));
-				if (toReturn == null) {
-					toReturn = defaultInstance;
-					Msg.info(classType.getSimpleName() + " loading failed. Using default");
-				}
+				return instantiateFromXMLElement(classType, defaultInstance, element);
 			} else {
 				Msg.info("No config for " + classType.getSimpleName() + " found. Using default of "
 						+ defaultInstance.getClass().getSimpleName());
@@ -131,8 +162,8 @@ public abstract class ConfigurableClass {
 	}
 
 	/**
-	 * Allows instantiation of a configureable class given just the name of the object wanted, e.g, calling it with
-	 * "FileSplitter" will return a custom FileSplitter object if defined in the xml, or just the default if it wasn't
+	 * Allows instantiation of a configurable class given just the name of the object wanted, e.g, calling it with
+	 * FileSplitter.class will return a custom FileSplitter object if defined in the xml, or just the default if it wasn't
 	 * specified in the config xml.
 	 * 
 	 * @param nameOfXMLNode
@@ -142,53 +173,5 @@ public abstract class ConfigurableClass {
 	public static <A extends ConfigurableClass> A instantiateFromSimConfig(Class<A> forClass) {
 		String nameOfXMLNode = forClass.getSimpleName();
 		return instantiateFromSimConfig(nameOfXMLNode, forClass, getDefaultInstance(forClass));
-	}
-
-	/**
-	 * Simple helper method to parse a double attribute from a given XMLElement
-	 * 
-	 * @param attribute
-	 *            the name of the attribute
-	 * @param XMLElement
-	 *            element the element to parse from
-	 * @param defaultVal
-	 *            default value if not provided
-	 * @return parse attribute or default if not there
-	 */
-	public static double parseDoubleAttribute(XMLElement element, String attribute, double defaultVal) {
-		double toReturn = defaultVal;
-		String attrStr = element.getAttributeValue(attribute);
-		try {
-			toReturn = Double.parseDouble(attrStr);
-		} catch (Exception e) {
-			Msg.info("Invalid or not value for attribute " + attribute + " for element " + element.getQName()
-					+ "; using default" + defaultVal);
-
-		}
-		return toReturn;
-	}
-
-	/**
-	 * Simple helper method to parse an int attribute from a given XMLElement
-	 * 
-	 * @param attribute
-	 *            the name of the attribute
-	 * @param XMLElement
-	 *            element the element to parse from
-	 * @param defaultVal
-	 *            default value if not provided
-	 * @return parse attribute or default if not there
-	 */
-	public static double parseIntAttribute(XMLElement element, String attribute, int defaultVal) {
-		int toReturn = defaultVal;
-		String attrStr = element.getAttributeValue(attribute);
-		try {
-			toReturn = Integer.parseInt(attrStr);
-		} catch (Exception e) {
-			Msg.info("Invalid or not value for attribute " + attribute + " for element " + element.getQName()
-					+ "; using default" + defaultVal);
-
-		}
-		return toReturn;
 	}
 }
