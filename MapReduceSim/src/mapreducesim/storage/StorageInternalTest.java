@@ -1,5 +1,7 @@
 package mapreducesim.storage;
 
+import java.util.List;
+
 public class StorageInternalTest {
 
 	public static void main(String[] args) {
@@ -44,6 +46,14 @@ public class StorageInternalTest {
 		File File9 = new File(dir3, "fileX", 500);
 		System.out.println("Directory 2 contains 'fileX':"
 				+ dir2.contains(File9) + ".");
+
+		// Test FSBuilder
+		FSBuilder fsbuild = new FSBuilder();
+		String str = "before/after";
+		List<String> tokstr = fsbuild.tokenize(str, '/');
+		System.out.println();
+		System.out.println("Results: '" + tokstr.get(0) + "','" + tokstr.get(1)
+				+ "'");
 
 		System.out.println("\nStorageTest end.");
 

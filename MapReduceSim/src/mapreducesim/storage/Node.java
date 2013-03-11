@@ -21,7 +21,7 @@ public class Node {
 	private ArrayList<Node> children;
 	private Node parent;
 	private Boolean isRoot;
-	private int level; //
+	private int level;
 
 	/**
 	 * No-args constructor creates the root
@@ -182,6 +182,13 @@ public class Node {
 		distance += 2;
 
 		return distance;
+	}
+
+	public boolean directlyContains(Node query) {
+		for (int i = 0; i < this.children.size(); i++) {
+			// TODO
+		}
+		return false;
 	}
 
 	/**
