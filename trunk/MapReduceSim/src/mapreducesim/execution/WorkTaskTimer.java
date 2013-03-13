@@ -16,11 +16,36 @@ import org.simgrid.msg.Host;
 public abstract class WorkTaskTimer extends ConfigurableClass {
 	protected XMLElement input;
 
+	/**
+	 * Constructor for WorkTaskTimer that gives values to the instance variables corresponding to the parameters.
+	 * 
+	 * @param input
+	 */
 	public WorkTaskTimer(XMLElement input) {
 		super(input);
 	}
 
+	/**
+	 * Estimates time cost of performing entire WorkTask
+	 * 
+	 * @param onHost
+	 *            the host to estimate for
+	 * @param task
+	 *            the task
+	 * @return time in seconds to perform the task
+	 */
 	public abstract double estimateComputeDuration(Host onHost, WorkTask task);
 
-	public abstract double estimateComputeDuration(Host onHost, WorkTask task, KeyValuePairs pair);
+	/**
+	 * Estimates time cost of performing a map or reduce task for the given collection of pairs
+	 * 
+	 * @param onHost
+	 *            the host to estimate for
+	 * @param task
+	 *            the task pairs are part of
+	 * @param pairs
+	 *            information about the number of pairs and their size
+	 * @return time in seconds to perform the computation for the pairs
+	 */
+	public abstract double estimateComputeDuration(Host onHost, WorkTask task, KeyValuePairs pairs);
 }

@@ -21,7 +21,7 @@ import org.simgrid.msg.TimeoutException;
 public class TestJobTracker extends SimProcess {
 	private static int tasklength;
 	static {
-		tasklength = Integer.parseInt(SimConfig.getConfigurationElementText("tasklength", "25"));
+		tasklength = Integer.parseInt(SimConfig.getElementText("tasklength", "25"));
 	}
 
 	public TestJobTracker(Host host, String name, String[] args) {

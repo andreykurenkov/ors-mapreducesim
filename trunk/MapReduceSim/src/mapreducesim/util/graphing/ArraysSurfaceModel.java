@@ -27,7 +27,7 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 		mins[0] = (float) offsets[0];
 		mins[1] = (float) offsets[1];
 		maxes[0] = (float) (offsets[0] + divisions[0] * graphValues.length);
-		maxes[1] = (float) (offsets[1] + divisions[1] * graphValues.length);
+		maxes[1] = (float) (offsets[1] + divisions[1] * graphValues[0].length);
 
 		float min = Float.MAX_VALUE;
 		float max = -Float.MAX_VALUE;
@@ -97,12 +97,12 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 
 	@Override
 	public float getXMax() {
-		return maxes[X_INDEX] - 1;
+		return maxes[X_INDEX];
 	}
 
 	@Override
 	public float getXMin() {
-		return mins[X_INDEX] - 1;
+		return mins[X_INDEX];
 	}
 
 	@Override
@@ -112,12 +112,12 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 
 	@Override
 	public float getYMax() {
-		return maxes[Y_INDEX] - 1;
+		return maxes[Y_INDEX];
 	}
 
 	@Override
 	public float getYMin() {
-		return mins[Y_INDEX] - 1;
+		return mins[Y_INDEX];
 	}
 
 	@Override

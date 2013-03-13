@@ -66,6 +66,7 @@ public class SimMain {
 		Msg.info("Simulation start...");
 		/* Creates the configuration to be used by the rest of the simulation */
 		config = new XMLDocument();
+		// read in configuration file
 		if (args.length > 2) {
 			SmartFile file = new SmartFile(args[2]);
 			if (file.exists()) {

@@ -23,12 +23,12 @@ public class StorageProcess extends SimProcess {
 
 			if (currentTask instanceof WriteRequestTask) { // write task
 				// update the actual filesystem, etc.
-				Msg.info("Writing file '" + ((WriteRequestTask) currentTask).getFile().getName() + "' at "
+				Msg.info("Writing file '" + ((WriteRequestTask) currentTask).getFileBlock() + "' at "
 						+ this.getTimeElapsed());
 				// simulate the expense
 				long costRemaining = 6; // dummy value for now.
-
-				Msg.info("Finished writing file '" + ((WriteRequestTask) currentTask).getFile().getName() + "' at "
+				// TODO: use elapseTime
+				Msg.info("Finished writing file '" + ((WriteRequestTask) currentTask).getFileBlock() + "' at "
 						+ Msg.getClock());
 
 			}

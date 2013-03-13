@@ -42,7 +42,7 @@ public abstract class ConfigurableClass {
 	}
 
 	/**
-	 * Adds the given class to the map contating default instances of ConfigurabeClass subclasses.
+	 * Adds the given class to the map containing default instances of ConfigurabeClass subclasses.
 	 * 
 	 * @param forClass
 	 * @param defaultInstance
@@ -83,7 +83,6 @@ public abstract class ConfigurableClass {
 	 * @param defaultInstance
 	 *            The default instance to be used in case no specification is given in the Configuration file.
 	 * @return An instance of the wanted class, either reflexively instantiated or the default.
-	 * @todo throw exception on invalid input/handle reflection errors better?
 	 */
 	public static <A extends ConfigurableClass> A instantiateFromXMLElement(Class<A> classType, A defaultInstance,
 			XMLElement element) {
@@ -124,7 +123,6 @@ public abstract class ConfigurableClass {
 	 * @param defaultInstance
 	 *            The default instance to be used in case no specification is given in the Configuration file.
 	 * @return An instance of the wanted class, either reflexively instantiated or the default.
-	 * @todo throw exception on invalid input/handle reflection errors better?
 	 */
 	public static <A extends ConfigurableClass> A instantiateFromSimConfig(String nameOfNode, Class<A> classType,
 			A defaultInstance) {
