@@ -24,6 +24,8 @@ import mapreducesim.storage.StorageProcess;
 import mapreducesim.util.xml.XMLElement;
 
 /**
+ * Simple implementation of ShuffleSorter that uses a trivial equation
+ * 
  * @author Andrey Kurenkov
  * @version 1.0 Mar 7, 2013
  */
@@ -32,6 +34,8 @@ public class SimpleShuffleSorter extends ShuffleSorter {
 	private double percentSameKey;
 
 	/**
+	 * Constructor for SimpleShuffleSorter that gives values to the instance variables corresponding to the parameters.
+	 * 
 	 * @param input
 	 */
 	public SimpleShuffleSorter(XMLElement input) {
@@ -40,6 +44,10 @@ public class SimpleShuffleSorter extends ShuffleSorter {
 		percentSameKey = SimConfig.parseDoubleAttribute(input, "percentSameKey", 0.1);
 	}
 
+	/**
+	 * Constructor for non-reflextive instantiation that uses default values for conversion and percentKey.
+	 * 
+	 */
 	public SimpleShuffleSorter() {
 		super(null);
 		conversion = 5;
@@ -62,11 +70,9 @@ public class SimpleShuffleSorter extends ShuffleSorter {
 			do {
 				response = Task.receive(process.MAILBOX);
 			} while (!(response instanceof FileTransferTask));
-			List<FileBlock> blocks = ((FileTransferTask) response).getTransferData();
+			List<FileBlock> blocks = ((FileTransferTask) response).getTransferFileBlocks();
 			for (FileBlock block : blocks) {
-				for (KeyValuePairs pair : block.getPairs()) {
-					pairs.add(pair);
-				}
+				pairs.add(block.getPairs());
 				// NlogN type stuff
 				process.waitFor(block.getSize() / process.getHost().getSpeed() * conversion);
 			}

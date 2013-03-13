@@ -33,6 +33,13 @@ public class KeyValuePairs {
 	}
 
 	/**
+	 * 
+	 */
+	public KeyValuePairs() {
+		this(0, 0);
+	}
+
+	/**
 	 * Getter for the key
 	 * 
 	 * @return the key

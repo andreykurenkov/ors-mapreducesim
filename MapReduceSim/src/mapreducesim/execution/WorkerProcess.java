@@ -18,7 +18,7 @@ public abstract class WorkerProcess extends SimProcess {
 	public WorkerProcess(Host host, String name, String mailbox, TaskRunnerProcess parent, WorkTask task) {
 		super(host, name, null, mailbox);
 		this.parent = parent;
-		this.timeElapsed = parent.getTimeElapsed();
+		this.timeSlept = parent.getTimeElapsed();
 		this.task = task;
 	}
 

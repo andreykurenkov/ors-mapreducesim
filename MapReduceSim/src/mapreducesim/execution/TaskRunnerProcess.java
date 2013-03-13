@@ -1,5 +1,10 @@
 package mapreducesim.execution;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import mapreducesim.core.ConfigurableClass;
 import mapreducesim.core.SimConfig;
 import mapreducesim.core.SimMain;
@@ -9,6 +14,7 @@ import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.scheduling.NotifyNoMoreTasks;
 import mapreducesim.scheduling.SchedulerProcess;
+import mapreducesim.storage.FileBlock;
 import mapreducesim.util.ExceptionUtil;
 import mapreducesim.util.ReflectionUtil;
 import mapreducesim.util.SafeParsing;
@@ -34,7 +40,9 @@ public class TaskRunnerProcess extends SimProcess {
 
 	private int mapCount, reduceCount;
 
-	private int timeUntilNextHeartbeat;
+	private double timeUntilNextHeartbeat;
+
+	private Map<WorkTask, List<FileBlock>> completed;
 
 	private static WorkTaskTimer workTimer;
 	static {
@@ -65,7 +73,7 @@ public class TaskRunnerProcess extends SimProcess {
 					+ this.getHost());
 		else {
 			// use default map slots from config.xml
-			numMapSlots = Integer.parseInt(SimConfig.getSimpleValue("TaskTrackerDefaultMapSlots", "3"));
+			numMapSlots = Integer.parseInt(SimConfig.getElementText("TaskTrackerDefaultMapSlots", "3"));
 
 		}
 
@@ -74,16 +82,17 @@ public class TaskRunnerProcess extends SimProcess {
 					+ this.getHost());
 		else {
 			// use default reduce slots from config.xml
-			numReduceSlots = Integer.parseInt(SimConfig.getSimpleValue("TaskTrackerDefaultReduceSlots", "3"));
+			numReduceSlots = Integer.parseInt(SimConfig.getElementText("TaskTrackerDefaultReduceSlots", "3"));
 
 		}
 
-		timeUntilNextHeartbeat = 0;
-
+		timeUntilNextHeartbeat = Math.random() * 50;// A bit of randomness with startup
+		completed = new HashMap<WorkTask, List<FileBlock>>();
 		while (!finished) {
 			try {
 				if (timeUntilNextHeartbeat <= 0) {
-					(new HeartbeatTask(this)).send(SchedulerProcess.SCHEDULER_MAILBOX);
+					(new HeartbeatTask(this, completed)).send(SchedulerProcess.SCHEDULER_MAILBOX);
+					completed = new HashMap<WorkTask, List<FileBlock>>();// reset completed list
 					timeUntilNextHeartbeat = SchedulerProcess.getHeartbeatInterval();
 				}
 			} catch (Exception e1) {
@@ -118,13 +127,13 @@ public class TaskRunnerProcess extends SimProcess {
 				new SimpleShuffleSorter());
 	}
 
-	protected void notifyMapFinish(InputSplit out) {
-		// TODO use
+	protected void notifyMapFinish(WorkTask task, List<FileBlock> output) {
+		completed.put(task, output);
 		numMapRunning--;
 	}
 
-	protected void notifyReduceFinish(InputSplit out) {
-		// TODO use
+	protected void notifyReduceFinish(WorkTask task, List<FileBlock> output) {
+		completed.put(task, output);
 		numReduceRunning--;
 	}
 

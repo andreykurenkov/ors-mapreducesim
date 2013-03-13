@@ -6,18 +6,20 @@ import mapreducesim.util.xml.XMLElement;
 import org.simgrid.msg.Msg;
 
 /**
- * 
+ * A static class to hold the simulation configuration loaded at the beginning of simulation as well as helper methods for
+ * accessing and parsing it.
  * 
  * @author Andrey Kurenkov
  * @version 1.0 Mar 1, 2013
  */
 public class SimConfig {
+	// SimMain.getConfig is protected, config retrieved now and publicly accesible through SimConfig.getConfig
 	public final static XMLDocument CONFIG = SimMain.getConfig();
 
 	/**
-	 * Simple getter for config
+	 * Simple getter for configuration
 	 * 
-	 * @return config
+	 * @return simulation configuration
 	 */
 	public static XMLDocument getConfig() {
 		return CONFIG;
@@ -31,9 +33,9 @@ public class SimConfig {
 	 *            the name of the element to get the contents of. Must be a top-level child of the root of the configuration.
 	 * @param defaultValue
 	 *            the default value to return in case the config does not
-	 * @return
+	 * @return context text of xml element if it exists or default value otherwise
 	 */
-	public static String getConfigurationElementText(String elementName, String defaultValue) {
+	public static String getElementText(String elementName, String defaultValue) {
 		if (CONFIG.getRoot() != null) {
 			XMLElement child = CONFIG.getRoot().getChildByName(elementName);
 			if (child != null)
@@ -56,24 +58,6 @@ public class SimConfig {
 		if (CONFIG.getRoot() != null)
 			return CONFIG.getRoot().getChildByName(elementName);
 		return null;
-	}
-
-	/**
-	 * Retrieves a simple string value from the root of the xml config, or defaultValue if it wasn't found in the config.
-	 * 
-	 * @param elementName
-	 * @param defaultValue
-	 * @return
-	 */
-	public static String getSimpleValue(String elementName, String defaultValue) {
-		if (CONFIG.getRoot() != null) {
-			XMLElement ele = CONFIG.getRoot().getChildByName(elementName);
-			if (ele != null) {
-				return ele.getContentText();
-			}
-		}
-
-		return defaultValue;
 	}
 
 	/**

@@ -1,7 +1,5 @@
 package mapreducesim.execution.tasks;
 
-import mapreducesim.execution.DummyOutputCollector;
-import mapreducesim.execution.OutputCollector;
 import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.File;

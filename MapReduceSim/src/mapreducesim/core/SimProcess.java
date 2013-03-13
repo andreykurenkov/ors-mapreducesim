@@ -16,16 +16,12 @@ import org.simgrid.msg.Task;
  * @author Andrey Kurenkov
  * 
  */
-/**
- * @author Andrey Kurenkov
- * @version 1.0 Mar 1, 2013
- */
 public abstract class SimProcess extends Process {
 
 	protected boolean finished;
 	// this is meant to store how much time was spent working in any Process for easy retrieval at end.
 	// However, Task.execute should be avoided if this is to be up to date
-	protected double timeElapsed;
+	protected double timeSlept;
 	public final String MAILBOX;
 
 	/**
@@ -60,9 +56,9 @@ public abstract class SimProcess extends Process {
 	 * @param amountOfTime
 	 * @throws HostFailureException
 	 */
-	protected void elapseTime(long amountOfTime) throws HostFailureException {
-		sleep(amountOfTime);
-		timeElapsed += amountOfTime;
+	protected void elapseTime(double amountOfTime) throws HostFailureException {
+		waitFor(amountOfTime);
+		timeSlept += amountOfTime;
 	}
 
 	/**
@@ -112,6 +108,6 @@ public abstract class SimProcess extends Process {
 	 * @return timeElapsed
 	 */
 	public double getTimeElapsed() {
-		return timeElapsed;
+		return timeSlept;
 	}
 }
