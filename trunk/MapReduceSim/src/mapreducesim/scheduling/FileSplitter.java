@@ -1,5 +1,6 @@
 package mapreducesim.scheduling;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mapreducesim.core.ConfigurableClass;
@@ -43,7 +44,7 @@ public abstract class FileSplitter extends ConfigurableClass {
 	 * 
 	 */
 	public static class InputSplit {
-		private DataLocation[] locations;
+		private List<DataLocation> locations;
 		private int size;
 
 		/**
@@ -51,7 +52,7 @@ public abstract class FileSplitter extends ConfigurableClass {
 		 * 
 		 * @param locations
 		 */
-		public InputSplit(DataLocation[] locations) {
+		public InputSplit(List<DataLocation> locations) {
 			this.locations = locations;
 			for (DataLocation loc : locations)
 				size += loc.getLength();
@@ -61,7 +62,7 @@ public abstract class FileSplitter extends ConfigurableClass {
 		 * Empty constructor that creates an inputsplit containing no data locations.
 		 */
 		public InputSplit() {
-			locations = new DataLocation[0];
+			locations = new ArrayList<DataLocation>();
 			size = 0;
 		}
 
@@ -70,7 +71,7 @@ public abstract class FileSplitter extends ConfigurableClass {
 		 * 
 		 * @return the locations
 		 */
-		public DataLocation[] getLocations() {
+		public List<DataLocation> getLocations() {
 			return locations;
 		}
 
