@@ -34,9 +34,13 @@ public class File extends Node {
 	/**
 	 * Don't use this constructor--files must have a parent directory.
 	 */
-	public File(String name) {
-		super();
-		this.setName(name);
+	// public File(String name) {
+	// super();
+	// this.setName(name);
+	// }
+
+	public List<FileBlock> getBlocks() {
+		return blocks;
 	}
 
 	/**
