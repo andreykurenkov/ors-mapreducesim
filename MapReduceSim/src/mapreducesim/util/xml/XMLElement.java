@@ -32,6 +32,19 @@ public class XMLElement extends XMLNode {
 		return children;
 	}
 
+	/**
+	 * Helper method to extract only the XMLElement children of this element
+	 * 
+	 * @return
+	 */
+	public List<XMLElement> getElements() {
+		ArrayList<XMLElement> elements = new ArrayList<XMLElement>();
+		for (XMLNode node : children)
+			if (node instanceof XMLElement)
+				elements.add((XMLElement) node);
+		return elements;
+	}
+
 	public void addChild(XMLNode child) {
 		children.add(child);
 	}
