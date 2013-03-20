@@ -314,4 +314,28 @@ public class Node {
 		}
 	}
 
+	/**
+	 * Allows the user to retrieve a child node with the specified name. Returns
+	 * null if no such child node exists.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public Node getChild(String name) {
+		for (int i = 0; i < this.numChildren(); i++) {
+			if (this.getChildAtPosition(i).getName() == name) {
+				return this.getChildAtPosition(i);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * For debugging purposes. Prints the names of the children to the console.
+	 */
+	public void printContents() {
+		for (Node child : getChildren()) {
+			System.out.println(child.name);
+		}
+	}
 }
