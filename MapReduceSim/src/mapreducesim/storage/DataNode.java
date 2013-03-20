@@ -14,6 +14,7 @@ public class DataNode extends Node {
 
 	private List<FileBlock> blocks;
 	private int capacity;
+	private int speed; // Connection node and its parent in gbps
 
 	/**
 	 * Constructor defines the name of the DataBlock and its parent
@@ -23,6 +24,7 @@ public class DataNode extends Node {
 	 */
 	public DataNode(Rack parent, String name) {
 		super(parent, name);
+		setSpeed(5);
 	}
 
 	public List<FileBlock> getBlocks() {
@@ -88,6 +90,14 @@ public class DataNode extends Node {
 		this.capacity = capacity;
 	}
 
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
 	/**
 	 * Calculates the amount of free space on the DataNode by iterating through
 	 * the blocks and subtracting each block's size from the DataNode capacity.
@@ -151,6 +161,56 @@ public class DataNode extends Node {
 			return false;
 	}
 
+	/**
+	 * Calculates the chokepoint bandwidth between two nodes
+	 * 
+	 * @param node1
+	 * @param node2
+	 * @return
+	 */
+	public int speedBetween(Node node2) {
+		Node n1, n2;
+		int l1, l2;
+		int minSpeed = 99999;
+		n1 = this;
+		n2 = node2;
+		l1 = this.getLevel();
+		l2 = node2.getLevel();
+
+		// if node1 is deeper than node2,
+		// climb up the branch of node1 until it's at the same level of node2
+		while (l1 > l2 && l1 != 0) {
+			if (n1.getSpeed() < minSpeed)
+				minSpeed = n1.getSpeed();
+			n1 = n1.getParent();
+			--l1;
+		}
+
+		// if node2 is deeper than node2,
+		// climb up the branch of node2 until it's at the same level of node1
+		while (l2 > l1 && l2 != 0) {
+			if (n2.getSpeed() < minSpeed)
+				minSpeed = n2.getSpeed();
+			--l2;
+		}
+
+		// now that node1 and node2 are on the same level (depth),
+		// climb both up the branch until they have a common parent
+		while (l1 != 0 && l2 != 0 && n1.getParent() != n2.getParent()) {
+			n1 = n1.getParent();
+			n2 = n2.getParent();
+			if (n1.getSpeed() < minSpeed)
+				minSpeed = n1.getSpeed();
+			if (n2.getSpeed() < minSpeed)
+				minSpeed = n2.getSpeed();
+		}
+
+		// account for the final step up after the parents match
+		// TODO: might be missing one link somewhere in here; check when less
+		// tired.
+
+		return minSpeed;
+	}
 	/**
 	 * For nested DataNodes. Shouldn't be necessary right now.
 	 */

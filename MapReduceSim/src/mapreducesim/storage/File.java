@@ -15,6 +15,7 @@ import java.util.List;
 public class File extends Node {
 
 	private int size;
+	private int numReads;
 	private List<FileBlock> blocks;
 	private static final int SPLIT_SIZE = 128;
 
@@ -26,6 +27,7 @@ public class File extends Node {
 	 */
 	public File(Node parent, String name, int size) {
 		super(parent, name);
+		this.numReads = 0;
 		this.size = size;
 		this.blocks = new ArrayList<FileBlock>();
 		makeSplits();
@@ -41,6 +43,10 @@ public class File extends Node {
 
 	public List<FileBlock> getBlocks() {
 		return blocks;
+	}
+
+	public void incrementReads() {
+		numReads++;
 	}
 
 	/**

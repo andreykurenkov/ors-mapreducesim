@@ -8,8 +8,8 @@ package mapreducesim.storage;
  * 
  */
 public class StorageInterface {
-	private DataTree fs;
-	private DataTree top;
+	private DataTree<Node> fs;
+	private DataTree<Node> top;
 
 	/**
 	 * Constructor creates the fs/topology and loads it into StorageInterface

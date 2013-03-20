@@ -1,7 +1,6 @@
 package mapreducesim.storage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The basic unit of a data tree. A tree can be represented by a DataTree
@@ -299,6 +298,15 @@ public class Node {
 			return 0;
 		}
 		return children.size();
+	}
+
+	public int getSpeed() {
+		if (this instanceof DataNode) {
+			return ((DataNode) this).getSpeed();
+		} else if (this instanceof Rack) {
+			return ((Rack) this).getSpeed();
+		} else
+			return 999; // TODO: Error (not topology object)
 	}
 
 	/**
