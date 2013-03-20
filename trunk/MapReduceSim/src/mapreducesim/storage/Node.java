@@ -1,6 +1,7 @@
 package mapreducesim.storage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The basic unit of a data tree. A tree can be represented by a DataTree
@@ -321,12 +322,17 @@ public class Node {
 	 * @param name
 	 * @return
 	 */
-	public Node getChild(String name) {
+	public Node getChild(String query) {
 		for (int i = 0; i < this.numChildren(); i++) {
-			if (this.getChildAtPosition(i).getName() == name) {
+			if (this.getChildAtPosition(i).getName() == query) {
 				return this.getChildAtPosition(i);
 			}
 		}
+		return null;
+	}
+
+	public Node getChildRecursive(String query) {
+		// TODO
 		return null;
 	}
 
