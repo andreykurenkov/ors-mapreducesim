@@ -15,7 +15,8 @@ public class StorageProcess extends SimProcess {
 	}
 
 	@Override
-	public void main(String[] args) throws TransferFailureException, HostFailureException, TimeoutException {
+	public void main(String[] args) throws TransferFailureException,
+			HostFailureException, TimeoutException {
 		while (!finished) {
 			// get the next task from the storage interface mailbox
 			Task currentTask = Task.receive(MAILBOX);
@@ -23,23 +24,34 @@ public class StorageProcess extends SimProcess {
 
 			if (currentTask instanceof WriteRequestTask) { // write task
 				// update the actual filesystem, etc.
-				Msg.info("Writing file '" + ((WriteRequestTask) currentTask).getFileBlock() + "' at "
-						+ this.getTimeElapsed());
+				Msg.info("Writing file '"
+						+ ((WriteRequestTask) currentTask).getFileBlock()
+						+ "' at " + this.getTimeElapsed());
 				// simulate the expense
 				long costRemaining = 6; // dummy value for now.
 				// TODO: use elapseTime
-				Msg.info("Finished writing file '" + ((WriteRequestTask) currentTask).getFileBlock() + "' at "
-						+ Msg.getClock());
+				Msg.info("Finished writing file '"
+						+ ((WriteRequestTask) currentTask).getFileBlock()
+						+ "' at " + Msg.getClock());
 
 			}
 
 			if (currentTask instanceof ReadRequestTask) { // read task
-				// update the actual filesystem, etc. (metadata for read)
-				Msg.info("Reading file '" + ((ReadRequestTask) currentTask).getName() + "' at " + this.getTimeElapsed());
-				// simulate the expense
-				long costRemaining = 2; // dummy value...
+				// TODO combine interfaces...
+				Msg.info("Reading file '"
+						+ ((ReadRequestTask) currentTask).getName() + "' at "
+						+ this.getTimeElapsed());
+				DataLocation loc1 = ((ReadRequestTask) currentTask)
+						.getFileLocation();
+				// origin = ((ReadRequestTask) currentTask).getOriginMailbox();
+				// loc1.incrementReads();
+				// int speed = loc1.speedBetween(loc2);
+				// int size = loc1.get().getSize();
+				// long readCost = size / ( speed * 2^20 );
+				// elapseTime(readCost);
 
-				Msg.info("Finished reading file '" + ((ReadRequestTask) currentTask).getName() + "' at "
+				Msg.info("Finished reading file '"
+						+ ((ReadRequestTask) currentTask).getName() + "' at "
 						+ this.getTimeElapsed());
 			}
 
