@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.simgrid.msg.Msg;
+
+import mapreducesim.core.ConfigurableClass;
 import mapreducesim.core.SimConfig;
+import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.scheduling.TaskCacheEntry.Type;
 import mapreducesim.util.xml.XMLElement;
 import mapreducesim.util.xml.XMLNode;
@@ -123,6 +127,7 @@ public class MapReduceJobSpecification {
 				XMLElement taskNode = taskNodes.get(i);
 				TaskCacheEntry tce = TaskCacheEntry.constructFromXML(taskNode);
 				if (tce.type == Type.MAP) {
+
 					maps.add(tce);
 				} else if (tce.type == Type.REDUCE) {
 					reduces.add(tce);
@@ -134,6 +139,28 @@ public class MapReduceJobSpecification {
 
 			MapReduceJobSpecification returnVal = new MapReduceJobSpecification(
 					jobName, maps, reduces);
+
+			// we need to get the input splits for this map task
+
+			// TODO: annotate with input split data
+			FileSplitter fs = ConfigurableClass
+					.instantiateFromSimConfig(FileSplitter.class);
+			List<InputSplit> iSplits = fs.getInputSlits(returnVal);
+			Msg.info("input splits for job " + jobName + ":" + iSplits);
+
+			if (returnVal.getOriginalMapTasks().size() != iSplits.size()) {
+				throw new RuntimeException(
+						"Number of input splits obtained from FileSplitter ("
+								+ iSplits.size()
+								+ ") didn't match number of map tasks ("
+								+ returnVal.getOriginalMapTasks().size() + ")");
+			}
+
+			for (int i = 0; i < returnVal.getOriginalMapTasks().size(); i++) {
+				TaskCacheEntry tce = returnVal.getOriginalMapTasks().get(i);
+				tce.taskData = iSplits.get(i);
+			}
+
 			return returnVal;
 
 		} else {

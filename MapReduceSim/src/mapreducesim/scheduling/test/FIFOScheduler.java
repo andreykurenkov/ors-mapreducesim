@@ -3,15 +3,18 @@ package mapreducesim.scheduling.test;
 import java.util.List;
 import java.util.Set;
 
+import mapreducesim.core.ConfigurableClass;
 import mapreducesim.execution.TaskRunnerProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
+import mapreducesim.scheduling.FileSplitter;
 import mapreducesim.scheduling.MapReduceJobSpecification;
 import mapreducesim.scheduling.NotifyNoMoreTasks;
 import mapreducesim.scheduling.TaskCacheEntry;
 import mapreducesim.scheduling.JobSubmission;
 import mapreducesim.scheduling.SchedulerProcess;
 import mapreducesim.scheduling.TaskPool;
+import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.scheduling.TaskCacheEntry.Type;
 import mapreducesim.storage.FileBlockLocation;
 
@@ -213,11 +216,15 @@ public class FIFOScheduler extends SchedulerProcess {
 	public SimpleJobStatus createNewJobStatus(JobSubmission j) {
 		TaskPool taskPool = new TaskPool();
 		MapReduceJobSpecification mrj = j.jobToRun;
+
 		// add the map tasks
 		for (int i = 0; i < mrj.getOriginalMapTasks().size(); i++) {
 			// add the task with no preferred location for now
-			taskPool.addTask(new TaskCacheEntry(TaskCacheEntry.Type.MAP,
-					TaskCacheEntry.StatusType.NOTSTARTED), null);
+			TaskCacheEntry tce = new TaskCacheEntry(TaskCacheEntry.Type.MAP,
+					TaskCacheEntry.StatusType.NOTSTARTED);
+			// annotate the cache entry with its input split
+			tce.taskData = mrj.getOriginalMapTasks().get(i).taskData;
+			taskPool.addTask(tce, null);
 		}
 		// add the reduce tasks
 		for (int i = 0; i < mrj.getOriginalReduceTasks().size(); i++) {

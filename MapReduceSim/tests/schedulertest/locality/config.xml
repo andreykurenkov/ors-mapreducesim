@@ -1,5 +1,9 @@
 <?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">	<config>
-		<JobMaker>
+		
+		<FileSplitter classname="mapreducesim.scheduling.SimpleFileSplitter" type="random" >
+			
+		</FileSplitter>
+		<JobMaker classname="mapreducesim.scheduling.SimpleJobMaker">
 			<job taskSpecification="full" name="job0">
 				<task preferredLocation="TaskTracker3" type="map">
 				</task>

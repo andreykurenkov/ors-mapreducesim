@@ -33,7 +33,8 @@ public class TaskCacheEntry {
 	public final Type type;
 	public Status status;
 
-	public TaskCacheEntry(String preferredLocation, Type type, StatusType initialStatus) {
+	public TaskCacheEntry(String preferredLocation, Type type,
+			StatusType initialStatus) {
 
 		taskData = new InputSplit();
 		this.preferredNode = preferredLocation;
@@ -47,7 +48,8 @@ public class TaskCacheEntry {
 	}
 
 	public String toString() {
-		return this.type + " " + this.status;
+		return this.type + " " + this.status
+				+ (this.taskData == null ? "" : (", data = " + this.taskData));
 	}
 
 	public static TaskCacheEntry constructFromXML(XMLElement taskNode) {
@@ -60,12 +62,6 @@ public class TaskCacheEntry {
 		} else {
 			throw new RuntimeException("Invalid type on task node: " + typeStr);
 		}
-		// TODO: construct input splits
-
-		// get the FileSplitter
-		FileSplitter fs = ConfigurableClass.instantiateFromSimConfig(FileSplitter.class);
-
-		// use the filesplitter to get the input split
 
 		// get preferred location
 		String preferredLoc = taskNode.getAttributeValue("preferredLocation");
