@@ -95,7 +95,7 @@ public class SimConfig {
 	 *            default value if not provided
 	 * @return parse attribute or default if not there
 	 */
-	public static double parseIntAttribute(XMLElement element, String attribute, int defaultVal) {
+	public static int parseIntAttribute(XMLElement element, String attribute, int defaultVal) {
 		int toReturn = defaultVal;
 		String attrStr = element.getAttributeValue(attribute);
 		try {
