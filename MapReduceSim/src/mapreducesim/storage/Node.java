@@ -352,4 +352,8 @@ public class Node {
 			System.out.println(child.name);
 		}
 	}
+
+	public boolean isFile() {
+		return false;
+	}
 }

@@ -1,5 +1,7 @@
 package mapreducesim.storage;
 
+import java.util.List;
+
 /**
  * Simple storer of information needed to specify the data Map and Reduce tasks
  * need.
@@ -13,6 +15,8 @@ package mapreducesim.storage;
 public class DataLocation {
 	private String fileName;
 	private String[] hosts; // hostnames of datanodes where this block is stored
+	private List<DataNode> datanodes; // should replicate hosts but with
+										// DataNode objects
 	private int offset;
 	private int length;
 
@@ -32,11 +36,6 @@ public class DataLocation {
 		this.hosts = new String[0];
 	}
 
-	public String toString() {
-		return "(file=" + fileName + ", offset=" + offset + ", length="
-				+ length + ")";
-	}
-
 	/**
 	 * Constructor that sets instance variables including the list of hosts
 	 * 
@@ -45,20 +44,27 @@ public class DataLocation {
 	 * @param length
 	 * @param hosts
 	 */
-	public DataLocation(String file, int offset, int length, String[] hosts) {
+	public DataLocation(String file, int offset, int length, String[] hosts,
+			List<DataNode> datanodes) {
 		super();
 		this.fileName = file;
 		this.offset = offset;
 		this.length = length;
 		this.hosts = hosts;
+		this.datanodes = datanodes;
+	}
+
+	public String toString() {
+		return "(file=" + fileName + ", offset=" + offset + ", length="
+				+ length + ")";
 	}
 
 	/**
-	 * Getter for the file
+	 * Getter for the filename
 	 * 
-	 * @return the file
+	 * @return the filename
 	 */
-	public String getFile() {
+	public String getFilename() {
 		return fileName;
 	}
 

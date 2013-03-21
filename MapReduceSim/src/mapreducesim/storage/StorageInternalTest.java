@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class StorageInternalTest {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		System.out.println("Begin storage test\n\n");
 
