@@ -22,6 +22,7 @@ import mapreducesim.util.xml.XMLDocument;
 import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
+import org.simgrid.msg.HostFailureException;
 import org.simgrid.msg.HostNotFoundException;
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.MsgException;
@@ -91,7 +92,9 @@ public class TaskRunnerProcess extends SimProcess {
 		while (!finished) {
 			try {
 				if (timeUntilNextHeartbeat <= 0) {
+					Msg.info("Sending heatbeat to " + SchedulerProcess.SCHEDULER_MAILBOX);
 					(new HeartbeatTask(this, completed)).send(SchedulerProcess.SCHEDULER_MAILBOX);
+
 					completed = new HashMap<WorkTask, List<FileBlock>>();// reset completed list
 					timeUntilNextHeartbeat = SchedulerProcess.getHeartbeatInterval();
 				}

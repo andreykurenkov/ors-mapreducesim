@@ -45,12 +45,13 @@ public class SimpleMapperProcess extends WorkerProcess {
 	 * Main method of Process - once started performs simulation for finishing entire map task.
 	 */
 	public void main(String[] args) throws MsgException {
-		Msg.info(this.getHost().getName() + " starting " + task + " for " + task.getComputeDuration() + " expected time.");
+		Msg.info(this.getHost().getName() + " starting " + task);
 		ArrayList<FileBlock> output = new ArrayList<FileBlock>();
 		for (DataLocation dataLocation : task.NEEDED_DATA.getLocations()) {
 			ReadRequestTask read = new ReadRequestTask(dataLocation, this.MAILBOX);
 			read.send(StorageProcess.STORAGE_MAILBOX);
 			Task transferTask = Task.receive(this.MAILBOX);
+
 			while (!(transferTask instanceof FileTransferTask)) {
 				transferTask = Task.receive(this.MAILBOX);
 			}
@@ -60,11 +61,9 @@ public class SimpleMapperProcess extends WorkerProcess {
 				output.add(out);
 				WriteRequestTask task = new WriteRequestTask(out);
 				task.sendToStorage();
-
 			}
 		}
 		Msg.info(this.getHost().getName() + " finishing " + task);
 		parent.notifyMapFinish(task, output);// TODO
-		this.suspend();// TODO: figure out how to avoid this
 	}
 }
