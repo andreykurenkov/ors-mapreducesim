@@ -1,5 +1,7 @@
 package mapreducesim.execution.test;
 
+import java.util.ArrayList;
+
 import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.storage.File;
@@ -7,6 +9,7 @@ import mapreducesim.storage.FileBlock;
 import mapreducesim.storage.FileTransferTask;
 import mapreducesim.storage.FileTransferTask.ReadRequestTask;
 import mapreducesim.storage.FileTransferTask.WriteRequestTask;
+import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.storage.StorageProcess;
 
 import org.simgrid.msg.Host;
@@ -43,7 +46,9 @@ public class TestStorage extends SimProcess {
 					// simulate the expense
 					// long costRemaining = 2; // dummy value...
 					String loc = ((ReadRequestTask) currentTask).getOriginMailbox();
-					(new FileTransferTask.WriteRequestTask(new FileBlock(null, 0, null))).send(loc);
+					ArrayList<FileBlock> fakeRead = new ArrayList<FileBlock>();
+					fakeRead.add(new FileBlock(null, 50, new KeyValuePairs()));
+					(new FileTransferTask(fakeRead)).send(loc);
 				}
 			} catch (TimeoutException e) {
 				this.finish();

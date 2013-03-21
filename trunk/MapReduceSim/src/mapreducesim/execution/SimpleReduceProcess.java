@@ -57,8 +57,7 @@ public class SimpleReduceProcess extends WorkerProcess {
 			task.sendToStorage();
 		}
 		Msg.info(this.getHost().getName() + " finishing WorkTask" + task + " at " + this.getTimeElapsed());
-		parent.notifyReduceFinish(task, output);// TODO
-		this.suspend();// TODO: figure out how to avoid this
+		parent.notifyReduceFinish(task, output);
 	}
 
 }
