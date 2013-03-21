@@ -48,6 +48,6 @@ public class WorkTask extends Task {
 	}
 
 	public String toString() {
-		return id;
+		return id + (NEEDED_DATA == null ? "" : (", data=" + NEEDED_DATA));
 	}
 }
