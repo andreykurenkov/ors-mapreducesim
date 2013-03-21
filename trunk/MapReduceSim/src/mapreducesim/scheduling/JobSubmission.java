@@ -5,6 +5,7 @@ import java.util.List;
 
 import mapreducesim.core.ConfigurableClass;
 
+import org.simgrid.msg.Msg;
 import org.simgrid.msg.Task;
 
 public class JobSubmission extends Task {
@@ -17,7 +18,9 @@ public class JobSubmission extends Task {
 	public static JobSubmission constructFromXML(String jobName) {
 		// get the JobMaker, and use it to grab a MapReduceJobSpecification
 		// object
-		JobMaker jm = ConfigurableClass.instantiateFromSimConfig(JobMaker.class);
+		JobMaker jm = ConfigurableClass
+				.instantiateFromSimConfig(JobMaker.class);
+		Msg.info("Grabbing job: " + jobName + " from jobMaker");
 		MapReduceJobSpecification spec = jm.getJob(jobName);
 		return new JobSubmission(spec);
 

@@ -1,7 +1,8 @@
 package mapreducesim.storage;
 
 /**
- * Simple storer of information needed to specify the data Map and Reduce tasks need.
+ * Simple storer of information needed to specify the data Map and Reduce tasks
+ * need.
  * 
  * Simulates /hadoop/fs/BlockLocation.java
  * 
@@ -16,7 +17,8 @@ public class DataLocation {
 	private int length;
 
 	/**
-	 * Simple constructor that sets the instance variables with no hosts defined.
+	 * Simple constructor that sets the instance variables with no hosts
+	 * defined.
 	 * 
 	 * @param file
 	 * @param offset
@@ -28,6 +30,11 @@ public class DataLocation {
 		this.offset = offset;
 		this.length = length;
 		this.hosts = new String[0];
+	}
+
+	public String toString() {
+		return "(file=" + fileName + ", offset=" + offset + ", length="
+				+ length + ")";
 	}
 
 	/**

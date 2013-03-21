@@ -34,12 +34,14 @@ public class LocalityTestJobMaker extends JobMaker {
 		// write the config, platform, and deployment files to disk, then run
 		// the simulation
 
-		new SmartFile(config_loc).write(wrapXMLHeader(getXMLConfig(0).toRawXML(
-				XMLNode.PRETTYFORMAT)), false);
-		new SmartFile(plat_loc).write(wrapXMLHeader(getXMLPlatform(0).toRawXML(
-				XMLNode.PRETTYFORMAT)), false);
-		new SmartFile(depl_loc).write(wrapXMLHeader(getXMLDeployment(0)
-				.toRawXML(XMLNode.PRETTYFORMAT)), false);
+		if (false) {
+			new SmartFile(config_loc).write(wrapXMLHeader(getXMLConfig(0)
+					.toRawXML(XMLNode.PRETTYFORMAT)), false);
+			new SmartFile(plat_loc).write(wrapXMLHeader(getXMLPlatform(0)
+					.toRawXML(XMLNode.PRETTYFORMAT)), false);
+			new SmartFile(depl_loc).write(wrapXMLHeader(getXMLDeployment(0)
+					.toRawXML(XMLNode.PRETTYFORMAT)), false);
+		}
 
 		try {
 			SimMain.main(new String[] { plat_loc, depl_loc, config_loc });
@@ -152,6 +154,8 @@ public class LocalityTestJobMaker extends JobMaker {
 	public static XMLDocument getXMLConfig(int simIndex) {
 		XMLElement root = new XMLElement("config");
 		XMLElement JobMaker = new XMLElement("JobMaker");
+		JobMaker.setAttribute("classname",
+				"mapreducesim.scheduling.SimpleJobMaker");
 		JobMaker.addChild(getJobSpecification(simIndex));
 		root.addChild(JobMaker);
 		return new XMLDocument(root);
