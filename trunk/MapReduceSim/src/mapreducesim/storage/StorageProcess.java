@@ -43,7 +43,8 @@ public class StorageProcess extends SimProcess {
 						+ this.getTimeElapsed());
 				DataLocation loc1 = ((ReadRequestTask) currentTask)
 						.getFileLocation();
-				// origin = ((ReadRequestTask) currentTask).getOriginMailbox();
+				String origin = ((ReadRequestTask) currentTask)
+						.getOriginMailbox();
 				// loc1.incrementReads();
 				// int speed = loc1.speedBetween(loc2);
 				// int size = loc1.get().getSize();

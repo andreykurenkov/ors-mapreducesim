@@ -45,8 +45,16 @@ public class File extends Node {
 		return blocks;
 	}
 
+	public static int getSplitSize() {
+		return SPLIT_SIZE;
+	}
+
 	public void incrementReads() {
 		numReads++;
+	}
+
+	public boolean isFile() {
+		return true;
 	}
 
 	/**
@@ -65,8 +73,8 @@ public class File extends Node {
 		FileBlock currentSplit;
 
 		while (remainingSize > 0) {
-			if (remainingSize > File.SPLIT_SIZE)
-				currentSize = File.SPLIT_SIZE;
+			if (remainingSize > File.getSplitSize())
+				currentSize = File.getSplitSize();
 			else
 				currentSize = remainingSize;
 			currentSplit = new FileBlock(this, splitNumber, currentSize);
@@ -75,5 +83,32 @@ public class File extends Node {
 			remainingSize -= currentSize;
 			splitNumber++;
 		}
+	}
+
+	/**
+	 * With an input of offset and length, returns a list of the necessary
+	 * fileblocks.
+	 * 
+	 * Example: With split size 128, offset=100,length=100, returns blocks[0]
+	 * and blocks[1]
+	 * 
+	 * @param offset
+	 * @param length
+	 * @return
+	 */
+	public List<FileBlock> getNeededFileBlocks(double offset, int length) {
+		int firstBlockIndex = (int) Math.ceil(offset / SPLIT_SIZE);
+		int lengthRemaining = length - SPLIT_SIZE;
+		int lastBlockIndex = firstBlockIndex;
+		while (lengthRemaining > 0) {
+			lengthRemaining -= SPLIT_SIZE;
+			lastBlockIndex++;
+		}
+		int arraySize = lastBlockIndex - firstBlockIndex + 1;
+		List<FileBlock> toReturn = new ArrayList<FileBlock>(arraySize);
+		for (int i = firstBlockIndex; i <= lastBlockIndex; i++) {
+			toReturn.add(blocks.get(i));
+		}
+		return toReturn;
 	}
 }
