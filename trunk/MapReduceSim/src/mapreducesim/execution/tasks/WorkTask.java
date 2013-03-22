@@ -8,6 +8,8 @@ import mapreducesim.storage.FileBlockLocation;
 import org.simgrid.msg.Task;
 
 /**
+ * A task holding information needed to do a Map or Reduce task to be sent from the Scheduler to any of TaskRunner processes.
+ * 
  * 
  * @author Andrey Kurenkov
  * 
@@ -28,6 +30,14 @@ public class WorkTask extends Task {
 	private static int reduceCount;
 	private String id;
 
+	/**
+	 * Constructor that sets up the needed information
+	 * 
+	 * 
+	 * @param workAmount
+	 * @param type
+	 * @param data
+	 */
 	public WorkTask(double workAmount, Type type, InputSplit data) {
 		this.WORK_AMOUNT = workAmount;
 		this.NEEDED_DATA = data;
@@ -39,14 +49,25 @@ public class WorkTask extends Task {
 		}
 	}
 
+	/**
+	 * Getter for id
+	 * 
+	 * @return ID
+	 */
 	public String getID() {
 		return id;
 	}
 
+	/**
+	 * Getter for type
+	 * 
+	 * @return TYPE
+	 */
 	public Type getType() {
 		return TYPE;
 	}
 
+	@Override
 	public String toString() {
 		return id + (NEEDED_DATA == null ? "" : (", data=" + NEEDED_DATA));
 	}

@@ -11,7 +11,8 @@ import org.simgrid.msg.Msg;
 import org.simgrid.msg.Task;
 
 /**
- * Heartbeat simulation to be sent from TaskRunnerProcess to the SchedulerProcess to indicate
+ * Heartbeat simulation to be sent from TaskRunnerProcess to the SchedulerProcess to indicate amounts of open slots for work
+ * as well as completed and failed tasks.
  * 
  * @author Andrey Kurenkov
  * @version 1.0 Mar 13, 2013
