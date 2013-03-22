@@ -20,7 +20,8 @@ public class Node {
 	private String name;
 	private ArrayList<Node> children;
 	private Node parent;
-	private Boolean isRoot;
+	private boolean isRoot;
+	protected boolean isFile;
 	private int level;
 
 	/**
@@ -29,6 +30,7 @@ public class Node {
 	public Node() {
 		super();
 		isRoot = true;
+		isFile = false;
 		this.level = 0;
 		name = "/";
 	}

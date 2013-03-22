@@ -15,7 +15,7 @@ import java.util.List;
 public class DataLocation {
 	private String fileName;
 	private String[] hosts; // hostnames of datanodes where this block is stored
-	private List<DataNode> datanodes; // should replicate hosts but with
+	private List<DataNode> datanodes; // should be the same as hosts but with
 										// DataNode objects
 	private int offset;
 	private int length;

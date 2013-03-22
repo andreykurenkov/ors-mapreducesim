@@ -1,6 +1,5 @@
 package mapreducesim.storage;
 
-import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +28,19 @@ public class StorageInterface {
 	}
 
 	/**
+	 * Returns the entire topology. To get an individual element, first get the
+	 * root element (e.g., root = getTopology().getRoot()), then you can climb
+	 * down the tree to get the element you want (e.g.,
+	 * root.getChild("rack1").getChild("dn1a")). It's probably easier just to
+	 * use the get(String nodeName) method to get a specific element.
+	 * 
+	 * @return The DataTree of the topology
+	 */
+	public DataTree getTopology() {
+		return top;
+	}
+
+	/**
 	 * Very generic search to return any kind of created storage node--File,
 	 * FileBlock, Rack, DataNode, etc. If none is found returns null. Caution:
 	 * if more than one object with the same name field exists, only the last
@@ -44,10 +56,11 @@ public class StorageInterface {
 	}
 
 	/**
-	 * Returns a list of all fileblocks for the given filename
+	 * Returns a list of all fileblocks for the file
 	 * 
 	 * @param filename
-	 * @return
+	 *            the unique filename of the file to get blocks for
+	 * @return a list of the fileblocks for the file
 	 */
 	public List<FileBlock> getBlocks(String filename) {
 		// get the requested file
@@ -65,10 +78,15 @@ public class StorageInterface {
 	 * Returns a list of all fileblocks in a file needed for the given offset
 	 * and length.
 	 * 
+	 * Example: If file is size 300 and split size is 100, it has three blocks:
+	 * (0)[0..99], (1)[100..199], and (3)[200..299]. getBlocks(filename, 50,
+	 * 100) would return blocks (0) and (1).
+	 * 
 	 * @param filename
 	 * @param offset
 	 * @param length
-	 * @return
+	 * @return a list of the blocks representing the specified region of the
+	 *         file.
 	 */
 	public List<FileBlock> getBlocks(String filename, int offset, int length) {
 		// get the requested file
@@ -83,10 +101,17 @@ public class StorageInterface {
 	}
 
 	/**
-	 * Returns a list of DataNodes where a replica of the FileBlock lives.
+	 * Hadoop stores three replicas of each FileBlock on three separate
+	 * DataNodes. Returns a list of DataNodes where a replica of the FileBlock
+	 * lives.
+	 * 
+	 * Example: Use getBlocks(...) to get a list of FileBlocks. For each
+	 * FileBlock, this method can be called to get a list of the three
+	 * DataBlocks replicas are on.
 	 * 
 	 * @param block
-	 * @return
+	 *            the FileBlock to find locality information on
+	 * @return a list of the DataNodes a replica of this FileBlock is on
 	 */
 	public List<DataNode> getLocations(FileBlock block) {
 		return block.getLocations();

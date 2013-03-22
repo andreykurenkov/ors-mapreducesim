@@ -127,6 +127,12 @@ public class FileBlock {
 		this.locations.add(location);
 	}
 
+	public void addLocations(DataNode l1, DataNode l2, DataNode l3) {
+		this.locations.add(l1);
+		this.locations.add(l2);
+		this.locations.add(l3);
+	}
+
 	public void incrementReads() {
 		numReads++;
 	}
