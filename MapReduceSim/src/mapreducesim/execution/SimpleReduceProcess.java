@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import mapreducesim.core.SimMain;
 import mapreducesim.execution.tasks.WorkTask;
+import mapreducesim.storage.File;
 import mapreducesim.storage.FileBlock;
 import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.storage.FileTransferTask.WriteRequestTask;
@@ -49,9 +50,11 @@ public class SimpleReduceProcess extends WorkerProcess {
 		Msg.info(this.getHost().getName() + " starting WorkTask" + task + " at " + this.getTimeElapsed());
 		ArrayList<FileBlock> output = new ArrayList<FileBlock>();
 		List<KeyValuePairs> pairs = sorter.doShuffleSort(task.NEEDED_DATA, this);
+		File outFile = new File(task.getID() + " Out");
+		int index = 0;
 		for (KeyValuePairs pair : pairs) {
 			this.elapseTime(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, pair));
-			FileBlock out = new FileBlock(null, 0, pair.getTotalSize() / 3);// TODO: get compression rate?
+			FileBlock out = new FileBlock(outFile, index++, pair.getTotalSize() / 3);// TODO: get compression rate?
 			output.add(out);
 			WriteRequestTask task = new WriteRequestTask(out);
 			task.sendToStorage();

@@ -47,6 +47,8 @@ public class SimpleMapperProcess extends WorkerProcess {
 	public void main(String[] args) throws MsgException {
 		Msg.info(this.getHost().getName() + " starting " + task);
 		ArrayList<FileBlock> output = new ArrayList<FileBlock>();
+		File outFile = new File(task.getID() + " Out");
+		int index = 0;
 		for (DataLocation dataLocation : task.NEEDED_DATA.getLocations()) {
 			ReadRequestTask read = new ReadRequestTask(dataLocation, this.MAILBOX);
 			read.send(StorageProcess.STORAGE_MAILBOX);
@@ -57,7 +59,7 @@ public class SimpleMapperProcess extends WorkerProcess {
 			}
 			for (FileBlock block : ((FileTransferTask) transferTask).getTransferFileBlocks()) {
 				this.elapseTime(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, block.getPairs()));
-				FileBlock out = new FileBlock(null, 0, block.getSize() / 2);// TODO: get compression rate?
+				FileBlock out = new FileBlock(outFile, index++, block.getSize() / 2);// TODO: get compression rate?
 				output.add(out);
 				WriteRequestTask task = new WriteRequestTask(out);
 				task.sendToStorage();
