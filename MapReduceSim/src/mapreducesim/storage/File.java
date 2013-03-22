@@ -30,16 +30,18 @@ public class File extends Node {
 		this.numReads = 0;
 		this.size = size;
 		this.blocks = new ArrayList<FileBlock>();
+		this.isFile = true;
 		makeSplits();
 	}
 
 	/**
-	 * Don't use this constructor--files must have a parent directory.
+	 * Don't use this constructor (for testing only)--files must have a parent
+	 * directory.
 	 */
-	// public File(String name) {
-	// super();
-	// this.setName(name);
-	// }
+	public File(String name) {
+		super();
+		this.setName(name);
+	}
 
 	public List<FileBlock> getBlocks() {
 		return blocks;
@@ -49,12 +51,23 @@ public class File extends Node {
 		return SPLIT_SIZE;
 	}
 
+	/**
+	 * Increments the counter for the number of times this file has been read.
+	 */
 	public void incrementReads() {
 		numReads++;
 	}
 
+	public int getNumReads() {
+		return numReads;
+	}
+
+	/**
+	 * Used to validate if a retrieved fs object with the given filename is
+	 * actually a file
+	 */
 	public boolean isFile() {
-		return true;
+		return isFile;
 	}
 
 	/**
@@ -97,8 +110,8 @@ public class File extends Node {
 	 * @return
 	 */
 	public List<FileBlock> getNeededFileBlocks(double offset, int length) {
-		int firstBlockIndex = (int) Math.ceil(offset / SPLIT_SIZE);
-		int lengthRemaining = length - SPLIT_SIZE;
+		int firstBlockIndex = (int) Math.floor(offset / SPLIT_SIZE);
+		int lengthRemaining = ((int) offset + length) - SPLIT_SIZE;
 		int lastBlockIndex = firstBlockIndex;
 		while (lengthRemaining > 0) {
 			lengthRemaining -= SPLIT_SIZE;

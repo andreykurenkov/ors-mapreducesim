@@ -129,66 +129,34 @@ public class FSBuilder {
 				.getChild("dn1a");
 		DataNode dn1b = (DataNode) topology.getRoot().getChild("rack1")
 				.getChild("dn1b");
-		DataNode dn2a = (DataNode) topology.getRoot().getChild("rack1")
-				.getChild("dn1a");
-		DataNode dn2b = (DataNode) topology.getRoot().getChild("rack1")
-				.getChild("dn1b");
-		DataNode dn3a = (DataNode) topology.getRoot().getChild("rack1")
-				.getChild("dn1a");
-		DataNode dn3b = (DataNode) topology.getRoot().getChild("rack1")
-				.getChild("dn1b");
+		DataNode dn2a = (DataNode) topology.getRoot().getChild("rack2")
+				.getChild("dn2a");
+		DataNode dn2b = (DataNode) topology.getRoot().getChild("rack2")
+				.getChild("dn2b");
+		DataNode dn3a = (DataNode) topology.getRoot().getChild("rack3")
+				.getChild("dn3a");
+		DataNode dn3b = (DataNode) topology.getRoot().getChild("rack3")
+				.getChild("dn3b");
 		File file1 = (File) fs.getRoot().getChild("dir1").getChild("file1");
 		File file2 = (File) fs.getRoot().getChild("dir1").getChild("file2");
 		File file3 = (File) fs.getRoot().getChild("dir2").getChild("file3");
 		File file4 = (File) fs.getRoot().getChild("dir2").getChild("file4");
 		// f1[0..99]:
-		ArrayList<DataNode> locations = new ArrayList<DataNode>(3);
-		locations.add(dn1a);
-		locations.add(dn1b);
-		locations.add(dn2b);
-		file1.getBlocks().get(0).setLocations(locations);
+		file1.getBlocks().get(0).addLocations(dn1a, dn1b, dn2b);
 		// f1[100..199]:
-		locations.clear();
-		locations.add(dn1a);
-		locations.add(dn1b);
-		locations.add(dn3a);
-		file1.getBlocks().get(1).setLocations(locations);
+		file1.getBlocks().get(1).addLocations(dn1a, dn1b, dn3a);
 		// f2[0..79]:
-		locations.clear();
-		locations.add(dn1b);
-		locations.add(dn2a);
-		locations.add(dn2b);
-		file2.getBlocks().get(0).setLocations(locations);
+		file2.getBlocks().get(0).addLocations(dn1b, dn2a, dn2b);
 		// f3[0..127]:
-		locations.clear();
-		locations.add(dn2a);
-		locations.add(dn3a);
-		locations.add(dn3b);
-		file3.getBlocks().get(0).setLocations(locations);
+		file3.getBlocks().get(0).addLocations(dn2a, dn3a, dn3b);
 		// f3[128..255]:
-		locations.clear();
-		locations.add(dn1a);
-		locations.add(dn1b);
-		locations.add(dn3a);
-		file3.getBlocks().get(1).setLocations(locations);
+		file3.getBlocks().get(1).addLocations(dn1a, dn1b, dn3a);
 		// f4[0..89]:
-		locations.clear();
-		locations.add(dn1a);
-		locations.add(dn3a);
-		locations.add(dn3b);
-		file4.getBlocks().get(0).setLocations(locations);
+		file4.getBlocks().get(0).addLocations(dn1a, dn3a, dn3b);
 		// f4[90..179]:
-		locations.clear();
-		locations.add(dn2a);
-		locations.add(dn3a);
-		locations.add(dn3b);
-		file4.getBlocks().get(1).setLocations(locations);
+		file4.getBlocks().get(1).addLocations(dn2a, dn3a, dn3b);
 		// f4[180..269]:
-		locations.clear();
-		locations.add(dn1b);
-		locations.add(dn2a);
-		locations.add(dn2b);
-		file4.getBlocks().get(2).setLocations(locations);
+		file4.getBlocks().get(2).addLocations(dn1b, dn2a, dn2b);
 	}
 
 	public DataTree<Node> getFS() {
