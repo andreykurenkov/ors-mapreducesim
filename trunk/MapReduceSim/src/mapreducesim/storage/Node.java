@@ -308,7 +308,7 @@ public class Node {
 		} else if (this instanceof Rack) {
 			return ((Rack) this).getSpeed();
 		} else
-			return 999; // TODO: Error (not topology object)
+			return 0; // TODO: Error (not topology object)
 	}
 
 	/**

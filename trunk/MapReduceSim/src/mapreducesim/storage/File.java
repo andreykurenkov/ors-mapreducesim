@@ -2,6 +2,7 @@ package mapreducesim.storage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Represents a file in the file system. Each file is divided into blocks
@@ -93,9 +94,43 @@ public class File extends Node {
 			currentSplit = new FileBlock(this, splitNumber, currentSize);
 			this.blocks.add(currentSplit);
 			// TODO: Assign blocks to DataNodes
+			// placeSplits();
 			remainingSize -= currentSize;
 			splitNumber++;
 		}
+	}
+
+	/**
+	 * Simple policy to place the blocks of a file onto DataNodes in the
+	 * topology
+	 * 
+	 * @param top
+	 *            the topology
+	 */
+	public void placeSplits(DataTree<Node> top) {
+		Random random = new Random();
+
+		// get the number of racks
+		int numRacks = ((Root) top.getRoot()).getNumRacks();
+
+		for (FileBlock block : this.blocks) {
+			// choose one rack to be the host for two of the replicas
+			int rack1Index = random.nextInt(numRacks);
+			// choose another rack to be the host for the third
+			int rack2Index = random.nextInt(numRacks);
+			while (rack1Index == rack2Index) { // make sure they aren't the same
+				rack2Index = random.nextInt(numRacks);
+			}
+			// get the DataNodes to put a replica of this block on
+			Rack rack1 = (Rack) top.getRoot().getChildAtPosition(rack1Index);
+			Rack rack2 = (Rack) top.getRoot().getChildAtPosition(rack2Index);
+			DataNode node1 = (DataNode) rack1.getChildAtPosition(0);
+			DataNode node2 = (DataNode) rack1.getChildAtPosition(1);
+			DataNode node3 = (DataNode) rack2.getChildAtPosition(0);
+			// place the replicas
+			block.addLocations(node1, node2, node3);
+		}
+
 	}
 
 	/**

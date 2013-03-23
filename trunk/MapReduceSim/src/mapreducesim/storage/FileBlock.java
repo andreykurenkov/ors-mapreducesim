@@ -137,6 +137,10 @@ public class FileBlock {
 		numReads++;
 	}
 
+	public int getNumReads() {
+		return numReads;
+	}
+
 	public int getOffset() {
 		return (getIndex() * File.getSplitSize());
 	}
