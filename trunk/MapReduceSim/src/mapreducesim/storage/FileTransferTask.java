@@ -20,7 +20,8 @@ public class FileTransferTask extends Task {
 	private boolean readDone;
 
 	/**
-	 * Constructor that creates the transfer task with the file blocks that will be or have been transferred
+	 * Constructor that creates the transfer task with the file blocks that will
+	 * be or have been transferred
 	 * 
 	 * @param transferFileBlocks
 	 *            the blocks to transfer
@@ -92,17 +93,42 @@ public class FileTransferTask extends Task {
 	 */
 	public static class ReadRequestTask extends Task {
 		private DataLocation location;
+		private String filename;
+		private int offset;
+		private int length;
 		private boolean readDone;
 		private String originMailbox;
 
 		/**
+		 * Constructor for a read request of a specified (offset; length) part
+		 * of a file (filename)
+		 * 
+		 * @param filename
+		 * @param offset
+		 * @param length
+		 * @param originMailbox
+		 */
+		public ReadRequestTask(String filename, int offset, int length,
+				String originMailbox) {
+			this.setFilename(filename);
+			this.setOffset(offset);
+			this.setLength(length);
+			this.originMailbox = originMailbox;
+		}
+
+		/**
 		 * Simple constuctor to set the location of the read
+		 * 
+		 * Extracts (filename, offset, length) from DataLocation input
 		 * 
 		 * @param location
 		 * @param originMailbox
 		 */
 		public ReadRequestTask(DataLocation location, String originMailbox) {
 			this.location = location;
+			this.setFilename(location.getFilename());
+			this.setOffset(location.getOffset());
+			this.setLength(location.getLength());
 			this.originMailbox = originMailbox;
 		}
 
@@ -147,8 +173,33 @@ public class FileTransferTask extends Task {
 		 * @throws HostFailureException
 		 * @throws TransferFailureException
 		 */
-		public void sendToStorage() throws TransferFailureException, HostFailureException, TimeoutException {
+		public void sendToStorage() throws TransferFailureException,
+				HostFailureException, TimeoutException {
 			this.send(StorageProcess.STORAGE_MAILBOX);
+		}
+
+		public String getFilename() {
+			return filename;
+		}
+
+		public void setFilename(String filename) {
+			this.filename = filename;
+		}
+
+		public int getOffset() {
+			return offset;
+		}
+
+		public void setOffset(int offset) {
+			this.offset = offset;
+		}
+
+		public int getLength() {
+			return length;
+		}
+
+		public void setLength(int length) {
+			this.length = length;
 		}
 	}
 
@@ -205,7 +256,8 @@ public class FileTransferTask extends Task {
 		 * @throws HostFailureException
 		 * @throws TransferFailureException
 		 */
-		public void sendToStorage() throws TransferFailureException, HostFailureException, TimeoutException {
+		public void sendToStorage() throws TransferFailureException,
+				HostFailureException, TimeoutException {
 			this.send(StorageProcess.STORAGE_MAILBOX);
 		}
 
