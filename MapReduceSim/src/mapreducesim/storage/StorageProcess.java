@@ -41,11 +41,22 @@ public class StorageProcess extends SimProcess {
 				Msg.info("Reading file '"
 						+ ((ReadRequestTask) currentTask).getName() + "' at "
 						+ this.getTimeElapsed());
-				DataLocation loc1 = ((ReadRequestTask) currentTask)
-						.getFileLocation();
+
+				// Get the information needed from the task
+				String filename = ((ReadRequestTask) currentTask).getFilename();
+				int offset = ((ReadRequestTask) currentTask).getOffset();
+				int length = ((ReadRequestTask) currentTask).getLength();
 				String origin = ((ReadRequestTask) currentTask)
 						.getOriginMailbox();
-				// loc1.incrementReads();
+
+				// Get the blocks needed
+				// DataTree<Node> fs = StorageMain.getFS();
+				// DataTree<Node> top = StorageMain.getTopology();
+
+				// Increment the read count
+				// ((File) fs.get(filename)).incrementReads();
+
+				// Get the closest block
 				// int speed = loc1.speedBetween(loc2);
 				// int size = loc1.get().getSize();
 				// long readCost = size / ( speed * 2^20 );

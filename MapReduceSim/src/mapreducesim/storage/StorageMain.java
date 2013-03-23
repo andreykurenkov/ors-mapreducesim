@@ -1,26 +1,34 @@
 package mapreducesim.storage;
 
-import java.io.IOException;
-
-import org.simgrid.msg.Msg;
-import org.simgrid.msg.NativeException;
-
+/**
+ * For testing.
+ * 
+ * @author Matthew O'Shaughnessy
+ * 
+ */
 public class StorageMain {
 
-	public static void main(String[] args) throws NativeException, IOException,
-			InterruptedException {
+	private static DataTree<Node> fs;
+	private static DataTree<Node> top;
 
-		Msg.init(args);
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
 
-		if (args.length < 2) {
-			Msg.info("Usage: program platform_file deployment_file");
-			System.exit(1);
-		}
+		FSBuilder fsbuild = new FSBuilder();
+		fsbuild.createTestTopology();
+		fs = fsbuild.getFS();
+		top = fsbuild.getTopology();
 
-		Msg.createEnvironment(args[0]);
-		Msg.deployApplication(args[1]);
+	}
 
-		Msg.run();
+	public static DataTree<Node> getFS() {
+		return fs;
+	}
+
+	public static DataTree<Node> getTopology() {
+		return top;
 	}
 
 }

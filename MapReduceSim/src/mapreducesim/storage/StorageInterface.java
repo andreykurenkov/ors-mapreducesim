@@ -118,7 +118,10 @@ public class StorageInterface {
 
 	/**
 	 * Add a new file to the filesystem and assign its blocks to DataNodes in
-	 * the topology
+	 * the topology. The topology will be updated with three replicas of each
+	 * block of the file assigned to DataBlocks, with two replicas on different
+	 * DataNodes on the same rack, and the third replica on a separate rack
+	 * (default Hadoop placement policy)
 	 * 
 	 * @param filename
 	 * @param size
@@ -131,4 +134,5 @@ public class StorageInterface {
 		// Place the splits in the topology
 		file.placeSplits(top);
 	}
+
 }
