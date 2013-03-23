@@ -1,7 +1,5 @@
 package mapreducesim.storage;
 
-import java.util.List;
-
 /**
  * An internal class for verifying the operation of the storage system.
  * 
@@ -10,14 +8,12 @@ import java.util.List;
  */
 public class StorageInternalTest {
 
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		System.out.println("Begin storage test\n\n");
 
 		StorageInterface storage = new StorageInterface();
 
-		List<FileBlock> blocks = storage.getBlocks("file1", 25, 50);
-		List<DataNode> locations = storage.getLocations(blocks.get(0));
+		storage.addFile("newfile", 500);
 
 		// Set breakpoint here to verify fs/topology
 

@@ -1,6 +1,5 @@
 package mapreducesim.storage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.simgrid.msg.Msg;
@@ -36,7 +35,7 @@ public class StorageInterface {
 	 * 
 	 * @return The DataTree of the topology
 	 */
-	public DataTree getTopology() {
+	public DataTree<Node> getTopology() {
 		return top;
 	}
 
@@ -115,5 +114,21 @@ public class StorageInterface {
 	 */
 	public List<DataNode> getLocations(FileBlock block) {
 		return block.getLocations();
+	}
+
+	/**
+	 * Add a new file to the filesystem and assign its blocks to DataNodes in
+	 * the topology
+	 * 
+	 * @param filename
+	 * @param size
+	 */
+	public void addFile(String filename, int size) {
+		// Add to the filesystem
+		Directory parent = (Directory) fs.getRoot().getChild("dir1");
+		File file = new File(parent, filename, size);
+		fs.getRoot().getChild("dir1").addChild(file);
+		// Place the splits in the topology
+		file.placeSplits(top);
 	}
 }
