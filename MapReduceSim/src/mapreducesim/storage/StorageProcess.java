@@ -9,9 +9,11 @@ import mapreducesim.storage.FileTransferTask.*;
 public class StorageProcess extends SimProcess {
 	// private int filesize;
 	public static String STORAGE_MAILBOX = "Storage";
+	public static StorageProcess instance;
 
 	public StorageProcess(Host host, String name, String[] args) {
 		super(host, name, args, STORAGE_MAILBOX);
+		instance = this;
 	}
 
 	@Override
