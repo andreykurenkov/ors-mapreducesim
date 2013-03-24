@@ -14,7 +14,7 @@ import org.simgrid.msg.TimeoutException;
 import org.simgrid.msg.TransferFailureException;
 
 import mapreducesim.core.SimConfig;
-import mapreducesim.scheduling.FileSplitter.InputSplit;
+import mapreducesim.scheduling.InputSplit;
 import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.FileBlock;
 import mapreducesim.storage.FileTransferTask;
