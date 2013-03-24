@@ -8,7 +8,6 @@ import org.simgrid.msg.Msg;
 
 import mapreducesim.core.ConfigurableClass;
 import mapreducesim.core.SimConfig;
-import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.scheduling.TaskCacheEntry.Type;
 import mapreducesim.util.xml.XMLElement;
 import mapreducesim.util.xml.XMLNode;

@@ -11,7 +11,6 @@ import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
-import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.scheduling.NotifyNoMoreTasks;
 import mapreducesim.scheduling.SchedulerProcess;
 import mapreducesim.storage.FileBlock;

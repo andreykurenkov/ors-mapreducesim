@@ -8,7 +8,7 @@ import org.simgrid.msg.TimeoutException;
 import org.simgrid.msg.TransferFailureException;
 
 import mapreducesim.core.ConfigurableClass;
-import mapreducesim.scheduling.FileSplitter.InputSplit;
+import mapreducesim.scheduling.InputSplit;
 import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.util.xml.XMLElement;
 

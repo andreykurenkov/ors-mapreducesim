@@ -3,7 +3,6 @@ package mapreducesim.scheduling;
 import java.util.List;
 
 import mapreducesim.core.ConfigurableClass;
-import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.storage.FileBlock;
 import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.util.xml.XMLElement;

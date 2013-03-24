@@ -14,7 +14,6 @@ import mapreducesim.scheduling.TaskCacheEntry;
 import mapreducesim.scheduling.JobSubmission;
 import mapreducesim.scheduling.SchedulerProcess;
 import mapreducesim.scheduling.TaskPool;
-import mapreducesim.scheduling.FileSplitter.InputSplit;
 import mapreducesim.scheduling.TaskCacheEntry.Type;
 import mapreducesim.storage.FileBlockLocation;
 

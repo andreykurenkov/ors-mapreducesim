@@ -31,9 +31,11 @@ public class SimpleFileSplitter extends FileSplitter {
 		ArrayList<InputSplit> toReturn = new ArrayList<InputSplit>();
 
 		if (this.input != null) {
-			Msg.info("SimpleFileSplitter: input wasn't null.");
 			if (input.getAttributes().containsKey("type")) {
 				if (input.getAttributeValue("type").equals("random")) {
+
+					// testing setup using a b.s. file
+
 					// get the number of tasks to split the input into
 					int N = job.getOriginalMapTasks().size();
 					Msg.info("SimpleFileSplitter: N = " + N);

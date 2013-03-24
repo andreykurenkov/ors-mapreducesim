@@ -1,6 +1,6 @@
 package mapreducesim.execution.tasks;
 
-import mapreducesim.scheduling.FileSplitter.InputSplit;
+import mapreducesim.scheduling.InputSplit;
 import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.File;
 import mapreducesim.storage.FileBlockLocation;
