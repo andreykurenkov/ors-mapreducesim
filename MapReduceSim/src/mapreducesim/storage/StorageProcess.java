@@ -12,8 +12,8 @@ public class StorageProcess extends SimProcess {
 	// private int filesize;
 	public static String STORAGE_MAILBOX = "Storage";
 	public static StorageProcess instance;
-	public static DataTree<Node> fs;
-	public static DataTree<Node> top;
+	public DataTree<Node> fs;
+	public DataTree<Node> top;
 
 	public StorageProcess(Host host, String name, String[] args) {
 		super(host, name, args, STORAGE_MAILBOX);
