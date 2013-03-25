@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.simgrid.msg.Msg;
+
 import mapreducesim.core.ConfigurableClass;
 import mapreducesim.storage.FileBlock;
 import mapreducesim.storage.FileBlockLocation;
@@ -30,7 +32,7 @@ public class TaskCacheEntry {
 		NOTSTARTED, ASSIGNED, COMPLETED;
 	}
 
-	public List<String> preferredNodes = null;
+	public List<String> preferredLocations = null;
 	public final Type type;
 	public Status status;
 
@@ -38,7 +40,7 @@ public class TaskCacheEntry {
 			StatusType initialStatus) {
 
 		taskData = new InputSplit();
-		this.preferredNodes = preferredLocation;
+		this.preferredLocations = preferredLocation;
 		this.type = type;
 		this.status = new Status();
 		this.status.statusType = initialStatus;
@@ -50,7 +52,8 @@ public class TaskCacheEntry {
 
 	public String toString() {
 		return this.type + " " + this.status
-				+ (this.taskData == null ? "" : (", data = " + this.taskData));
+				+ (this.taskData == null ? "" : (", data = " + this.taskData))
+				+ ", preferredLocation = " + this.preferredLocations;
 	}
 
 	public static TaskCacheEntry constructFromXML(XMLElement taskNode) {
@@ -72,9 +75,10 @@ public class TaskCacheEntry {
 			throw new RuntimeException(
 					"If constructing task from xml, xml tag must contain preferred location");
 		}
-
+		TaskCacheEntry tce = new TaskCacheEntry(Arrays.asList(preferredLoc),
+				type, StatusType.NOTSTARTED);
+		Msg.info("Returning constructed task cache entry: " + tce);
 		// construct and return
-		return new TaskCacheEntry(Arrays.asList(preferredLoc), type,
-				StatusType.NOTSTARTED);
+		return tce;
 	}
 }
