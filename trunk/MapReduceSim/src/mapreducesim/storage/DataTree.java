@@ -55,6 +55,10 @@ public class DataTree<T> {
 		return linearizedTree;
 	}
 
+	public String toString() {
+		return "DataTree(" + getRoot() + ")";
+	}
+
 	public void recursiveLinearize(Node recurseRoot, List<Node> linearizedTree) {
 		linearizedTree.add(recurseRoot);
 		for (Node child : recurseRoot.getChildren()) {
