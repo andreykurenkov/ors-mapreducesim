@@ -1,5 +1,7 @@
 package mapreducesim.scheduling;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mapreducesim.core.ConfigurableClass;
@@ -28,15 +30,15 @@ public class TaskCacheEntry {
 		NOTSTARTED, ASSIGNED, COMPLETED;
 	}
 
-	public String preferredNode = null;
+	public List<String> preferredNodes = null;
 	public final Type type;
 	public Status status;
 
-	public TaskCacheEntry(String preferredLocation, Type type,
+	public TaskCacheEntry(List<String> preferredLocation, Type type,
 			StatusType initialStatus) {
 
 		taskData = new InputSplit();
-		this.preferredNode = preferredLocation;
+		this.preferredNodes = preferredLocation;
 		this.type = type;
 		this.status = new Status();
 		this.status.statusType = initialStatus;
@@ -63,9 +65,16 @@ public class TaskCacheEntry {
 		}
 
 		// get preferred location
-		String preferredLoc = taskNode.getAttributeValue("preferredLocation");
+		String preferredLoc;
+		if (taskNode.getAttributes().keySet().contains("preferredLocation")) {
+			preferredLoc = taskNode.getAttributeValue("preferredLocation");
+		} else {
+			throw new RuntimeException(
+					"If constructing task from xml, xml tag must contain preferred location");
+		}
 
 		// construct and return
-		return new TaskCacheEntry(preferredLoc, type, StatusType.NOTSTARTED);
+		return new TaskCacheEntry(Arrays.asList(preferredLoc), type,
+				StatusType.NOTSTARTED);
 	}
 }
