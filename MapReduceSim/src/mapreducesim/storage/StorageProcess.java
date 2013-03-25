@@ -21,7 +21,7 @@ public class StorageProcess extends SimProcess {
 		super(host, name, args, STORAGE_MAILBOX);
 		instance = this;
 		FSBuilder fsbuild = new FSBuilder();
-		fsbuild.createTestTopology();
+		fsbuild.createTopology();
 		this.fs = fsbuild.getFS();
 		this.top = fsbuild.getTopology();
 	}
@@ -102,14 +102,18 @@ public class StorageProcess extends SimProcess {
 		return top;
 	}
 
-	/*
-	 * public List<String> getPreferredLocations(InputSplit input) {
-	 * List<DataLocation> locations = new ArrayList<DataLocation>(3);
-	 * DataLocation loc0 = input.getLocations().get(0); DataLocation loc1 =
-	 * input.getLocations().get(1); DataLocation loc2 =
-	 * input.getLocations().get(2); locations.add(loc0); locations.add(loc1);
-	 * locations.add(loc2); return locations; }
-	 */
+	public List<String> getPreferredLocations(InputSplit input) {
+		// Extract the locations for all the splits
+		List<DataLocation> locations = input.getLocations();
+		List<String> hostnames = new ArrayList<String>();
+		for (int i = 0; i < locations.size(); i++) {
+			for (int j = 0; j < locations.get(i).getHosts().length; j++) {
+				hostnames.add(locations.get(i).getHosts()[j]);
+			}
+		}
+		// Find the most popular locations
+		return hostnames;
+	}
 
 	/**
 	 * Very generic search to return any kind of created storage node--File,
