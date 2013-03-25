@@ -1,11 +1,13 @@
 package mapreducesim.storage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.simgrid.msg.*;
 
 import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
+import mapreducesim.scheduling.InputSplit;
 import mapreducesim.storage.FileTransferTask.*;
 
 public class StorageProcess extends SimProcess {
@@ -37,7 +39,8 @@ public class StorageProcess extends SimProcess {
 				Msg.info("Writing file '"
 						+ ((WriteRequestTask) currentTask).getFileBlock()
 						+ "' at " + this.getTimeElapsed());
-				// simulate the expense
+				currentTask = (WriteRequestTask) currentTask;
+
 				long costRemaining = 6; // dummy value for now.
 				// TODO: use elapseTime
 				Msg.info("Finished writing file '"
@@ -80,6 +83,12 @@ public class StorageProcess extends SimProcess {
 		}
 	}
 
+	public void addFile(String filename, int size) {
+		File newfile = new File(fs.getRoot(), filename, size);
+		fs.getRoot().addChild(newfile);
+		newfile.placeSplits(top);
+	}
+
 	/**
 	 * Returns the entire topology. To get an individual element, first get the
 	 * root element (e.g., root = getTopology().getRoot()), then you can climb
@@ -92,6 +101,15 @@ public class StorageProcess extends SimProcess {
 	public DataTree<Node> getTopology() {
 		return top;
 	}
+
+	/*
+	 * public List<String> getPreferredLocations(InputSplit input) {
+	 * List<DataLocation> locations = new ArrayList<DataLocation>(3);
+	 * DataLocation loc0 = input.getLocations().get(0); DataLocation loc1 =
+	 * input.getLocations().get(1); DataLocation loc2 =
+	 * input.getLocations().get(2); locations.add(loc0); locations.add(loc1);
+	 * locations.add(loc2); return locations; }
+	 */
 
 	/**
 	 * Very generic search to return any kind of created storage node--File,
@@ -168,24 +186,5 @@ public class StorageProcess extends SimProcess {
 	 */
 	public List<DataNode> getLocations(FileBlock block) {
 		return block.getLocations();
-	}
-
-	/**
-	 * Add a new file to the filesystem and assign its blocks to DataNodes in
-	 * the topology. The topology will be updated with three replicas of each
-	 * block of the file assigned to DataBlocks, with two replicas on different
-	 * DataNodes on the same rack, and the third replica on a separate rack
-	 * (default Hadoop placement policy)
-	 * 
-	 * @param filename
-	 * @param size
-	 */
-	public void addFile(String filename, int size) {
-		// Add to the filesystem
-		Directory parent = (Directory) fs.getRoot().getChild("dir1");
-		File file = new File(parent, filename, size);
-		fs.getRoot().getChild("dir1").addChild(file);
-		// Place the splits in the topology
-		file.placeSplits(top);
 	}
 }
