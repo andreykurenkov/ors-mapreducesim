@@ -16,16 +16,6 @@
 			</host>
 			<host id="TaskTracker4" state="ON" power="1">
 			</host>
-			<host id="TaskTracker5" state="ON" power="1">
-			</host>
-			<host id="TaskTracker6" state="ON" power="1">
-			</host>
-			<host id="TaskTracker7" state="ON" power="1">
-			</host>
-			<host id="TaskTracker8" state="ON" power="1">
-			</host>
-			<host id="TaskTracker9" state="ON" power="1">
-			</host>
 			<link id="link0" latency="0.1" bandwidth="100000">
 			</link>
 			<route src="TaskTracker0" dst="JobTracker">
@@ -65,46 +55,6 @@
 				</link_ctn>
 			</route>
 			<route src="TaskTracker4" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker5" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker5" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker6" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker6" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker7" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker7" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker8" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker8" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker9" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker9" dst="Storage">
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>

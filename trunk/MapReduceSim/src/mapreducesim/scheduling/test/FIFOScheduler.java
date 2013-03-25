@@ -190,7 +190,8 @@ public class FIFOScheduler extends SchedulerProcess {
 				}
 			}
 		}
-		dumpTaskPool();
+		// debug the current state of the task pool
+		// dumpTaskPool();
 
 	}
 
