@@ -39,42 +39,42 @@ public class StorageProcess extends SimProcess {
 				Msg.info("Writing file '"
 						+ ((WriteRequestTask) currentTask).getFileBlock()
 						+ "' at " + this.getTimeElapsed());
-				currentTask = (WriteRequestTask) currentTask;
-
-				long costRemaining = 6; // dummy value for now.
-				// TODO: use elapseTime
-				Msg.info("Finished writing file '"
-						+ ((WriteRequestTask) currentTask).getFileBlock()
-						+ "' at " + Msg.getClock());
-
+				// currentTask.execute();
+				// simulate the expense
 			}
 
 			if (currentTask instanceof ReadRequestTask) { // read task
-				// TODO combine interfaces...
+				// update the actual filesystem, etc. (metadata for read)
 				Msg.info("Reading file '"
 						+ ((ReadRequestTask) currentTask).getName() + "' at "
 						+ this.getTimeElapsed());
-
-				// Get the information needed from the task
-				String filename = ((ReadRequestTask) currentTask).getFilename();
-				int offset = ((ReadRequestTask) currentTask).getOffset();
-				int length = ((ReadRequestTask) currentTask).getLength();
+				// simulate the expense
+				// long costRemaining = 2; // dummy value...
+				int readcost = 0;
 				String origin = ((ReadRequestTask) currentTask)
 						.getOriginMailbox();
-
-				// Get the blocks needed
-				// DataTree<Node> fs = StorageMain.getFS();
-				// DataTree<Node> top = StorageMain.getTopology();
-
-				// Increment the read count
-				// ((File) fs.get(filename)).incrementReads();
-
-				// Get the closest block
-				// int speed = loc1.speedBetween(loc2);
-				// int size = loc1.get().getSize();
-				// long readCost = size / ( speed * 2^20 );
-				// elapseTime(readCost);
-
+				int offset = ((ReadRequestTask) currentTask).getOffset();
+				int length = ((ReadRequestTask) currentTask).getLength();
+				String filename = ((ReadRequestTask) currentTask).getFilename();
+				File file = (File) this.fs.get(filename);
+				List<FileBlock> blocks = file.getNeededFileBlocks((int) offset,
+						length);
+				DataNode originloc = (DataNode) this.top.get(origin);
+				for (FileBlock b : blocks) {
+					if (b.getLocation(0).equals(originloc)) { // TODO find
+																// fastest link
+						readcost += 10; // On the same datanode; minimal read
+										// cost
+					} else if (b.getLocation(0).isOnSameRackAs(originloc)) {
+						readcost += 100; // On same rack; small read cost
+					} else {
+						readcost += 1000; // Not on same rack.
+					}
+				}
+				elapseTime(readcost);
+				// ArrayList<FileBlock> fakeRead = new ArrayList<FileBlock>();
+				// fakeRead.add(new FileBlock(null, 50, new KeyValuePairs()));
+				// (new FileTransferTask(fakeRead)).send(loc);
 				Msg.info("Finished reading file '"
 						+ ((ReadRequestTask) currentTask).getName() + "' at "
 						+ this.getTimeElapsed());
@@ -102,17 +102,20 @@ public class StorageProcess extends SimProcess {
 		return top;
 	}
 
+	/**
+	 * Extracts the host from each of the DataLocation s in the input InputSplit
+	 * 
+	 * @param input
+	 * @return list of strings with host names
+	 */
 	public List<String> getPreferredLocations(InputSplit input) {
 		// Extract the locations for all the splits
 		List<DataLocation> locations = input.getLocations();
-		List<String> hostnames = new ArrayList<String>();
+		List<String> hosts = new ArrayList<String>();
 		for (int i = 0; i < locations.size(); i++) {
-			for (int j = 0; j < locations.get(i).getHosts().length; j++) {
-				hostnames.add(locations.get(i).getHosts()[j]);
-			}
+			hosts.add(locations.get(i).getHost());
 		}
-		// Find the most popular locations
-		return hostnames;
+		return hosts;
 	}
 
 	/**
