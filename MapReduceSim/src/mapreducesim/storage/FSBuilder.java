@@ -94,8 +94,7 @@ public class FSBuilder {
 
 	public void createTopology() {
 		XMLDocument xmld = SimMain.getPlatform();
-		XMLElement AS = xmld.getRoot().getChildByName("platform")
-				.getChildByName("AS");
+		XMLElement AS = xmld.getRoot().getChildByName("AS");
 		int numRacks = 3;
 		List<XMLElement> hosts = AS.getChildrenByName("host");
 		List<String> hostNames = new ArrayList<String>();
@@ -106,7 +105,7 @@ public class FSBuilder {
 		List<Rack> racks = new ArrayList<Rack>();
 		for (int rackIndex = 0; rackIndex < numRacks; rackIndex++) {
 			int mn = rackIndex * hostNames.size() / numRacks;
-			int mx = mn + hostNames.size() / numRacks;
+			int mx = mn + hostNames.size() / numRacks + 1;
 			if (mx > hostNames.size()) {
 				mx = hostNames.size();
 			}
