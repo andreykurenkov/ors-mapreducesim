@@ -15,6 +15,7 @@ import mapreducesim.scheduling.TaskCacheEntry;
 import mapreducesim.scheduling.JobSubmission;
 import mapreducesim.scheduling.SchedulerProcess;
 import mapreducesim.scheduling.TaskPool;
+import mapreducesim.scheduling.TaskCacheEntry.StatusType;
 import mapreducesim.scheduling.TaskCacheEntry.Type;
 import mapreducesim.storage.FileBlockLocation;
 
@@ -37,68 +38,13 @@ public class FIFOScheduler extends SchedulerProcess {
 	static final int RACK_LOCAL = 2;
 	static final int GLOBAL_LOCAL = 3;
 
+	int nodeLocalDecisions = 0;
+	int rackLocalDecisions = 0;
+	int globalLocalDecisions = 0;
+
 	public FIFOScheduler(Host host, String name, String[] args) {
 		super(host, name, args);
 
-	}
-
-	/**
-	 * 
-	 * @param taskRunner
-	 * @param localityConstraint
-	 *            1 -> node-local, 2->rack local, 3-> global
-	 * 
-	 * @return
-	 */
-	public List<TaskCacheEntry> getTasksSatisfyingLocality(
-			TaskRunnerProcess taskRunner, int localityConstraint) {
-		List<TaskCacheEntry> rv = new ArrayList<TaskCacheEntry>();
-		// get all tasks
-		List<TaskCacheEntry> tasks = this.currentJob.tasks.getAsList();
-		for (int i = 0; i < tasks.size(); i++) {
-			TaskCacheEntry tce = tasks.get(i);
-			List<String> preferredLocations = tce.preferredNodes;
-			// check to see if any of the preferredLocations satisfies the
-			// locality constraint
-			boolean anySatisfied = false;
-			for (int j = 0; j < preferredLocations.size(); j++) {
-				String loc = preferredLocations.get(j);
-				boolean satisfies = satisfiesLocalityConstraint(taskRunner,
-						loc, localityConstraint);
-				if (satisfies) {
-					anySatisfied = true;
-				}
-			}
-			if (anySatisfied) {
-				rv.add(tce);
-			}
-		}
-		return rv;
-	}
-
-	/**
-	 * 
-	 * @param taskRunner
-	 *            - The task runner requesting a task
-	 * @param node
-	 *            - The node to check for proximity to task runner
-	 * @param localityConstraint
-	 *            - The level of locality/proximity needed
-	 * @return
-	 */
-	public boolean satisfiesLocalityConstraint(TaskRunnerProcess taskRunner,
-			String node, int localityConstraint) {
-		if (localityConstraint == NODE_LOCAL) {
-			return node.equals(taskRunner.getHost().getName());
-		} else if (localityConstraint == RACK_LOCAL) {
-			throw new UnsupportedOperationException(
-					"rack local not supported yet");
-		} else if (localityConstraint == GLOBAL_LOCAL) {
-			return true;
-		} else {
-			throw new RuntimeException("Invalid locality constraint: "
-					+ localityConstraint);
-		}
 	}
 
 	/**
@@ -140,11 +86,25 @@ public class FIFOScheduler extends SchedulerProcess {
 		for (int i = 0; i < process.getNumMapSlots()
 				- process.getNumMapRunning(); i++) {
 			// pick out an appropriate map task
-			TaskCacheEntry mapTask = pickMapTask();
+			MapTaskPickResult pickResult = pickMapTask(process);
+
+			TaskCacheEntry mapTask = pickResult.taskSelected;
 			// assign task to that tasktracker
 			if (mapTask == null) {
 				mapTasksLeft = false;
 			} else {
+				// a map task was successfully found
+				if (pickResult.localityAbleToSatisfy == NODE_LOCAL) {
+					this.nodeLocalDecisions++;
+				} else if (pickResult.localityAbleToSatisfy == RACK_LOCAL) {
+					this.rackLocalDecisions++;
+				} else {
+					this.globalLocalDecisions++;
+				}
+				Msg.info("Decisions made so far (node, rack, global): "
+						+ this.nodeLocalDecisions + ", "
+						+ this.rackLocalDecisions + ", "
+						+ this.globalLocalDecisions);
 
 				WorkTask wt = new WorkTask(0.0, WorkTask.Type.MAP,
 						mapTask.taskData);
@@ -243,16 +203,55 @@ public class FIFOScheduler extends SchedulerProcess {
 		}
 	}
 
+	static class MapTaskPickResult {
+		TaskCacheEntry taskSelected = null;
+		int localityAbleToSatisfy = GLOBAL_LOCAL;
+
+		public MapTaskPickResult(TaskCacheEntry taskSelected,
+				int localityAbleToSatisfy) {
+			this.taskSelected = taskSelected;
+			this.localityAbleToSatisfy = localityAbleToSatisfy;
+		}
+	}
+
 	/** bare-bones task picker **/
-	public TaskCacheEntry pickMapTask() {
-		for (int i = 0; i < this.currentJob.tasks.getAsList().size(); i++) {
-			TaskCacheEntry task = this.currentJob.tasks.getAsList().get(i);
+	public MapTaskPickResult pickMapTask(TaskRunnerProcess process) {
+		// use locality information
+		List<TaskCacheEntry> nodeLocalTasks = this.getTasksSatisfyingLocality(
+				process, NODE_LOCAL);
+		List<TaskCacheEntry> rackLocalTasks = this.getTasksSatisfyingLocality(
+				process, NODE_LOCAL);
+		List<TaskCacheEntry> globalTasks = this.getTasksSatisfyingLocality(
+				process, GLOBAL_LOCAL);
+		// go through each list, prioritizing node-local tasks
+
+		// go through the node-local tasks
+		for (int i = 0; i < nodeLocalTasks.size(); i++) {
+			TaskCacheEntry task = nodeLocalTasks.get(i);
 			if (task.type == Type.MAP
 					&& task.status.statusType == TaskCacheEntry.StatusType.NOTSTARTED) {
-				return task;
+				return new MapTaskPickResult(task, NODE_LOCAL);
 			}
 		}
-		return null;
+
+		// go through the rack local tasks
+		for (int i = 0; i < rackLocalTasks.size(); i++) {
+			TaskCacheEntry task = rackLocalTasks.get(i);
+			if (task.type == Type.MAP
+					&& task.status.statusType == TaskCacheEntry.StatusType.NOTSTARTED) {
+				return new MapTaskPickResult(task, RACK_LOCAL);
+			}
+		}
+
+		// go through the global task list
+		for (int i = 0; i < globalTasks.size(); i++) {
+			TaskCacheEntry task = globalTasks.get(i);
+			if (task.type == Type.MAP
+					&& task.status.statusType == TaskCacheEntry.StatusType.NOTSTARTED) {
+				return new MapTaskPickResult(task, GLOBAL_LOCAL);
+			}
+		}
+		return new MapTaskPickResult(null, -1);
 	}
 
 	/** bare-bones task picker **/
@@ -268,6 +267,68 @@ public class FIFOScheduler extends SchedulerProcess {
 	}
 
 	/**
+	 * 
+	 * @param taskRunner
+	 * @param localityConstraint
+	 *            1 -> node-local, 2->rack local, 3-> global
+	 * 
+	 * @return
+	 */
+	public List<TaskCacheEntry> getTasksSatisfyingLocality(
+			TaskRunnerProcess taskRunner, int localityConstraint) {
+		List<TaskCacheEntry> rv = new ArrayList<TaskCacheEntry>();
+		// get all tasks
+		List<TaskCacheEntry> tasks = this.currentJob.tasks.getAsList();
+		for (int i = 0; i < tasks.size(); i++) {
+			TaskCacheEntry tce = tasks.get(i);
+			List<String> preferredLocations = tce.preferredLocations;
+			if (preferredLocations == null) {
+				throw new RuntimeException("Preferred locations of " + tce
+						+ " was null");
+			}
+			// check to see if any of the preferredLocations satisfies the
+			// locality constraint
+			boolean anySatisfied = false;
+			for (int j = 0; j < preferredLocations.size(); j++) {
+				String loc = preferredLocations.get(j);
+				boolean satisfies = satisfiesLocalityConstraint(taskRunner,
+						loc, localityConstraint);
+				if (satisfies) {
+					anySatisfied = true;
+				}
+			}
+			if (anySatisfied) {
+				rv.add(tce);
+			}
+		}
+		return rv;
+	}
+
+	/**
+	 * 
+	 * @param taskRunner
+	 *            - The task runner requesting a task
+	 * @param node
+	 *            - The node to check for proximity to task runner
+	 * @param localityConstraint
+	 *            - The level of locality/proximity needed
+	 * @return
+	 */
+	public boolean satisfiesLocalityConstraint(TaskRunnerProcess taskRunner,
+			String node, int localityConstraint) {
+		if (localityConstraint == NODE_LOCAL) {
+			return node.equals(taskRunner.getHost().getName());
+		} else if (localityConstraint == RACK_LOCAL) {
+			return false;
+		} else if (localityConstraint == GLOBAL_LOCAL) {
+			return true;
+		} else {
+			throw new RuntimeException("Invalid locality constraint: "
+					+ localityConstraint);
+		}
+	}
+
+	/**
 	 * Creates a jobstatus object given a jobsubmission object
 	 * 
 	 * @param j
@@ -279,18 +340,17 @@ public class FIFOScheduler extends SchedulerProcess {
 
 		// add the map tasks
 		for (int i = 0; i < mrj.getOriginalMapTasks().size(); i++) {
-			// add the task with no preferred location for now
-			TaskCacheEntry tce = new TaskCacheEntry(TaskCacheEntry.Type.MAP,
-					TaskCacheEntry.StatusType.NOTSTARTED);
-			// annotate the cache entry with its input split
-			tce.taskData = mrj.getOriginalMapTasks().get(i).taskData;
-			taskPool.addTask(tce, null);
+			// add the task with an initial status of "not started"
+			TaskCacheEntry tce = mrj.getOriginalMapTasks().get(i);
+			tce.status.statusType = StatusType.NOTSTARTED;
+			taskPool.addTask(tce);
 		}
 		// add the reduce tasks
 		for (int i = 0; i < mrj.getOriginalReduceTasks().size(); i++) {
-			// add the task with no preferred location for now
-			taskPool.addTask(new TaskCacheEntry(TaskCacheEntry.Type.REDUCE,
-					TaskCacheEntry.StatusType.NOTSTARTED), null);
+			// add the task with an initial status of "not started"
+			TaskCacheEntry tce = mrj.getOriginalMapTasks().get(i);
+			tce.status.statusType = StatusType.NOTSTARTED;
+			taskPool.addTask(tce);
 		}
 		SimpleJobStatus retVal = new SimpleJobStatus(mrj.getName(), taskPool);
 		return retVal;
