@@ -1,12 +1,10 @@
 <?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">	<platform version="3">
 		<AS id="main" routing="Full">
-			<host id="Storage" state="ON" power="1">
-			</host>
-			<host id="BSStorage" state="ON" power="1">
-			</host>
 			<host id="JobTracker" state="ON" power="1">
 			</host>
 			<host id="JobSubmitter" state="ON" power="1">
+			</host>
+			<host id="Storage" state="ON" power="1">
 			</host>
 			<host id="TaskTracker0" state="ON" power="1">
 			</host>
@@ -34,47 +32,11 @@
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
-			<route src="TaskTracker1" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker2" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker3" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker4" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker5" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker6" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker7" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker8" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker9" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="JobSubmitter" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
 			<route src="TaskTracker0" dst="Storage">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+			<route src="TaskTracker1" dst="JobTracker">
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
@@ -82,7 +44,15 @@
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
+			<route src="TaskTracker2" dst="JobTracker">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
 			<route src="TaskTracker2" dst="Storage">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+			<route src="TaskTracker3" dst="JobTracker">
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
@@ -90,7 +60,15 @@
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
+			<route src="TaskTracker4" dst="JobTracker">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
 			<route src="TaskTracker4" dst="Storage">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+			<route src="TaskTracker5" dst="JobTracker">
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
@@ -98,7 +76,15 @@
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
+			<route src="TaskTracker6" dst="JobTracker">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
 			<route src="TaskTracker6" dst="Storage">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+			<route src="TaskTracker7" dst="JobTracker">
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
@@ -106,7 +92,15 @@
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
+			<route src="TaskTracker8" dst="JobTracker">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
 			<route src="TaskTracker8" dst="Storage">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+			<route src="TaskTracker9" dst="JobTracker">
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
@@ -116,10 +110,6 @@
 			</route>
 			<route src="JobSubmitter" dst="JobTracker">
 				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="Storage" dst="BSStorage">
-			<link_ctn id="link0">
 				</link_ctn>
 			</route>
 		</AS>

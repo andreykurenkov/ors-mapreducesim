@@ -83,8 +83,7 @@ public class FIFOScheduler extends SchedulerProcess {
 		boolean assignedAny = false;
 
 		// for each map slot available on the task tracker
-		for (int i = 0; i < process.getNumMapSlots()
-				- process.getNumMapRunning(); i++) {
+		for (int i = 0; i < availMapSlots; i++) {
 			// pick out an appropriate map task
 			MapTaskPickResult pickResult = pickMapTask(process);
 
@@ -136,8 +135,7 @@ public class FIFOScheduler extends SchedulerProcess {
 		}
 
 		// for each reduce slot available on the task tracker
-		for (int i = 0; i < process.getNumReduceSlots()
-				- process.getNumReduceRunning(); i++) {
+		for (int i = 0; i < availReduceSlots; i++) {
 			// pick out an appropriate map task
 			TaskCacheEntry reduceTask = pickReduceTask();
 			// assign task to that tasktracker

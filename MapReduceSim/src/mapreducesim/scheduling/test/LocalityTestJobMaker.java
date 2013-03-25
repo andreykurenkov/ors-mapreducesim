@@ -2,6 +2,7 @@ package mapreducesim.scheduling.test;
 
 import org.simgrid.msg.NativeException;
 
+import mapreducesim.core.ConfigurableClass;
 import mapreducesim.core.SimMain;
 import mapreducesim.scheduling.JobMaker;
 import mapreducesim.scheduling.MapReduceJobSpecification;
@@ -34,7 +35,7 @@ public class LocalityTestJobMaker extends JobMaker {
 		// write the config, platform, and deployment files to disk, then run
 		// the simulation
 
-		if (false) {
+		if (true) {
 			new SmartFile(config_loc).write(wrapXMLHeader(getXMLConfig(0)
 					.toRawXML(XMLNode.PRETTYFORMAT)), false);
 			new SmartFile(plat_loc).write(wrapXMLHeader(getXMLPlatform(0)
@@ -45,8 +46,7 @@ public class LocalityTestJobMaker extends JobMaker {
 
 		try {
 			SimMain.main(new String[] { plat_loc, depl_loc, config_loc });
-		} catch (NativeException e) {
-			// TODO Auto-generated catch block
+		} catch (NativeException e) { // TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -71,6 +71,13 @@ public class LocalityTestJobMaker extends JobMaker {
 		arg.setAttribute("value", "job0");
 		JobSubmitter.addChild(arg);
 		root.addChild(JobSubmitter);
+
+		// create the storage process
+		XMLElement storageProcess = new XMLElement("process");
+		storageProcess.setAttribute("host", "Storage");
+		storageProcess.setAttribute("function",
+				"mapreducesim.execution.test.TestStorage");
+		root.addChild(storageProcess);
 
 		// add the job tracker
 		XMLElement jobTracker = new XMLElement("process");
@@ -111,6 +118,13 @@ public class LocalityTestJobMaker extends JobMaker {
 		jobSubmitter.setAttribute("state", "ON");
 		AS.addChild(jobSubmitter);
 
+		// add the storage head node
+		XMLElement storage = new XMLElement("host");
+		storage.setAttribute("id", "Storage");
+		storage.setAttribute("power", "1");
+		storage.setAttribute("state", "ON");
+		AS.addChild(storage);
+
 		// add the task trackers
 		for (int i = 0; i < NUM_NODES; i++) {
 			XMLElement taskTracker = new XMLElement("host");
@@ -127,7 +141,7 @@ public class LocalityTestJobMaker extends JobMaker {
 		link.setAttribute("latency", "0.1");
 		AS.addChild(link);
 
-		// add the routes (star topology for now)
+		// add the routes (tree topology for now)
 		for (int i = 0; i < NUM_NODES; i++) {
 			XMLElement route = new XMLElement("route");
 			route.setAttribute("src", "TaskTracker" + i);
@@ -136,6 +150,14 @@ public class LocalityTestJobMaker extends JobMaker {
 			link_ctn.setAttribute("id", "link0");
 			route.addChild(link_ctn);
 			AS.addChild(route);
+			route = new XMLElement("route");
+			route.setAttribute("src", "TaskTracker" + i);
+			route.setAttribute("dst", "Storage");
+			link_ctn = new XMLElement("link_ctn");
+			link_ctn.setAttribute("id", "link0");
+			route.addChild(link_ctn);
+			AS.addChild(route);
+
 		}
 
 		XMLElement route = new XMLElement("route");
@@ -154,9 +176,14 @@ public class LocalityTestJobMaker extends JobMaker {
 	public static XMLDocument getXMLConfig(int simIndex) {
 		XMLElement root = new XMLElement("config");
 		XMLElement JobMaker = new XMLElement("JobMaker");
-		JobMaker.setAttribute("classname",
+		JobMaker.setAttribute(ConfigurableClass.CLASS_ATTRIBUTE_KEY,
 				"mapreducesim.scheduling.SimpleJobMaker");
 		JobMaker.addChild(getJobSpecification(simIndex));
+		XMLElement fileSplitter = new XMLElement("FileSplitter");
+		fileSplitter.setAttribute(ConfigurableClass.CLASS_ATTRIBUTE_KEY,
+				"mapreducesim.scheduling.SimpleFileSplitter");
+		fileSplitter.setAttribute("type", "random");
+		root.addChild(fileSplitter);
 		root.addChild(JobMaker);
 		return new XMLDocument(root);
 	}
