@@ -51,7 +51,7 @@ public class DataLocation {
 		this.offset = offset;
 		this.length = length;
 		this.hosts = hosts;
-		this.datanodes = datanodes;
+		this.setDatanodes(datanodes);
 	}
 
 	public String toString() {
@@ -134,6 +134,14 @@ public class DataLocation {
 		} else {
 			this.hosts = hosts;
 		}
+	}
+
+	public List<DataNode> getDatanodes() {
+		return datanodes;
+	}
+
+	public void setDatanodes(List<DataNode> datanodes) {
+		this.datanodes = datanodes;
 	}
 
 }
