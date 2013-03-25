@@ -3,6 +3,10 @@ package mapreducesim.storage;
 import java.util.ArrayList;
 import java.util.List;
 
+import mapreducesim.core.SimMain;
+import mapreducesim.util.xml.XMLDocument;
+import mapreducesim.util.xml.XMLElement;
+
 public class FSBuilder {
 	private DataTree<Node> fs;
 	private DataTree<Node> topology;
@@ -86,6 +90,33 @@ public class FSBuilder {
 		int extractedSize = Integer
 				.parseInt(str.substring(i + 1, str.length()));
 		return extractedSize;
+	}
+
+	public void createToplogy() {
+		XMLDocument xmld = SimMain.getPlatform();
+		XMLElement AS = xmld.getRoot().getChildByName("platform")
+				.getChildByName("AS");
+		int numRacks = 3;
+		List<XMLElement> hosts = AS.getChildrenByName("host");
+		List<String> hostNames = new ArrayList<String>();
+		for (XMLElement e : hosts) {
+			hostNames.add(e.getAttributeValue("id"));
+		}
+		Root root = new Root();
+		List<Rack> racks = new ArrayList<Rack>();
+		for (int rackIndex = 0; rackIndex < numRacks; rackIndex++) {
+			int mn = rackIndex * hostNames.size() / numRacks;
+			int mx = mn + hostNames.size() / numRacks;
+			if (mx > hostNames.size()) {
+				mx = hostNames.size();
+			}
+			Rack rack = new Rack(root, "rack" + rackIndex);
+			for (int j = mn; j < mx; j++) {
+				rack.addChild(new DataNode(rack, hostNames.get(j)));
+			}
+			root.addChild(rack);
+		}
+
 	}
 
 	/**
