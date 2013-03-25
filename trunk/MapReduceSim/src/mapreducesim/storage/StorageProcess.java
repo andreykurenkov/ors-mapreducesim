@@ -13,17 +13,18 @@ import mapreducesim.storage.FileTransferTask.*;
 public class StorageProcess extends SimProcess {
 	// private int filesize;
 	public static String STORAGE_MAILBOX = "Storage";
-	public static StorageProcess instance;
-	public DataTree<Node> fs;
-	public DataTree<Node> top;
+	public static DataTree<Node> fs;
+	public static DataTree<Node> top;
+
+	static {
+		FSBuilder fsbuild = new FSBuilder();
+		fsbuild.createTopology();
+		fs = fsbuild.getFS();
+		top = fsbuild.getTopology();
+	}
 
 	public StorageProcess(Host host, String name, String[] args) {
 		super(host, name, args, STORAGE_MAILBOX);
-		instance = this;
-		FSBuilder fsbuild = new FSBuilder();
-		fsbuild.createTopology();
-		this.fs = fsbuild.getFS();
-		this.top = fsbuild.getTopology();
 	}
 
 	@Override
@@ -41,6 +42,9 @@ public class StorageProcess extends SimProcess {
 						+ "' at " + this.getTimeElapsed());
 				// currentTask.execute();
 				// simulate the expense
+				Msg.info("Finished writing file '"
+						+ ((WriteRequestTask) currentTask).getName() + "' at "
+						+ this.getTimeElapsed());
 			}
 
 			if (currentTask instanceof ReadRequestTask) { // read task
@@ -51,27 +55,44 @@ public class StorageProcess extends SimProcess {
 				// simulate the expense
 				// long costRemaining = 2; // dummy value...
 				int readcost = 0;
+				int blockreadcost = 0;
 				String origin = ((ReadRequestTask) currentTask)
 						.getOriginMailbox();
 				int offset = ((ReadRequestTask) currentTask).getOffset();
 				int length = ((ReadRequestTask) currentTask).getLength();
 				String filename = ((ReadRequestTask) currentTask).getFilename();
 				File file = (File) this.fs.get(filename);
-				List<FileBlock> blocks = file.getNeededFileBlocks((int) offset,
-						length);
-				DataNode originloc = (DataNode) this.top.get(origin);
-				for (FileBlock b : blocks) {
-					if (b.getLocation(0).equals(originloc)) { // TODO find
-																// fastest link
-						readcost += 10; // On the same datanode; minimal read
-										// cost
-					} else if (b.getLocation(0).isOnSameRackAs(originloc)) {
-						readcost += 100; // On same rack; small read cost
-					} else {
-						readcost += 1000; // Not on same rack.
+				if (file == null) {
+					Msg.info("Requested file does not exist in the filesystem.");
+				} else {
+					List<FileBlock> blocks = file.getNeededFileBlocks(
+							(int) offset, length);
+					DataNode originloc = (DataNode) this.top.get(origin);
+					for (FileBlock b : blocks) {
+						for (int i = 0; i < b.getLocations().size(); i++) {
+							if (b.getLocation(i).equals(originloc)) {
+								blockreadcost = 1; // on same DN
+							} else if (b.getLocation(0).isOnSameRackAs(
+									originloc)) {
+								if (blockreadcost > 2) {
+									blockreadcost = 2; // On same rack
+								}
+							} else {
+								if (blockreadcost > 5) {
+									blockreadcost = 5; // Not on same rack.
+								}
+							}
+							readcost += blockreadcost;
+						}
 					}
+					elapseTime(readcost);
 				}
-				elapseTime(readcost);
+				// Send the block that was read back to the sender?
+				// Not sure if this is needed //TODO
+				((ReadRequestTask) currentTask).setReadDone();
+				ArrayList<FileBlock> notAFakeRead = new ArrayList<FileBlock>();
+				notAFakeRead.add(file.getBlocks().get(0));
+				(new FileTransferTask(notAFakeRead)).send(origin);
 				// ArrayList<FileBlock> fakeRead = new ArrayList<FileBlock>();
 				// fakeRead.add(new FileBlock(null, 50, new KeyValuePairs()));
 				// (new FileTransferTask(fakeRead)).send(loc);
