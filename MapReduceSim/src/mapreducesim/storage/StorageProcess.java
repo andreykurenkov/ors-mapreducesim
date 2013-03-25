@@ -53,9 +53,8 @@ public class StorageProcess extends SimProcess {
 						+ ((ReadRequestTask) currentTask).getName() + "' at "
 						+ this.getTimeElapsed());
 				// simulate the expense
-				// long costRemaining = 2; // dummy value...
-				int readcost = 0;
-				int blockreadcost = 0;
+				double readcost = 0.0;
+				double blockreadcost = 0.0;
 				String origin = ((ReadRequestTask) currentTask)
 						.getOriginMailbox();
 				int offset = ((ReadRequestTask) currentTask).getOffset();
@@ -74,7 +73,7 @@ public class StorageProcess extends SimProcess {
 								blockreadcost = 1; // on same DN
 							} else if (b.getLocation(0).isOnSameRackAs(
 									originloc)) {
-								if (blockreadcost > 2) {
+								if (blockreadcost > 0.2) {
 									blockreadcost = 2; // On same rack
 								}
 							} else {
@@ -104,7 +103,7 @@ public class StorageProcess extends SimProcess {
 		}
 	}
 
-	public void addFile(String filename, int size) {
+	public static void addFile(String filename, int size) {
 		File newfile = new File(fs.getRoot(), filename, size);
 		fs.getRoot().addChild(newfile);
 		newfile.placeSplits(top);
@@ -119,7 +118,7 @@ public class StorageProcess extends SimProcess {
 	 * 
 	 * @return The DataTree of the topology
 	 */
-	public DataTree<Node> getTopology() {
+	public static DataTree<Node> getTopology() {
 		return top;
 	}
 
@@ -129,7 +128,7 @@ public class StorageProcess extends SimProcess {
 	 * @param input
 	 * @return list of strings with host names
 	 */
-	public List<String> getPreferredLocations(InputSplit input) {
+	public static List<String> getPreferredLocations(InputSplit input) {
 		// Extract the locations for all the splits
 		List<DataLocation> locations = input.getLocations();
 		List<String> hosts = new ArrayList<String>();
@@ -147,7 +146,7 @@ public class StorageProcess extends SimProcess {
 	 * 
 	 * @return the requested node
 	 */
-	public Node get(String query) {
+	public static Node get(String query) {
 		Node result;
 		result = fs.get(query);
 		result = top.get(query);
@@ -161,7 +160,7 @@ public class StorageProcess extends SimProcess {
 	 *            the unique filename of the file to get blocks for
 	 * @return a list of the fileblocks for the file
 	 */
-	public List<FileBlock> getBlocks(String filename) {
+	public static List<FileBlock> getBlocks(String filename) {
 		// get the requested file
 		Node file = fs.get(filename);
 		// validate the file retrieved (non-null, is file)
@@ -187,7 +186,8 @@ public class StorageProcess extends SimProcess {
 	 * @return a list of the blocks representing the specified region of the
 	 *         file.
 	 */
-	public List<FileBlock> getBlocks(String filename, int offset, int length) {
+	public static List<FileBlock> getBlocks(String filename, int offset,
+			int length) {
 		// get the requested file
 		Node file = fs.get(filename);
 		// validate the file retrieved (non-null, is file)
@@ -212,7 +212,7 @@ public class StorageProcess extends SimProcess {
 	 *            the FileBlock to find locality information on
 	 * @return a list of the DataNodes a replica of this FileBlock is on
 	 */
-	public List<DataNode> getLocations(FileBlock block) {
+	public static List<DataNode> getLocations(FileBlock block) {
 		return block.getLocations();
 	}
 }
