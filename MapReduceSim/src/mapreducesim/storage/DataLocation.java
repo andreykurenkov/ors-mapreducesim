@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DataLocation {
 	private String fileName;
-	private String[] hosts; // hostnames of datanodes where this block is stored
+	private String host; // host where the data is stored
 	private List<DataNode> datanodes; // should be the same as hosts but with
 										// DataNode objects
 	private int offset;
@@ -33,7 +33,7 @@ public class DataLocation {
 		this.fileName = file;
 		this.offset = offset;
 		this.length = length;
-		this.hosts = new String[0];
+		this.host = "[no host defined]";
 	}
 
 	/**
@@ -44,13 +44,13 @@ public class DataLocation {
 	 * @param length
 	 * @param hosts
 	 */
-	public DataLocation(String file, int offset, int length, String[] hosts,
+	public DataLocation(String file, int offset, int length, String host,
 			List<DataNode> datanodes) {
 		super();
 		this.fileName = file;
 		this.offset = offset;
 		this.length = length;
-		this.hosts = hosts;
+		this.host = host;
 		this.setDatanodes(datanodes);
 	}
 
@@ -115,11 +115,11 @@ public class DataLocation {
 	 * 
 	 * @return String[]
 	 */
-	public String[] getHosts() {
-		if ((hosts == null) || (hosts.length == 0)) {
-			return new String[0];
+	public String getHost() {
+		if ((host == null) || (host.length() == 0)) {
+			return new String();
 		} else {
-			return hosts;
+			return host;
 		}
 	}
 
@@ -128,11 +128,11 @@ public class DataLocation {
 	 * 
 	 * @param hosts
 	 */
-	public void setHosts(String[] hosts) {
-		if (hosts == null) {
-			this.hosts = new String[0];
+	public void setHosts(String host) {
+		if (host == null) {
+			this.host = new String();
 		} else {
-			this.hosts = hosts;
+			this.host = host;
 		}
 	}
 
