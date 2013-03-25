@@ -92,7 +92,7 @@ public class FSBuilder {
 		return extractedSize;
 	}
 
-	public void createToplogy() {
+	public void createTopology() {
 		XMLDocument xmld = SimMain.getPlatform();
 		XMLElement AS = xmld.getRoot().getChildByName("platform")
 				.getChildByName("AS");
