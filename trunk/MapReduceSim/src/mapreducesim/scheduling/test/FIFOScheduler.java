@@ -1,5 +1,6 @@
 package mapreducesim.scheduling.test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -32,6 +33,10 @@ public class FIFOScheduler extends SchedulerProcess {
 
 	SimpleJobStatus currentJob;
 
+	static final int NODE_LOCAL = 1;
+	static final int RACK_LOCAL = 2;
+	static final int GLOBAL_LOCAL = 3;
+
 	public FIFOScheduler(Host host, String name, String[] args) {
 		super(host, name, args);
 
@@ -39,25 +44,92 @@ public class FIFOScheduler extends SchedulerProcess {
 
 	/**
 	 * 
+	 * @param taskRunner
+	 * @param localityConstraint
+	 *            1 -> node-local, 2->rack local, 3-> global
+	 * 
+	 * @return
+	 */
+	public List<TaskCacheEntry> getTasksSatisfyingLocality(
+			TaskRunnerProcess taskRunner, int localityConstraint) {
+		List<TaskCacheEntry> rv = new ArrayList<TaskCacheEntry>();
+		// get all tasks
+		List<TaskCacheEntry> tasks = this.currentJob.tasks.getAsList();
+		for (int i = 0; i < tasks.size(); i++) {
+			TaskCacheEntry tce = tasks.get(i);
+			List<String> preferredLocations = tce.preferredNodes;
+			// check to see if any of the preferredLocations satisfies the
+			// locality constraint
+			boolean anySatisfied = false;
+			for (int j = 0; j < preferredLocations.size(); j++) {
+				String loc = preferredLocations.get(j);
+				boolean satisfies = satisfiesLocalityConstraint(taskRunner,
+						loc, localityConstraint);
+				if (satisfies) {
+					anySatisfied = true;
+				}
+			}
+			if (anySatisfied) {
+				rv.add(tce);
+			}
+		}
+		return rv;
+	}
+
+	/**
+	 * 
+	 * @param taskRunner
+	 *            - The task runner requesting a task
+	 * @param node
+	 *            - The node to check for proximity to task runner
+	 * @param localityConstraint
+	 *            - The level of locality/proximity needed
+	 * @return
+	 */
+	public boolean satisfiesLocalityConstraint(TaskRunnerProcess taskRunner,
+			String node, int localityConstraint) {
+		if (localityConstraint == NODE_LOCAL) {
+			return node.equals(taskRunner.getHost().getName());
+		} else if (localityConstraint == RACK_LOCAL) {
+			throw new UnsupportedOperationException(
+					"rack local not supported yet");
+		} else if (localityConstraint == GLOBAL_LOCAL) {
+			return true;
+		} else {
+			throw new RuntimeException("Invalid locality constraint: "
+					+ localityConstraint);
+		}
+	}
+
+	/**
+	 * 
 	 * 1st priority: node-local task 2nd priority: rack-local task
 	 * 
-	 * a "level" how many switches tasktracker needs to go through to find the data
+	 * a "level" how many switches tasktracker needs to go through to find the
+	 * data
 	 * 
-	 * framework function: given a job, tasktracker, and a locality level, return a task matching the criteria or null if
-	 * none was found
+	 * framework function: given a job, tasktracker, and a locality level,
+	 * return a task matching the criteria or null if none was found
 	 * 
 	 */
 
 	public void assignTasks(TaskRunnerProcess process) {
 		String src = process.getHost().getName();
-		Msg.info("FIFOScheduler received heartbeat from: " + process.getHost().getName());
+		Msg.info("FIFOScheduler received heartbeat from: "
+				+ process.getHost().getName());
 
-		int availMapSlots = process.getNumMapSlots() - process.getNumMapRunning();
-		int availReduceSlots = process.getNumReduceSlots() - process.getNumReduceRunning();
+		int availMapSlots = process.getNumMapSlots()
+				- process.getNumMapRunning();
+		int availReduceSlots = process.getNumReduceSlots()
+				- process.getNumReduceRunning();
 
-		Msg.info(src + " has " + availMapSlots + " map slots available and " + availReduceSlots + " reduce slots available");
-		Msg.info("The current job has " + this.currentJob.tasks.getNumNotStartedMap() + " map tasks and "
-				+ this.currentJob.tasks.getNumNotStartedReduce() + " reduce tasks not started");
+		Msg.info(src + " has " + availMapSlots + " map slots available and "
+				+ availReduceSlots + " reduce slots available");
+		Msg.info("The current job has "
+				+ this.currentJob.tasks.getNumNotStartedMap()
+				+ " map tasks and "
+				+ this.currentJob.tasks.getNumNotStartedReduce()
+				+ " reduce tasks not started");
 
 		// simple scheduling algorithm
 		boolean mapTasksLeft = true;
@@ -65,7 +137,8 @@ public class FIFOScheduler extends SchedulerProcess {
 		boolean assignedAny = false;
 
 		// for each map slot available on the task tracker
-		for (int i = 0; i < process.getNumMapSlots() - process.getNumMapRunning(); i++) {
+		for (int i = 0; i < process.getNumMapSlots()
+				- process.getNumMapRunning(); i++) {
 			// pick out an appropriate map task
 			TaskCacheEntry mapTask = pickMapTask();
 			// assign task to that tasktracker
@@ -73,15 +146,18 @@ public class FIFOScheduler extends SchedulerProcess {
 				mapTasksLeft = false;
 			} else {
 
-				WorkTask wt = new WorkTask(0.0, WorkTask.Type.MAP, mapTask.taskData);
+				WorkTask wt = new WorkTask(0.0, WorkTask.Type.MAP,
+						mapTask.taskData);
 				// send the task to the tasktracker
 				try {
-					Msg.info("Assigning map task " + wt + " to task tracker " + process.getHost().getName());
+					Msg.info("Assigning map task " + wt + " to task tracker "
+							+ process.getHost().getName());
 					wt.send(process.MAILBOX);
 
 					// update local cache
 					mapTask.status.statusType = TaskCacheEntry.StatusType.ASSIGNED;
-					mapTask.status.taskTrackerRunningOn = process.getHost().getName();
+					mapTask.status.taskTrackerRunningOn = process.getHost()
+							.getName();
 
 					assignedAny = true;
 
@@ -98,21 +174,27 @@ public class FIFOScheduler extends SchedulerProcess {
 		}
 
 		// for each reduce slot available on the task tracker
-		for (int i = 0; i < process.getNumReduceSlots() - process.getNumReduceRunning(); i++) {
+		for (int i = 0; i < process.getNumReduceSlots()
+				- process.getNumReduceRunning(); i++) {
 			// pick out an appropriate map task
 			TaskCacheEntry reduceTask = pickReduceTask();
 			// assign task to that tasktracker
 			if (reduceTask == null) {
 				reduceTasksLeft = false;
 			} else {
-				WorkTask wt = new WorkTask(0.0, WorkTask.Type.REDUCE, reduceTask.taskData);
+				WorkTask wt = new WorkTask(0.0, WorkTask.Type.REDUCE,
+						reduceTask.taskData);
 				// send the task to the tasktracker
 				try {
-					Msg.info("Assigning reduce task " + wt + " to task tracker " + process.getHost().getName());
+					Msg
+							.info("Assigning reduce task " + wt
+									+ " to task tracker "
+									+ process.getHost().getName());
 					wt.send(process.MAILBOX);
 					// update local cache
 					reduceTask.status.statusType = TaskCacheEntry.StatusType.ASSIGNED;
-					reduceTask.status.taskTrackerRunningOn = process.getHost().getName();
+					reduceTask.status.taskTrackerRunningOn = process.getHost()
+							.getName();
 
 					assignedAny = true;
 
@@ -130,7 +212,8 @@ public class FIFOScheduler extends SchedulerProcess {
 
 			// if no more map or reduce tasks left, notify the task tracker
 			if (!assignedAny) {
-				Msg.info("Notifying task tracker " + src + " that there are no more tasks available");
+				Msg.info("Notifying task tracker " + src
+						+ " that there are no more tasks available");
 				NotifyNoMoreTasks notify = new NotifyNoMoreTasks();
 				try {
 					assignedAny = true;
@@ -164,7 +247,8 @@ public class FIFOScheduler extends SchedulerProcess {
 	public TaskCacheEntry pickMapTask() {
 		for (int i = 0; i < this.currentJob.tasks.getAsList().size(); i++) {
 			TaskCacheEntry task = this.currentJob.tasks.getAsList().get(i);
-			if (task.type == Type.MAP && task.status.statusType == TaskCacheEntry.StatusType.NOTSTARTED) {
+			if (task.type == Type.MAP
+					&& task.status.statusType == TaskCacheEntry.StatusType.NOTSTARTED) {
 				return task;
 			}
 		}
@@ -175,7 +259,8 @@ public class FIFOScheduler extends SchedulerProcess {
 	public TaskCacheEntry pickReduceTask() {
 		for (int i = 0; i < this.currentJob.tasks.getAsList().size(); i++) {
 			TaskCacheEntry task = this.currentJob.tasks.getAsList().get(i);
-			if (task.type == Type.REDUCE && task.status.statusType == TaskCacheEntry.StatusType.NOTSTARTED) {
+			if (task.type == Type.REDUCE
+					&& task.status.statusType == TaskCacheEntry.StatusType.NOTSTARTED) {
 				return task;
 			}
 		}
@@ -195,7 +280,8 @@ public class FIFOScheduler extends SchedulerProcess {
 		// add the map tasks
 		for (int i = 0; i < mrj.getOriginalMapTasks().size(); i++) {
 			// add the task with no preferred location for now
-			TaskCacheEntry tce = new TaskCacheEntry(TaskCacheEntry.Type.MAP, TaskCacheEntry.StatusType.NOTSTARTED);
+			TaskCacheEntry tce = new TaskCacheEntry(TaskCacheEntry.Type.MAP,
+					TaskCacheEntry.StatusType.NOTSTARTED);
 			// annotate the cache entry with its input split
 			tce.taskData = mrj.getOriginalMapTasks().get(i).taskData;
 			taskPool.addTask(tce, null);
@@ -203,7 +289,8 @@ public class FIFOScheduler extends SchedulerProcess {
 		// add the reduce tasks
 		for (int i = 0; i < mrj.getOriginalReduceTasks().size(); i++) {
 			// add the task with no preferred location for now
-			taskPool.addTask(new TaskCacheEntry(TaskCacheEntry.Type.REDUCE, TaskCacheEntry.StatusType.NOTSTARTED), null);
+			taskPool.addTask(new TaskCacheEntry(TaskCacheEntry.Type.REDUCE,
+					TaskCacheEntry.StatusType.NOTSTARTED), null);
 		}
 		SimpleJobStatus retVal = new SimpleJobStatus(mrj.getName(), taskPool);
 		return retVal;
@@ -215,7 +302,8 @@ public class FIFOScheduler extends SchedulerProcess {
 		// job,
 		// and set it as our "current" job
 		this.currentJob = createNewJobStatus(js);
-		Msg.info("New job submission received (job name '" + this.currentJob.getJobName() + "')");
+		Msg.info("New job submission received (job name '"
+				+ this.currentJob.getJobName() + "')");
 	}
 
 }

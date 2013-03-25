@@ -25,7 +25,7 @@
 		</process>
 		<process host="TaskTracker9" function="mapreducesim.execution.TaskRunnerProcess">
 		</process>
-        <process host="Storage" function="mapreducesim.storage.StorageProcess">
+        <process host="Storage" function="mapreducesim.execution.test.TestStorage">
         
         
         </process>
