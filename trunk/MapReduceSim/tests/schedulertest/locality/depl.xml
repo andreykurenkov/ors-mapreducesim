@@ -1,7 +1,5 @@
 <?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">	<platform version="3">
-		
-		<process host="Storage" function="mapreducesim.storage.StorageProcess">
-        </process>
+		<process host="BSStorage" function="mapreducesim.execution.test.TestStorage"></process>
 		<process host="JobSubmitter" function="mapreducesim.scheduling.test.JobSubmitterProcess">
 			<argument value="job0">
 			</argument>

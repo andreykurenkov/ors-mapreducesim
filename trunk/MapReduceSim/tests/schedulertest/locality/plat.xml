@@ -2,6 +2,8 @@
 		<AS id="main" routing="Full">
 			<host id="Storage" state="ON" power="1">
 			</host>
+			<host id="BSStorage" state="ON" power="1">
+			</host>
 			<host id="JobTracker" state="ON" power="1">
 			</host>
 			<host id="JobSubmitter" state="ON" power="1">
@@ -114,6 +116,10 @@
 			</route>
 			<route src="JobSubmitter" dst="JobTracker">
 				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+			<route src="Storage" dst="BSStorage">
+			<link_ctn id="link0">
 				</link_ctn>
 			</route>
 		</AS>

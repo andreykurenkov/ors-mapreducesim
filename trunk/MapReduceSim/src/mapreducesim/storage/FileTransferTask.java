@@ -175,7 +175,7 @@ public class FileTransferTask extends Task {
 		 */
 		public void sendToStorage() throws TransferFailureException,
 				HostFailureException, TimeoutException {
-			this.send(StorageProcess.STORAGE_MAILBOX);
+			this.send(StorageProcess.DEFAULT_STORAGE_MAILBOX);
 		}
 
 		public String getFilename() {
@@ -258,7 +258,9 @@ public class FileTransferTask extends Task {
 		 */
 		public void sendToStorage() throws TransferFailureException,
 				HostFailureException, TimeoutException {
-			this.send(StorageProcess.STORAGE_MAILBOX);
+			System.out.println("Sending thing to "
+					+ StorageProcess.DEFAULT_STORAGE_MAILBOX);
+			this.send(StorageProcess.DEFAULT_STORAGE_MAILBOX);
 		}
 
 	}
