@@ -3,6 +3,8 @@ package mapreducesim.storage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.simgrid.msg.Msg;
+
 /**
  * 
  * Holds the root element for a data tree. Makes it easier to maintain the
@@ -75,8 +77,9 @@ public class DataTree<T> {
 	 */
 	public Node get(String query) {
 		List<Node> linearTree = linearize();
+		// Msg.info("Linear tree: " + linearTree);
 		for (Node potentialTarget : linearTree) {
-			if (potentialTarget.getName() == query) {
+			if (potentialTarget.getName().equals(query)) {
 				return potentialTarget;
 			}
 		}
