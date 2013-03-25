@@ -18,6 +18,9 @@ import mapreducesim.scheduling.TaskPool;
 import mapreducesim.scheduling.TaskCacheEntry.StatusType;
 import mapreducesim.scheduling.TaskCacheEntry.Type;
 import mapreducesim.storage.FileBlockLocation;
+import mapreducesim.storage.Node;
+import mapreducesim.storage.Rack;
+import mapreducesim.storage.StorageProcess;
 
 import org.simgrid.msg.*;
 
@@ -63,7 +66,8 @@ public class FIFOScheduler extends SchedulerProcess {
 		String src = process.getHost().getName();
 		Msg.info("FIFOScheduler received heartbeat from: "
 				+ process.getHost().getName());
-
+		// debug the current state of the task pool
+		dumpTaskPool();
 		int availMapSlots = process.getNumMapSlots()
 				- process.getNumMapRunning();
 		int availReduceSlots = process.getNumReduceSlots()
@@ -190,8 +194,6 @@ public class FIFOScheduler extends SchedulerProcess {
 				}
 			}
 		}
-		// debug the current state of the task pool
-		// dumpTaskPool();
 
 	}
 
@@ -221,11 +223,14 @@ public class FIFOScheduler extends SchedulerProcess {
 		List<TaskCacheEntry> nodeLocalTasks = this.getTasksSatisfyingLocality(
 				process, NODE_LOCAL);
 		List<TaskCacheEntry> rackLocalTasks = this.getTasksSatisfyingLocality(
-				process, NODE_LOCAL);
+				process, RACK_LOCAL);
 		List<TaskCacheEntry> globalTasks = this.getTasksSatisfyingLocality(
 				process, GLOBAL_LOCAL);
 		// go through each list, prioritizing node-local tasks
-
+		Msg.info("For trp :" + process.getHost().getName() + ", nodeLocals = "
+				+ nodeLocalTasks);
+		Msg.info("For trp :" + process.getHost().getName() + ", rackLocals = "
+				+ rackLocalTasks);
 		// go through the node-local tasks
 		for (int i = 0; i < nodeLocalTasks.size(); i++) {
 			TaskCacheEntry task = nodeLocalTasks.get(i);
@@ -292,6 +297,7 @@ public class FIFOScheduler extends SchedulerProcess {
 			boolean anySatisfied = false;
 			for (int j = 0; j < preferredLocations.size(); j++) {
 				String loc = preferredLocations.get(j);
+
 				boolean satisfies = satisfiesLocalityConstraint(taskRunner,
 						loc, localityConstraint);
 				if (satisfies) {
@@ -320,6 +326,17 @@ public class FIFOScheduler extends SchedulerProcess {
 		if (localityConstraint == NODE_LOCAL) {
 			return node.equals(taskRunner.getHost().getName());
 		} else if (localityConstraint == RACK_LOCAL) {
+			// check to see if taskRunner and node are on the same rack
+			Node n = StorageProcess.getTopology().get(node);
+			if (n == null) {
+				throw new RuntimeException(
+						"Could not find topological location of : " + node);
+			}
+			Rack r = (Rack) n.getParent();
+			if (r.getChild(taskRunner.getHost().getName()) != null) {
+				// rack contains the task runner, it is rack local
+				return true;
+			}
 			return false;
 		} else if (localityConstraint == GLOBAL_LOCAL) {
 			return true;
@@ -365,6 +382,13 @@ public class FIFOScheduler extends SchedulerProcess {
 		this.currentJob = createNewJobStatus(js);
 		Msg.info("New job submission received (job name '"
 				+ this.currentJob.getJobName() + "')");
+	}
+
+	@Override
+	public void onSimulationFinish() {
+		Msg.info("total decisions made: node, rack, global: "
+				+ this.nodeLocalDecisions + ", " + this.rackLocalDecisions
+				+ ", " + this.globalLocalDecisions);
 	}
 
 }

@@ -338,7 +338,7 @@ public class Node {
 	 */
 	public Node getChild(String query) {
 		for (int i = 0; i < this.numChildren(); i++) {
-			if (this.getChildAtPosition(i).getName() == query) {
+			if (this.getChildAtPosition(i).getName().equals(query)) {
 				return this.getChildAtPosition(i);
 			}
 		}
