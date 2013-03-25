@@ -8,6 +8,7 @@ import org.simgrid.msg.Msg;
 
 import mapreducesim.core.SimConfig;
 import mapreducesim.storage.DataLocation;
+import mapreducesim.storage.StorageProcess;
 import mapreducesim.util.xml.XMLElement;
 import mapreducesim.util.xml.XMLNode;
 
@@ -35,6 +36,10 @@ public class SimpleFileSplitter extends FileSplitter {
 				if (input.getAttributeValue("type").equals("random")) {
 
 					// testing setup using a b.s. file
+
+					// get the topology and print out
+					Msg.info("topology = "
+							+ StorageProcess.instance.getTopology());
 
 					// get the number of tasks to split the input into
 					int N = job.getOriginalMapTasks().size();

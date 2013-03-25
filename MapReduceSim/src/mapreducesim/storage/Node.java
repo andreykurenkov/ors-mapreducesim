@@ -35,6 +35,10 @@ public class Node {
 		name = "/";
 	}
 
+	public String toString() {
+		return this.name + "(" + this.children + ")";
+	}
+
 	/**
 	 * Creates a node as a child of specified node with specified name
 	 * 
