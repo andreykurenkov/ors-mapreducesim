@@ -13,11 +13,12 @@ import mapreducesim.util.xml.XMLNode;
 
 public class LocalityTestJobMaker extends JobMaker {
 
-	static final int NUM_NODES = 10;
+	static final int NUM_NODES = 5;
 	static final double GAUSSIAN_WIDTH_MIN = 1;
 	static final double GAUSSIAN_WIDTH_MAX = NUM_NODES / 2.0;
 	static final double GAUSSIAN_CENTER = (NUM_NODES - 1) / 2.0;
 	static final int NUM_SIMULATIONS = 100;
+	static final double TASKS_NODE_RATIO = 1;
 
 	int simIndex = 40;
 
@@ -76,7 +77,7 @@ public class LocalityTestJobMaker extends JobMaker {
 		XMLElement storageProcess = new XMLElement("process");
 		storageProcess.setAttribute("host", "Storage");
 		storageProcess.setAttribute("function",
-				"mapreducesim.execution.test.TestStorage");
+				"mapreducesim.storage.StorageProcess");
 		root.addChild(storageProcess);
 
 		// add the job tracker
@@ -204,7 +205,8 @@ public class LocalityTestJobMaker extends JobMaker {
 		double cumSum = 0;
 		for (int i = 0; i < NUM_NODES; i++) {
 			gaussIn[i] = i;
-			gaussOut[i] = NUM_NODES
+			gaussOut[i] = TASKS_NODE_RATIO
+					* NUM_NODES
 					/ (gaussWidth * Math.sqrt(2 * Math.PI))
 					* Math.exp(-(i - GAUSSIAN_CENTER) * (i - GAUSSIAN_CENTER)
 							/ (2 * gaussWidth * gaussWidth));
