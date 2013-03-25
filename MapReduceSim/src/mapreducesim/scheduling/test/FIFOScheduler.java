@@ -110,8 +110,10 @@ public class FIFOScheduler extends SchedulerProcess {
 						mapTask.taskData);
 				// send the task to the tasktracker
 				try {
-					Msg.info("Assigning map task " + wt + " to task tracker "
-							+ process.getHost().getName());
+					Msg
+							.info("Assigning map task " + mapTask
+									+ " to task tracker "
+									+ process.getHost().getName());
 					wt.send(process.MAILBOX);
 
 					// update local cache

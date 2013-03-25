@@ -12,7 +12,7 @@ import mapreducesim.storage.FileTransferTask.*;
 
 public class StorageProcess extends SimProcess {
 	// private int filesize;
-	public static String STORAGE_MAILBOX = "Storage";
+	public static String DEFAULT_STORAGE_MAILBOX = "Storage";
 	public static DataTree<Node> fs;
 	public static DataTree<Node> top;
 
@@ -24,7 +24,7 @@ public class StorageProcess extends SimProcess {
 	}
 
 	public StorageProcess(Host host, String name, String[] args) {
-		super(host, name, args, STORAGE_MAILBOX);
+		super(host, name, args);
 	}
 
 	@Override
@@ -62,7 +62,8 @@ public class StorageProcess extends SimProcess {
 				String filename = ((ReadRequestTask) currentTask).getFilename();
 				File file = (File) this.fs.get(filename);
 				if (file == null) {
-					Msg.info("Requested file does not exist in the filesystem.");
+					Msg
+							.info("Requested file does not exist in the filesystem.");
 				} else {
 					List<FileBlock> blocks = file.getNeededFileBlocks(
 							(int) offset, length);

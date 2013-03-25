@@ -21,7 +21,7 @@ import org.simgrid.msg.TimeoutException;
 public class TestStorage extends SimProcess {
 
 	public TestStorage(Host host, String name, String[] args) {
-		super(host, name, args, StorageProcess.STORAGE_MAILBOX);
+		super(host, name, args);
 	}
 
 	@Override
@@ -34,18 +34,22 @@ public class TestStorage extends SimProcess {
 
 				if (currentTask instanceof WriteRequestTask) { // write task
 					// update the actual filesystem, etc.
-					Msg.info("Writing file '" + ((WriteRequestTask) currentTask).getFileBlock() + "' at "
-							+ this.getTimeElapsed());
+					Msg.info("Writing file '"
+							+ ((WriteRequestTask) currentTask).getFileBlock()
+							+ "' at " + this.getTimeElapsed());
 					// currentTask.execute();
 					// simulate the expense
 				}
 
 				if (currentTask instanceof ReadRequestTask) { // read task
 					// update the actual filesystem, etc. (metadata for read)
-					Msg.info("Reading file '" + ((ReadRequestTask) currentTask).getName() + "' at " + this.getTimeElapsed());
+					Msg.info("Reading file '"
+							+ ((ReadRequestTask) currentTask).getName()
+							+ "' at " + this.getTimeElapsed());
 					// simulate the expense
 					// long costRemaining = 2; // dummy value...
-					String loc = ((ReadRequestTask) currentTask).getOriginMailbox();
+					String loc = ((ReadRequestTask) currentTask)
+							.getOriginMailbox();
 					ArrayList<FileBlock> fakeRead = new ArrayList<FileBlock>();
 					fakeRead.add(new FileBlock(null, 50, new KeyValuePairs()));
 					(new FileTransferTask(fakeRead)).send(loc);

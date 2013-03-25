@@ -65,7 +65,7 @@ public class SimpleShuffleSorter extends ShuffleSorter {
 		ArrayList<KeyValuePairs> pairs = new ArrayList<KeyValuePairs>();
 		for (DataLocation location : split.getLocations()) {
 			ReadRequestTask task = new ReadRequestTask(location, process.MAILBOX);
-			task.send(StorageProcess.STORAGE_MAILBOX);
+			task.send(StorageProcess.DEFAULT_STORAGE_MAILBOX);
 			Task response = null;
 			do {
 				response = Task.receive(process.MAILBOX);

@@ -38,8 +38,7 @@ public class SimpleFileSplitter extends FileSplitter {
 					// testing setup using a b.s. file
 
 					// get the topology and print out
-					Msg.info("topology = "
-							+ StorageProcess.instance.getTopology());
+					Msg.info("topology = " + StorageProcess.getTopology());
 
 					// get the number of tasks to split the input into
 					int N = job.getOriginalMapTasks().size();
