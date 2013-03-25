@@ -116,7 +116,13 @@ public class FSBuilder {
 			}
 			root.addChild(rack);
 		}
+		topology.setRoot(root);
 
+	}
+
+	public void createFS() {
+		Directory fsRoot = new Directory();
+		fs.setRoot(fsRoot);
 	}
 
 	/**
