@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Represents a file in the file system. Each file is divided into blocks
- * (FileBlock) of a split size defined for each job. Files are represented and
- * do not have a physical location--these are FileBlocks, which have
- * FileBlockLocations.
+ * Represents a file in the file system. Each file is divided into blocks (FileBlock) of a split size defined for each job.
+ * Files are represented and do not have a physical location--these are FileBlocks, which have FileBlockLocations.
  * 
  * @author Matthew O'Shaughnessy
  */
@@ -36,8 +34,7 @@ public class File extends Node {
 	}
 
 	/**
-	 * Don't use this constructor (for testing only)--files must have a parent
-	 * directory.
+	 * Don't use this constructor (for testing only)--files must have a parent directory.
 	 */
 	public File(String name) {
 		super();
@@ -46,6 +43,13 @@ public class File extends Node {
 
 	public List<FileBlock> getBlocks() {
 		return blocks;
+	}
+
+	public void addFileBlock(FileBlock toAdd) {
+		toAdd.setOwner(this);
+		toAdd.setIndex(blocks.size());
+		blocks.add(toAdd);
+		size += toAdd.getSize();
 	}
 
 	public static int getSplitSize() {
@@ -64,8 +68,7 @@ public class File extends Node {
 	}
 
 	/**
-	 * Used to validate if a retrieved fs object with the given filename is
-	 * actually a file
+	 * Used to validate if a retrieved fs object with the given filename is actually a file
 	 */
 	public boolean isFile() {
 		return isFile;
@@ -76,9 +79,8 @@ public class File extends Node {
 	 * 
 	 * Output: blocks field populated with FileBlock s.
 	 * 
-	 * Example: new file created with size 300MB, SPLIT_SIZE=128 --
-	 * this.blocks[0] (size=128) -- this.blocks[1] (size=128) -- this.blocks[2]
-	 * (size=44)
+	 * Example: new file created with size 300MB, SPLIT_SIZE=128 -- this.blocks[0] (size=128) -- this.blocks[1] (size=128) --
+	 * this.blocks[2] (size=44)
 	 */
 	public void makeSplits() {
 		int splitNumber = 0;
@@ -101,8 +103,7 @@ public class File extends Node {
 	}
 
 	/**
-	 * Simple policy to place the blocks of a file onto DataNodes in the
-	 * topology
+	 * Simple policy to place the blocks of a file onto DataNodes in the topology
 	 * 
 	 * @param top
 	 *            the topology
@@ -134,11 +135,9 @@ public class File extends Node {
 	}
 
 	/**
-	 * With an input of offset and length, returns a list of the necessary
-	 * fileblocks.
+	 * With an input of offset and length, returns a list of the necessary fileblocks.
 	 * 
-	 * Example: With split size 128, offset=100,length=100, returns blocks[0]
-	 * and blocks[1]
+	 * Example: With split size 128, offset=100,length=100, returns blocks[0] and blocks[1]
 	 * 
 	 * @param offset
 	 * @param length

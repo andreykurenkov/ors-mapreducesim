@@ -1,6 +1,7 @@
 package mapreducesim.execution.tasks;
 
 import mapreducesim.scheduling.InputSplit;
+import mapreducesim.scheduling.MapReduceJobSpecification;
 import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.File;
 import mapreducesim.storage.FileBlockLocation;
@@ -24,6 +25,7 @@ public class WorkTask extends Task {
 
 	public final double WORK_AMOUNT;
 	public final Type TYPE;
+	public final MapReduceJobSpecification JOB;
 	public boolean finished;
 
 	private static int mapCount;
@@ -38,9 +40,10 @@ public class WorkTask extends Task {
 	 * @param type
 	 * @param data
 	 */
-	public WorkTask(double workAmount, Type type, InputSplit data) {
+	public WorkTask(double workAmount, MapReduceJobSpecification job, Type type, InputSplit data) {
 		this.WORK_AMOUNT = workAmount;
 		this.NEEDED_DATA = data;
+		this.JOB = job;
 		this.TYPE = type;
 		if (type == Type.MAP) {
 			id = "Map Task " + (++mapCount);
