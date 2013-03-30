@@ -13,14 +13,14 @@ import mapreducesim.util.xml.XMLNode;
 
 public class LocalityTestJobMaker extends JobMaker {
 
-	static final int NUM_NODES = 5;
+	static final int NUM_NODES = 100;
 	static final double GAUSSIAN_WIDTH_MIN = 1;
-	static final double GAUSSIAN_WIDTH_MAX = NUM_NODES / 2.0;
+	static final double GAUSSIAN_WIDTH_MAX = NUM_NODES;
 	static final double GAUSSIAN_CENTER = (NUM_NODES - 1) / 2.0;
-	static final int NUM_SIMULATIONS = 100;
-	static final double TASKS_NODE_RATIO = 1;
+	static final int NUM_SIMULATIONS = 6;
+	static final double TASKS_NODE_RATIO = 2;
 
-	int simIndex = 40;
+	static int simIndex = 0;
 
 	public LocalityTestJobMaker(XMLElement input) {
 		super(input);
@@ -36,19 +36,22 @@ public class LocalityTestJobMaker extends JobMaker {
 		// write the config, platform, and deployment files to disk, then run
 		// the simulation
 
-		if (true) {
-			new SmartFile(config_loc).write(wrapXMLHeader(getXMLConfig(0)
-					.toRawXML(XMLNode.PRETTYFORMAT)), false);
-			new SmartFile(plat_loc).write(wrapXMLHeader(getXMLPlatform(0)
-					.toRawXML(XMLNode.PRETTYFORMAT)), false);
-			new SmartFile(depl_loc).write(wrapXMLHeader(getXMLDeployment(0)
-					.toRawXML(XMLNode.PRETTYFORMAT)), false);
-		}
+		for (simIndex = 0; simIndex < NUM_SIMULATIONS; simIndex++) {
 
-		try {
-			SimMain.main(new String[] { plat_loc, depl_loc, config_loc });
-		} catch (NativeException e) { // TODO Auto-generated catch block
-			e.printStackTrace();
+			if (true) {
+				new SmartFile(config_loc).write(wrapXMLHeader(getXMLConfig(
+						simIndex).toRawXML(XMLNode.PRETTYFORMAT)), false);
+				new SmartFile(plat_loc).write(wrapXMLHeader(getXMLPlatform(
+						simIndex).toRawXML(XMLNode.PRETTYFORMAT)), false);
+				new SmartFile(depl_loc).write(wrapXMLHeader(getXMLDeployment(
+						simIndex).toRawXML(XMLNode.PRETTYFORMAT)), false);
+			}
+
+			try {
+				SimMain.main(new String[] { plat_loc, depl_loc, config_loc });
+			} catch (NativeException e) { // TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}

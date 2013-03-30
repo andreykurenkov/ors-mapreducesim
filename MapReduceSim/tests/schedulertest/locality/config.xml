@@ -3,13 +3,25 @@
 		</FileSplitter>
 		<JobMaker classname="mapreducesim.scheduling.SimpleJobMaker">
 			<job taskSpecification="full" name="job0">
+				<task preferredLocation="TaskTracker0" type="map">
+				</task>
+				<task preferredLocation="TaskTracker1" type="map">
+				</task>
 				<task preferredLocation="TaskTracker1" type="map">
 				</task>
 				<task preferredLocation="TaskTracker2" type="map">
 				</task>
 				<task preferredLocation="TaskTracker2" type="map">
 				</task>
+				<task preferredLocation="TaskTracker2" type="map">
+				</task>
+				<task preferredLocation="TaskTracker2" type="map">
+				</task>
 				<task preferredLocation="TaskTracker3" type="map">
+				</task>
+				<task preferredLocation="TaskTracker3" type="map">
+				</task>
+				<task preferredLocation="TaskTracker4" type="map">
 				</task>
 			</job>
 		</JobMaker>
