@@ -21,7 +21,8 @@ import org.simgrid.msg.TimeoutException;
 public class TestJobTracker extends SimProcess {
 	private static int tasklength;
 	static {
-		tasklength = Integer.parseInt(SimConfig.getElementText("tasklength", "25"));
+		tasklength = Integer.parseInt(SimConfig.getElementText("tasklength",
+				"25"));
 	}
 
 	public TestJobTracker(Host host, String name, String[] args) {
@@ -35,7 +36,9 @@ public class TestJobTracker extends SimProcess {
 		int runnersfinished = 0;
 		while (!finished) {
 			try {
-				Task received = Task.receive(SchedulerProcess.SCHEDULER_MAILBOX, SchedulerProcess.getHeartbeatInterval());
+				Task received = Task.receive(
+						SchedulerProcess.SCHEDULER_MAILBOX, SchedulerProcess
+								.getHeartbeatInterval());
 				if (received instanceof HeartbeatTask) {
 					TaskRunnerProcess from = ((HeartbeatTask) received).from;
 					if (from.hasMapSlots()) {
@@ -45,7 +48,8 @@ public class TestJobTracker extends SimProcess {
 							runnersfinished++;
 							from.finish();
 						}
-						(new WorkTask(tasklength, Type.MAP, new InputSplit())).send(from.MAILBOX);
+						(new WorkTask(tasklength, null, Type.MAP,
+								new InputSplit())).send(from.MAILBOX);
 
 					}
 				}
