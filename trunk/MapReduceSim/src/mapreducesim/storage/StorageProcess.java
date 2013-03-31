@@ -32,7 +32,7 @@ public class StorageProcess extends SimProcess {
 			HostFailureException, TimeoutException {
 		while (!finished) {
 			// get the next task from the storage interface mailbox
-			Task currentTask = Task.receive(MAILBOX);
+			Task currentTask = Task.receive(MAILBOX, 10000);
 			// handle task appropriately
 
 			if (currentTask instanceof WriteRequestTask) { // write task

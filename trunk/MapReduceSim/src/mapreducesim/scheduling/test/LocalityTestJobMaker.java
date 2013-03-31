@@ -1,5 +1,7 @@
 package mapreducesim.scheduling.test;
 
+import java.io.IOException;
+
 import org.simgrid.msg.NativeException;
 
 import mapreducesim.core.ConfigurableClass;
@@ -13,14 +15,17 @@ import mapreducesim.util.xml.XMLNode;
 
 public class LocalityTestJobMaker extends JobMaker {
 
-	static final int NUM_NODES = 100;
+	static final int NUM_NODES = 30;
 	static final double GAUSSIAN_WIDTH_MIN = 1;
 	static final double GAUSSIAN_WIDTH_MAX = NUM_NODES;
 	static final double GAUSSIAN_CENTER = (NUM_NODES - 1) / 2.0;
-	static final int NUM_SIMULATIONS = 6;
+	static final int NUM_SIMULATIONS = 50;
 	static final double TASKS_NODE_RATIO = 2;
 
 	static int simIndex = 0;
+	static double gaussWidthCurrent = 0;
+
+	static String toWrite = "";
 
 	public LocalityTestJobMaker(XMLElement input) {
 		super(input);
@@ -33,25 +38,47 @@ public class LocalityTestJobMaker extends JobMaker {
 		String plat_loc = "tests/schedulertest/locality/plat.xml";
 		String depl_loc = "tests/schedulertest/locality/depl.xml";
 
+		simIndex = Integer.parseInt(args[0]);
+
 		// write the config, platform, and deployment files to disk, then run
 		// the simulation
 
-		for (simIndex = 0; simIndex < NUM_SIMULATIONS; simIndex++) {
+		if (true) {
+			new SmartFile(config_loc).write(
+					wrapXMLHeader(getXMLConfig(simIndex).toRawXML(
+							XMLNode.PRETTYFORMAT)), false);
+			new SmartFile(plat_loc).write(
+					wrapXMLHeader(getXMLPlatform(simIndex).toRawXML(
+							XMLNode.PRETTYFORMAT)), false);
+			new SmartFile(depl_loc).write(wrapXMLHeader(getXMLDeployment(
+					simIndex).toRawXML(XMLNode.PRETTYFORMAT)), false);
+		}
 
-			if (true) {
-				new SmartFile(config_loc).write(wrapXMLHeader(getXMLConfig(
-						simIndex).toRawXML(XMLNode.PRETTYFORMAT)), false);
-				new SmartFile(plat_loc).write(wrapXMLHeader(getXMLPlatform(
-						simIndex).toRawXML(XMLNode.PRETTYFORMAT)), false);
-				new SmartFile(depl_loc).write(wrapXMLHeader(getXMLDeployment(
-						simIndex).toRawXML(XMLNode.PRETTYFORMAT)), false);
-			}
+		try {
+			SimMain.main(new String[] { plat_loc, depl_loc, config_loc });
 
-			try {
-				SimMain.main(new String[] { plat_loc, depl_loc, config_loc });
-			} catch (NativeException e) { // TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			FIFOScheduler sched = FIFOScheduler.inst;
+
+			double totalDec = sched.nodeLocalDecisions
+					+ sched.rackLocalDecisions + sched.globalLocalDecisions;
+			double nodepct = sched.nodeLocalDecisions / totalDec * 100;
+			double rackpct = sched.rackLocalDecisions / totalDec * 100;
+			double remotepct = sched.globalLocalDecisions / totalDec * 100;
+
+			toWrite += (gaussWidthCurrent + ", " + nodepct + ", " + rackpct
+					+ ", " + remotepct + "; ...");
+
+		} catch (NativeException e) { // TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			SmartFile sf = new SmartFile("ml.m");
+			sf.createNewFile();
+			String nl = System.getProperty("line.separator");
+			sf.write(toWrite + nl, true);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 	}
@@ -80,7 +107,7 @@ public class LocalityTestJobMaker extends JobMaker {
 		XMLElement storageProcess = new XMLElement("process");
 		storageProcess.setAttribute("host", "Storage");
 		storageProcess.setAttribute("function",
-				"mapreducesim.storage.StorageProcess");
+				"mapreducesim.execution.test.TestStorage");
 		root.addChild(storageProcess);
 
 		// add the job tracker
@@ -197,7 +224,7 @@ public class LocalityTestJobMaker extends JobMaker {
 
 		// get the width of the gaussian distribution to use for this simulation
 		// instance
-		double gaussWidth = (GAUSSIAN_WIDTH_MAX - GAUSSIAN_WIDTH_MIN)
+		gaussWidthCurrent = (GAUSSIAN_WIDTH_MAX - GAUSSIAN_WIDTH_MIN)
 				* simIndex / NUM_SIMULATIONS + GAUSSIAN_WIDTH_MIN;
 
 		// System.out.println("gausswidth = " + gaussWidth);
@@ -210,9 +237,9 @@ public class LocalityTestJobMaker extends JobMaker {
 			gaussIn[i] = i;
 			gaussOut[i] = TASKS_NODE_RATIO
 					* NUM_NODES
-					/ (gaussWidth * Math.sqrt(2 * Math.PI))
+					/ (gaussWidthCurrent * Math.sqrt(2 * Math.PI))
 					* Math.exp(-(i - GAUSSIAN_CENTER) * (i - GAUSSIAN_CENTER)
-							/ (2 * gaussWidth * gaussWidth));
+							/ (2 * gaussWidthCurrent * gaussWidthCurrent));
 			// System.out.println("gaussOut[" + i + "] = " + gaussOut[i]);
 			cumSum += gaussOut[i];
 		}
@@ -230,7 +257,7 @@ public class LocalityTestJobMaker extends JobMaker {
 		}
 
 		for (int i = 0; i < NUM_NODES; i++) {
-			System.out.println("Tasks at node " + i + ": " + numTasks[i]);
+			// System.out.println("Tasks at node " + i + ": " + numTasks[i]);
 		}
 		// System.out.println("Total tasks: " + cTasks);
 
