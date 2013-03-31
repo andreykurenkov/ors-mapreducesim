@@ -1,0 +1,8 @@
+plot(sigma,nodeLocalPct,'-sb');
+hold on;
+plot(sigma,rackLocalPct,'-dr');
+plot(sigma,remotePct,'-*k');
+xlabel('sigma');
+ylabel('% scheduling decisions');
+legend('nodeLocal','rackLocal','remote');
+hold off;

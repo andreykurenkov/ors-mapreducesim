@@ -18,9 +18,11 @@ import org.simgrid.msg.Host;
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
+import org.simgrid.msg.TimeoutException;
 
 /**
- * Simple implementation of mapping that simulates retrieving needed files, doing map work, and writing output
+ * Simple implementation of mapping that simulates retrieving needed files,
+ * doing map work, and writing output
  * 
  * @author Andrey Kurenkov
  * @version 1.0 Mar 13, 2013
@@ -29,8 +31,9 @@ public class SimpleMapperProcess extends WorkerProcess {
 	public final double failureRate = 0.001;// TODO:use
 
 	/**
-	 * Constructor for SimpleMapperProcess that gives values to the instance variables corresponding to the parameters using
-	 * chaining to the superclass.
+	 * Constructor for SimpleMapperProcess that gives values to the instance
+	 * variables corresponding to the parameters using chaining to the
+	 * superclass.
 	 * 
 	 * @param host
 	 * @param name
@@ -38,12 +41,14 @@ public class SimpleMapperProcess extends WorkerProcess {
 	 * @param parent
 	 * @param workTask
 	 */
-	public SimpleMapperProcess(Host host, String name, String mailbox, TaskRunnerProcess parent, WorkTask workTask) {
+	public SimpleMapperProcess(Host host, String name, String mailbox,
+			TaskRunnerProcess parent, WorkTask workTask) {
 		super(host, name, mailbox, parent, workTask);
 	}
 
 	/**
-	 * Main method of Process - once started performs simulation for finishing entire map task.
+	 * Main method of Process - once started performs simulation for finishing
+	 * entire map task.
 	 */
 	public void main(String[] args) throws MsgException {
 		Msg.info(this.getHost().getName() + " starting " + task);
@@ -55,19 +60,43 @@ public class SimpleMapperProcess extends WorkerProcess {
 			outFile.setParent(myNode);
 		int index = 0;
 		for (DataLocation dataLocation : task.NEEDED_DATA.getLocations()) {
-			ReadRequestTask read = new ReadRequestTask(dataLocation, this.MAILBOX);
-			Msg.info("Sending thing to " + StorageProcess.DEFAULT_STORAGE_MAILBOX);
+			ReadRequestTask read = new ReadRequestTask(dataLocation,
+					this.MAILBOX);
+			Msg.info("Sending thing to "
+					+ StorageProcess.DEFAULT_STORAGE_MAILBOX);
 			read.send(StorageProcess.DEFAULT_STORAGE_MAILBOX);
-			Task transferTask = Task.receive(this.MAILBOX);
+			Task transferTask = null;
+			try {
+				transferTask = Task.receive(this.MAILBOX, 10000);
+			} catch (TimeoutException e) {
+				Msg.info("Transfer task receiving timed out.");
+				return;
+			}
 
 			while (!(transferTask instanceof FileTransferTask)) {
-				transferTask = Task.receive(this.MAILBOX);
+				try {
+					transferTask = Task.receive(this.MAILBOX, 10000);
+				} catch (TimeoutException e) {
+					Msg.info("Transfer task receiving timed out.");
+					return;
+				}
 			}
-			for (FileBlock block : ((FileTransferTask) transferTask).getTransferFileBlocks()) {
-				this.elapseTime(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, block.getPairs()));
-				FileBlock out = new FileBlock(outFile, index++, block.getSize() / 2);// TODO: get compression rate?
+			for (FileBlock block : ((FileTransferTask) transferTask)
+					.getTransferFileBlocks()) {
+				this.elapseTime(TaskRunnerProcess.getTimer()
+						.estimateComputeDuration(this.getHost(), task,
+								block.getPairs()));
+				FileBlock out = new FileBlock(outFile, index++,
+						block.getSize() / 2);// TODO: get compression rate?
 				output.add(out);
-				if (task.JOB.getOriginalReduceTasks().size() == 0) {// only write to FileSystem if no reduce tasks for job
+				if (task.JOB.getOriginalReduceTasks().size() == 0) {// only
+					// write to
+					// FileSystem
+					// if no
+					// reduce
+					// tasks for
+					// job
+					Msg.info("Sending write request task to storage");
 					WriteRequestTask task = new WriteRequestTask(out);
 					task.sendToStorage();
 				} else {

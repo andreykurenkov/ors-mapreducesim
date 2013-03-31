@@ -62,6 +62,9 @@ public class DataTree<T> {
 	}
 
 	public void recursiveLinearize(Node recurseRoot, List<Node> linearizedTree) {
+		if (recurseRoot == null) {
+			return;
+		}
 		linearizedTree.add(recurseRoot);
 		for (Node child : recurseRoot.getChildren()) {
 			recursiveLinearize(child, linearizedTree);
