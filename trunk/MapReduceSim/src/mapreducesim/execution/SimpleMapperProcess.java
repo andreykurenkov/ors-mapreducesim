@@ -6,11 +6,9 @@ import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.storage.DataLocation;
 import mapreducesim.storage.File;
 import mapreducesim.storage.FileBlock;
-import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.storage.FileTransferTask;
 import mapreducesim.storage.FileTransferTask.ReadRequestTask;
 import mapreducesim.storage.FileTransferTask.WriteRequestTask;
-import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.storage.Node;
 import mapreducesim.storage.StorageProcess;
 
@@ -21,8 +19,7 @@ import org.simgrid.msg.Task;
 import org.simgrid.msg.TimeoutException;
 
 /**
- * Simple implementation of mapping that simulates retrieving needed files,
- * doing map work, and writing output
+ * Simple implementation of mapping that simulates retrieving needed files, doing map work, and writing output
  * 
  * @author Andrey Kurenkov
  * @version 1.0 Mar 13, 2013
@@ -31,9 +28,8 @@ public class SimpleMapperProcess extends WorkerProcess {
 	public final double failureRate = 0.001;// TODO:use
 
 	/**
-	 * Constructor for SimpleMapperProcess that gives values to the instance
-	 * variables corresponding to the parameters using chaining to the
-	 * superclass.
+	 * Constructor for SimpleMapperProcess that gives values to the instance variables corresponding to the parameters using
+	 * chaining to the superclass.
 	 * 
 	 * @param host
 	 * @param name
@@ -41,14 +37,12 @@ public class SimpleMapperProcess extends WorkerProcess {
 	 * @param parent
 	 * @param workTask
 	 */
-	public SimpleMapperProcess(Host host, String name, String mailbox,
-			TaskRunnerProcess parent, WorkTask workTask) {
+	public SimpleMapperProcess(Host host, String name, String mailbox, TaskRunnerProcess parent, WorkTask workTask) {
 		super(host, name, mailbox, parent, workTask);
 	}
 
 	/**
-	 * Main method of Process - once started performs simulation for finishing
-	 * entire map task.
+	 * Main method of Process - once started performs simulation for finishing entire map task.
 	 */
 	public void main(String[] args) throws MsgException {
 		Msg.info(this.getHost().getName() + " starting " + task);
@@ -60,10 +54,8 @@ public class SimpleMapperProcess extends WorkerProcess {
 			outFile.setParent(myNode);
 		int index = 0;
 		for (DataLocation dataLocation : task.NEEDED_DATA.getLocations()) {
-			ReadRequestTask read = new ReadRequestTask(dataLocation,
-					this.MAILBOX);
-			Msg.info("Sending thing to "
-					+ StorageProcess.DEFAULT_STORAGE_MAILBOX);
+			ReadRequestTask read = new ReadRequestTask(dataLocation, this.MAILBOX);
+			Msg.info("Sending thing to " + StorageProcess.DEFAULT_STORAGE_MAILBOX);
 			read.send(StorageProcess.DEFAULT_STORAGE_MAILBOX);
 			Task transferTask = null;
 			try {
@@ -81,21 +73,11 @@ public class SimpleMapperProcess extends WorkerProcess {
 					return;
 				}
 			}
-			for (FileBlock block : ((FileTransferTask) transferTask)
-					.getTransferFileBlocks()) {
-				this.elapseTime(TaskRunnerProcess.getTimer()
-						.estimateComputeDuration(this.getHost(), task,
-								block.getPairs()));
-				FileBlock out = new FileBlock(outFile, index++,
-						block.getSize() / 2);// TODO: get compression rate?
+			for (FileBlock block : ((FileTransferTask) transferTask).getTransferFileBlocks()) {
+				this.elapseTime(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, block.getPairs()));
+				FileBlock out = new FileBlock(outFile, index++, block.getSize() / 2);// TODO: get compression rate?
 				output.add(out);
-				if (task.JOB.getOriginalReduceTasks().size() == 0) {// only
-					// write to
-					// FileSystem
-					// if no
-					// reduce
-					// tasks for
-					// job
+				if (task.JOB.getOriginalReduceTasks().size() == 0) {
 					Msg.info("Sending write request task to storage");
 					WriteRequestTask task = new WriteRequestTask(out);
 					task.sendToStorage();
