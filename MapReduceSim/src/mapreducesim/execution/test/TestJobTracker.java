@@ -1,5 +1,7 @@
 package mapreducesim.execution.test;
 
+import java.util.ArrayList;
+
 import mapreducesim.core.SimConfig;
 import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
@@ -8,7 +10,9 @@ import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.execution.tasks.WorkTask.Type;
 import mapreducesim.scheduling.InputSplit;
+import mapreducesim.scheduling.MapReduceJobSpecification;
 import mapreducesim.scheduling.SchedulerProcess;
+import mapreducesim.scheduling.TaskCacheEntry;
 import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.util.xml.XMLDocument;
 import mapreducesim.util.xml.XMLElement;
@@ -21,8 +25,7 @@ import org.simgrid.msg.TimeoutException;
 public class TestJobTracker extends SimProcess {
 	private static int tasklength;
 	static {
-		tasklength = Integer.parseInt(SimConfig.getElementText("tasklength",
-				"25"));
+		tasklength = Integer.parseInt(SimConfig.getElementText("tasklength", "25"));
 	}
 
 	public TestJobTracker(Host host, String name, String[] args) {
@@ -36,9 +39,7 @@ public class TestJobTracker extends SimProcess {
 		int runnersfinished = 0;
 		while (!finished) {
 			try {
-				Task received = Task.receive(
-						SchedulerProcess.SCHEDULER_MAILBOX, SchedulerProcess
-								.getHeartbeatInterval());
+				Task received = Task.receive(SchedulerProcess.SCHEDULER_MAILBOX, SchedulerProcess.getHeartbeatInterval());
 				if (received instanceof HeartbeatTask) {
 					TaskRunnerProcess from = ((HeartbeatTask) received).from;
 					if (from.hasMapSlots()) {
@@ -48,7 +49,8 @@ public class TestJobTracker extends SimProcess {
 							runnersfinished++;
 							from.finish();
 						}
-						(new WorkTask(tasklength, null, Type.MAP,
+						(new WorkTask((double) tasklength, new MapReduceJobSpecification("test",
+								new ArrayList<TaskCacheEntry>(), new ArrayList<TaskCacheEntry>()), Type.MAP,
 								new InputSplit())).send(from.MAILBOX);
 
 					}
