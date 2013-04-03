@@ -7,13 +7,14 @@ import mapreducesim.core.SimMain;
 import mapreducesim.util.xml.XMLDocument;
 import mapreducesim.util.xml.XMLElement;
 
+//TODO: make subclass of ConfigurableClass
 public class FSBuilder {
-	private DataTree<Node> fs;
-	private DataTree<Node> topology;
+	private DataTree fs;
+	private DataTree topology;
 
 	public FSBuilder() {
-		fs = new DataTree<Node>();
-		topology = new DataTree<Node>();
+		fs = new DataTree();
+		topology = new DataTree();
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class FSBuilder {
 	 */
 	public Directory makeTree() {
 		// make the DataTree
-		DataTree<Node> fs = new DataTree<Node>();
+		DataTree fs = new DataTree();
 		// add the root node ("/")
 		Directory fsRoot = new Directory();
 		fs.setRoot(fsRoot);
@@ -195,11 +196,11 @@ public class FSBuilder {
 		file4.getBlocks().get(2).addLocations(dn1b, dn2a, dn2b);
 	}
 
-	public DataTree<Node> getFS() {
+	public DataTree getFS() {
 		return fs;
 	}
 
-	public DataTree<Node> getTopology() {
+	public DataTree getTopology() {
 		return topology;
 	}
 }

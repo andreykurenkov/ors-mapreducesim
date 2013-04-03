@@ -8,8 +8,8 @@ package mapreducesim.storage;
  */
 public class StorageMain {
 
-	private static DataTree<Node> fs;
-	private static DataTree<Node> top;
+	private static DataTree fs;
+	private static DataTree top;
 
 	/**
 	 * @param args
@@ -17,17 +17,17 @@ public class StorageMain {
 	public static void main(String[] args) {
 
 		FSBuilder fsbuild = new FSBuilder();
-		fsbuild.createTestTopology();
+		fsbuild.createTopology();
 		fs = fsbuild.getFS();
 		top = fsbuild.getTopology();
 
 	}
 
-	public static DataTree<Node> getFS() {
+	public static DataTree getFS() {
 		return fs;
 	}
 
-	public static DataTree<Node> getTopology() {
+	public static DataTree getTopology() {
 		return top;
 	}
 

@@ -3,18 +3,24 @@ package mapreducesim.storage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.simgrid.msg.*;
-
-import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.scheduling.InputSplit;
-import mapreducesim.storage.FileTransferTask.*;
+import mapreducesim.scheduling.NotifyNoMoreTasks;
+import mapreducesim.storage.FileTransferTask.ReadRequestTask;
+import mapreducesim.storage.FileTransferTask.WriteRequestTask;
+
+import org.simgrid.msg.Host;
+import org.simgrid.msg.HostFailureException;
+import org.simgrid.msg.Msg;
+import org.simgrid.msg.Task;
+import org.simgrid.msg.TimeoutException;
+import org.simgrid.msg.TransferFailureException;
 
 public class StorageProcess extends SimProcess {
 	// private int filesize;
 	public static String DEFAULT_STORAGE_MAILBOX = "Storage";
-	public static DataTree<Node> fs;
-	public static DataTree<Node> top;
+	public static DataTree fs;
+	public static DataTree top;
 
 	static {
 		FSBuilder fsbuild = new FSBuilder();
@@ -34,7 +40,9 @@ public class StorageProcess extends SimProcess {
 			// get the next task from the storage interface mailbox
 			Task currentTask = Task.receive(MAILBOX, 10000);
 			// handle task appropriately
-
+			if (currentTask instanceof NotifyNoMoreTasks) {
+				finish();
+			}
 			if (currentTask instanceof WriteRequestTask) { // write task
 				// update the actual filesystem, etc.
 				Msg.info("Writing file '"
@@ -43,15 +51,13 @@ public class StorageProcess extends SimProcess {
 				// currentTask.execute();
 				// simulate the expense
 				Msg.info("Finished writing file '"
-						+ ((WriteRequestTask) currentTask).getName() + "' at "
-						+ this.getTimeElapsed());
+ + ((WriteRequestTask) currentTask).getName());
 			}
 
 			if (currentTask instanceof ReadRequestTask) { // read task
 				// update the actual filesystem, etc. (metadata for read)
 				Msg.info("Reading file '"
-						+ ((ReadRequestTask) currentTask).getName() + "' at "
-						+ this.getTimeElapsed());
+ + ((ReadRequestTask) currentTask).getName());
 				// simulate the expense
 				double readcost = 0.0;
 				double blockreadcost = 0.0;
@@ -87,12 +93,11 @@ public class StorageProcess extends SimProcess {
 					}
 					elapseTime(readcost);
 				}
-				// Send the block that was read back to the sender?
-				// Not sure if this is needed //TODO
 				((ReadRequestTask) currentTask).setReadDone();
-				ArrayList<FileBlock> notAFakeRead = new ArrayList<FileBlock>();
-				notAFakeRead.add(file.getBlocks().get(0));
-				(new FileTransferTask(notAFakeRead)).send(origin);
+				if (file != null)
+					(new FileTransferTask(file.getNeededFileBlocks(offset, length))).send(origin);
+				else
+					(new FileTransferTask(new ArrayList<FileBlock>())).send(origin);// TODO: handle error cases
 				// ArrayList<FileBlock> fakeRead = new ArrayList<FileBlock>();
 				// fakeRead.add(new FileBlock(null, 50, new KeyValuePairs()));
 				// (new FileTransferTask(fakeRead)).send(loc);
@@ -119,7 +124,7 @@ public class StorageProcess extends SimProcess {
 	 * 
 	 * @return The DataTree of the topology
 	 */
-	public static DataTree<Node> getTopology() {
+	public static DataTree getTopology() {
 		return top;
 	}
 

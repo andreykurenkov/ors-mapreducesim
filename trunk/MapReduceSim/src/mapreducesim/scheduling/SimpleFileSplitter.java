@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.simgrid.msg.Msg;
-
 import mapreducesim.core.SimConfig;
 import mapreducesim.storage.DataLocation;
+import mapreducesim.storage.DataNode;
+import mapreducesim.storage.FileBlock;
+import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.storage.StorageProcess;
 import mapreducesim.util.xml.XMLElement;
-import mapreducesim.util.xml.XMLNode;
+
+import org.simgrid.msg.Msg;
 
 /**
  * The default file splitter implementation
@@ -39,23 +41,27 @@ public class SimpleFileSplitter extends FileSplitter {
 
 					// get the topology and print out
 					Msg.info("topology = " + StorageProcess.getTopology());
-
+					List<DataNode> data = StorageProcess.getTopology().getDataNodes();
 					// get the number of tasks to split the input into
 					int N = job.getOriginalMapTasks().size();
 					Msg.info("SimpleFileSplitter: N = " + N);
-					final int OFFS_SIZE = 10000;
 					for (int i = 0; i < N; i++) {
 						// now for each map task, create an input split
-						// TODO: in the future, ask Matt's code for this
-						// information
 						// to create an input split we need a list of
 						// DataLocation
 						List<DataLocation> dls = new LinkedList<DataLocation>();
+						DataNode randomData = data.get((int) (Math.random() * data.size()));
+						FileBlock block = new FileBlock(null, i, new KeyValuePairs(64, 1));// fake random FileBlock
+						if (randomData.getBlocks().size() > 0) {// If blocks are actually being created
+						int blockNum = (int) (Math.random() * randomData.getBlocks().size());
+							block = randomData.getBlockAtPosition(blockNum);
+						}
 						// for now, just one data location per map task
 						// in the future, handle multiple
-						DataLocation dl = new DataLocation("inputFile", i
-								* OFFS_SIZE, OFFS_SIZE);
-						dls.add(dl);
+						if (block.getOwner() != null)
+							dls.add(new DataLocation(block.getOwner().getName(), block.getOffset(), block.getSize()));
+						else
+							dls.add(new DataLocation("Fake file", block.getOffset(), block.getSize()));
 						// now create the input split and add to the result
 						InputSplit is = new InputSplit(dls);
 						toReturn.add(is);

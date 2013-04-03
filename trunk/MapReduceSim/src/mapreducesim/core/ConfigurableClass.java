@@ -1,12 +1,7 @@
 package mapreducesim.core;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import org.simgrid.msg.Msg;
-
-import mapreducesim.execution.SimpleWorkTaskTimer;
-import mapreducesim.execution.WorkTaskTimer;
 import mapreducesim.scheduling.FileSplitter;
 import mapreducesim.scheduling.JobMaker;
 import mapreducesim.scheduling.SimpleFileSplitter;
@@ -15,6 +10,8 @@ import mapreducesim.util.ExceptionUtil;
 import mapreducesim.util.ReflectionUtil;
 import mapreducesim.util.xml.XMLDocument;
 import mapreducesim.util.xml.XMLElement;
+
+import org.simgrid.msg.Msg;
 
 /**
  * The top-level class for the set of classes whose instances should be loaded from the configuration xml file. This class
@@ -103,6 +100,7 @@ public abstract class ConfigurableClass {
 		try {
 			if (element != null) {
 				String nameOfA = element.getAttributeValue(CLASS_ATTRIBUTE_KEY);
+				if (nameOfA != null) {
 				// with XMLElement param
 				toReturn = ReflectionUtil.attemptConstructorCallAndCast(classType, Class.forName(nameOfA), element);
 				// if did not work, with no param
@@ -111,6 +109,12 @@ public abstract class ConfigurableClass {
 				if (toReturn == null) {
 					toReturn = defaultInstance;
 					Msg.info(classType.getSimpleName() + " loading failed. Using default");
+				}
+
+				} else {
+					Msg.info("No " + CLASS_ATTRIBUTE_KEY + " for " + classType.getSimpleName() + " given. Using default of "
+							+ defaultInstance.getClass().getSimpleName());
+					toReturn = defaultInstance;
 				}
 			} else {
 				Msg.info("Null XMLElement for " + classType.getSimpleName() + " given. Using default of "

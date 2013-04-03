@@ -1,21 +1,19 @@
 package mapreducesim.scheduling;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+
+import mapreducesim.core.SimConfig;
+import mapreducesim.core.SimProcess;
+import mapreducesim.execution.TaskRunnerProcess;
+import mapreducesim.execution.tasks.HeartbeatTask;
+import mapreducesim.storage.StorageProcess;
 
 import org.simgrid.msg.Host;
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.MsgException;
 import org.simgrid.msg.Task;
 import org.simgrid.msg.TimeoutException;
-
-import mapreducesim.core.SimConfig;
-import mapreducesim.core.SimMain;
-import mapreducesim.core.SimProcess;
-import mapreducesim.execution.TaskRunnerProcess;
-import mapreducesim.execution.tasks.HeartbeatTask;
 
 public abstract class SchedulerProcess extends SimProcess {
 
@@ -58,6 +56,8 @@ public abstract class SchedulerProcess extends SimProcess {
 				taskReceived = Task
 						.receive(this.MAILBOX, heartbeatInterval * 2);
 			} catch (TimeoutException te) {
+				NotifyNoMoreTasks notify = new NotifyNoMoreTasks();
+				notify.send(StorageProcess.DEFAULT_STORAGE_MAILBOX);
 				break;
 			}
 

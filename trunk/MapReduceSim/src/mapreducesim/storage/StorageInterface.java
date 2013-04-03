@@ -12,8 +12,8 @@ import org.simgrid.msg.Msg;
  * 
  */
 public class StorageInterface {
-	private DataTree<Node> fs;
-	private DataTree<Node> top;
+	private DataTree fs;
+	private DataTree top;
 
 	/**
 	 * Constructor creates the fs/topology and loads it into StorageInterface
@@ -21,7 +21,7 @@ public class StorageInterface {
 	 */
 	public StorageInterface() {
 		FSBuilder fsbuild = new FSBuilder();
-		fsbuild.createTestTopology();
+		fsbuild.createTopology();
 		this.fs = fsbuild.getFS();
 		this.top = fsbuild.getTopology();
 	}
@@ -35,7 +35,7 @@ public class StorageInterface {
 	 * 
 	 * @return The DataTree of the topology
 	 */
-	public DataTree<Node> getTopology() {
+	public DataTree getTopology() {
 		return top;
 	}
 

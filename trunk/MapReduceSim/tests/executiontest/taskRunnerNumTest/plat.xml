@@ -6,7 +6,7 @@
 			</host>
 			<host id="Storage" state="ON" power="1">
 			</host>
-			<host id="TaskTracker0" state="ON" power="100000">
+			<host id="TaskTracker0" state="ON" power="1">
 			</host>
 			<link id="link0" latency="0.1" bandwidth="100000">
 			</link>

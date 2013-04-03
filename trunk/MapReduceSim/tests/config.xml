@@ -1,24 +1,26 @@
+<?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">	
 <config>
-	<TaskTimer name="mapreducesim.execution.SimpleWorkTaskTimer"> </TaskTimer>
+
+	<WorkTaskTimer 	classname="mapreducesim.execution.SimpleWorkTaskTimer" MapCoefficient="10"> </WorkTaskTimer>
 	<heartbeat>50</heartbeat>
-   <tasklength>25</tasklength>
-	
-	
-	
-	<JobMaker>
-		<job name="job0" taskSpecification="full">
-			<task type="map" preferredLocation="TaskTracker1" />
-			<task type="map" preferredLocation="TaskTracker2" />
-			<task type="map" preferredLocation="TaskTracker3" />
-			<task type="reduce" preferredLocation="TaskTracker1" />
-			<task type="reduce" preferredLocation="TaskTracker2" />
-			<task type="reduce" preferredLocation="TaskTracker3" />
-		</job>
-	
-	</JobMaker>
+    <tasklength>25</tasklength>
 	
 	<TaskTrackerDefaultMapSlots>2</TaskTrackerDefaultMapSlots>
 	<TaskTrackerDefaultReduceSlots>2</TaskTrackerDefaultReduceSlots>
 	
-	
+		<FileSplitter classname="mapreducesim.scheduling.SimpleFileSplitter" type="random">
+		</FileSplitter>
+		<JobMaker classname="mapreducesim.scheduling.SimpleJobMaker">
+			<job taskSpecification="full" name="job0">
+				<task preferredLocation="TaskTracker0" type="map">
+				</task>
+				<task preferredLocation="TaskTracker0" type="map">
+				</task>
+				<task preferredLocation="TaskTracker0" type="map">
+				</task>
+				<task preferredLocation="TaskTracker0" type="map">
+				</task>
+				
+			</job>
+		</JobMaker>
 </config>

@@ -2,27 +2,26 @@ package mapreducesim.scheduling.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import mapreducesim.core.ConfigurableClass;
 import mapreducesim.execution.TaskRunnerProcess;
-import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
-import mapreducesim.scheduling.FileSplitter;
+import mapreducesim.scheduling.JobSubmission;
 import mapreducesim.scheduling.MapReduceJobSpecification;
 import mapreducesim.scheduling.NotifyNoMoreTasks;
-import mapreducesim.scheduling.TaskCacheEntry;
-import mapreducesim.scheduling.JobSubmission;
 import mapreducesim.scheduling.SchedulerProcess;
-import mapreducesim.scheduling.TaskPool;
+import mapreducesim.scheduling.TaskCacheEntry;
 import mapreducesim.scheduling.TaskCacheEntry.StatusType;
 import mapreducesim.scheduling.TaskCacheEntry.Type;
-import mapreducesim.storage.FileBlockLocation;
+import mapreducesim.scheduling.TaskPool;
 import mapreducesim.storage.Node;
 import mapreducesim.storage.Rack;
 import mapreducesim.storage.StorageProcess;
 
-import org.simgrid.msg.*;
+import org.simgrid.msg.Host;
+import org.simgrid.msg.HostFailureException;
+import org.simgrid.msg.Msg;
+import org.simgrid.msg.TimeoutException;
+import org.simgrid.msg.TransferFailureException;
 
 /**
  * Task.
@@ -130,10 +129,9 @@ public class FIFOScheduler extends SchedulerProcess {
 					assignedAny = true;
 
 				} catch (TransferFailureException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (HostFailureException e) {
-					// TODO Auto-generated catch block
+
 					e.printStackTrace();
 				} catch (TimeoutException e) {
 					e.printStackTrace();
@@ -166,13 +164,10 @@ public class FIFOScheduler extends SchedulerProcess {
 					assignedAny = true;
 
 				} catch (TransferFailureException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (HostFailureException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (TimeoutException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -186,13 +181,10 @@ public class FIFOScheduler extends SchedulerProcess {
 					assignedAny = true;
 					notify.send(process.MAILBOX);
 				} catch (TransferFailureException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (HostFailureException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (TimeoutException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

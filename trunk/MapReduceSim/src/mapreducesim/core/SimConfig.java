@@ -78,7 +78,7 @@ public class SimConfig {
 			toReturn = Double.parseDouble(attrStr);
 		} catch (Exception e) {
 			Msg.info("Invalid or not value for attribute " + attribute + " for element " + element.getQName()
-					+ "; using default" + defaultVal);
+					+ "; using default " + defaultVal);
 
 		}
 		return toReturn;
@@ -102,7 +102,7 @@ public class SimConfig {
 			toReturn = Integer.parseInt(attrStr);
 		} catch (Exception e) {
 			Msg.info("Invalid or not value for attribute " + attribute + " for element " + element.getQName()
-					+ "; using default" + defaultVal);
+					+ "; using default " + defaultVal);
 
 		}
 		return toReturn;

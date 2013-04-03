@@ -108,7 +108,7 @@ public class File extends Node {
 	 * @param top
 	 *            the topology
 	 */
-	public void placeSplits(DataTree<Node> top) {
+	public void placeSplits(DataTree top) {
 		Random random = new Random();
 
 		// get the number of racks

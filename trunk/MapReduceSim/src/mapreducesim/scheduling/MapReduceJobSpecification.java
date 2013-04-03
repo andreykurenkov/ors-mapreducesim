@@ -1,16 +1,15 @@
 package mapreducesim.scheduling;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-
-import org.simgrid.msg.Msg;
 
 import mapreducesim.core.ConfigurableClass;
 import mapreducesim.core.SimConfig;
 import mapreducesim.scheduling.TaskCacheEntry.Type;
 import mapreducesim.util.xml.XMLElement;
 import mapreducesim.util.xml.XMLNode;
+
+import org.simgrid.msg.Msg;
 
 /**
  * How an input job is specified in our framework. Can be constructed from the
@@ -103,10 +102,10 @@ public class MapReduceJobSpecification {
 					+ "' not found in xml.  Double-check your spelling");
 
 		} catch (Exception e) {
-			throw new RuntimeException(
-					"Error parsing xml for input jobs.  Double-check your syntax",
-					e);
+			Msg.debug("Error parsing xml for input jobs.  Double-check your syntax");
+			e.printStackTrace();
 		}
+		return null;
 
 	}
 
