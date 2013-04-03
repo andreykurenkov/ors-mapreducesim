@@ -3,6 +3,7 @@ package mapreducesim.execution.test;
 import java.util.ArrayList;
 
 import mapreducesim.core.SimProcess;
+import mapreducesim.scheduling.NotifyNoMoreTasks;
 import mapreducesim.storage.FileBlock;
 import mapreducesim.storage.FileTransferTask;
 import mapreducesim.storage.FileTransferTask.ReadRequestTask;
@@ -32,14 +33,13 @@ public class TestStorage extends SimProcess {
 		while (!finished) {
 			// get the next task from the storage interface mailbox
 			try {
-				Task currentTask = Task.receive(MAILBOX, 150);
+				Task currentTask = Task.receive(MAILBOX);
 				// handle task appropriately
 
 				if (currentTask instanceof WriteRequestTask) { // write task
 					// update the actual filesystem, etc.
 					Msg.info("Writing file '"
-							+ ((WriteRequestTask) currentTask).getFileBlock()
-							+ "' at " + this.getTimeElapsed());
+ + ((WriteRequestTask) currentTask).getFileBlock());
 					// currentTask.execute();
 					// simulate the expense
 				}
@@ -55,6 +55,9 @@ public class TestStorage extends SimProcess {
 					fakeRead.add(new FileBlock(null, 50, new KeyValuePairs(keyValueNum, keyValueSize)));
 					(new FileTransferTask(fakeRead)).send(loc);
 				}
+				if (currentTask instanceof NotifyNoMoreTasks)
+					this.finish();
+
 			} catch (TimeoutException e) {
 				this.finish();
 			}

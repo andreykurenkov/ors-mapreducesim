@@ -2,8 +2,6 @@ package mapreducesim.scheduling.test;
 
 import java.io.IOException;
 
-import org.simgrid.msg.NativeException;
-
 import mapreducesim.core.ConfigurableClass;
 import mapreducesim.core.SimMain;
 import mapreducesim.scheduling.JobMaker;
@@ -12,6 +10,8 @@ import mapreducesim.util.SmartFile;
 import mapreducesim.util.xml.XMLDocument;
 import mapreducesim.util.xml.XMLElement;
 import mapreducesim.util.xml.XMLNode;
+
+import org.simgrid.msg.NativeException;
 
 public class LocalityTestJobMaker extends JobMaker {
 
@@ -29,7 +29,6 @@ public class LocalityTestJobMaker extends JobMaker {
 
 	public LocalityTestJobMaker(XMLElement input) {
 		super(input);
-		// TODO Auto-generated constructor stub
 	}
 
 	public static void main(String[] args) {

@@ -1,6 +1,7 @@
 package mapreducesim.util.graphing;
-
 import org.sf.surfaceplot.ISurfacePlotModel;
+
+
 
 /**
  * @author Andrey Kurenkov
@@ -51,7 +52,17 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 	 */
 	@Override
 	public float calculateZ(float x, float y) {
-		return (float) values[(int) ((x - offsets[X_INDEX]) / divisions[X_INDEX])][(int) ((y - offsets[Y_INDEX]) / divisions[Y_INDEX])];
+		int xInd = (int) ((x - offsets[X_INDEX]) / divisions[X_INDEX]);
+		int yInd = (int) ((y - offsets[Y_INDEX]) / divisions[Y_INDEX]);
+		System.out.println(x + " " + y + " " + xInd + " " + yInd + " " + values[xInd][yInd]);
+		try {
+
+			return (float) values[xInd][yInd];
+		} catch (Exception e) {
+			System.out.println("Attempted to index at "
+					+ ((int) ((x - offsets[X_INDEX])) + " " + (int) ((y - offsets[Y_INDEX]) / divisions[Y_INDEX])));
+			return mins[2];
+		}
 	}
 
 	/*
@@ -61,7 +72,7 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 	 */
 	@Override
 	public int getCalcDivisions() {
-		return (int) divisions[0];
+		return 25;
 	}
 
 	/*
@@ -71,7 +82,7 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 	 */
 	@Override
 	public int getDispDivisions() {
-		return (int) divisions[0];
+		return 25;
 	}
 
 	/*
@@ -81,7 +92,6 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 	 */
 	@Override
 	public int getPlotMode() {
-		// TODO Auto-generated method stub
 		return ISurfacePlotModel.PLOT_MODE_SPECTRUM;
 	}
 
@@ -97,7 +107,7 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 
 	@Override
 	public float getXMax() {
-		return maxes[X_INDEX];
+		return maxes[X_INDEX] - (float) divisions[X_INDEX];
 	}
 
 	@Override
@@ -112,7 +122,7 @@ public class ArraysSurfaceModel implements ISurfacePlotModel {
 
 	@Override
 	public float getYMax() {
-		return maxes[Y_INDEX];
+		return maxes[Y_INDEX] - (float) divisions[Y_INDEX];
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import mapreducesim.storage.KeyValuePairs;
 import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
+import org.simgrid.msg.Msg;
 
 /**
  * Default implementation of WorkTaskTimer that simply divides the totalsize of data by the speed of the host and multiplies
@@ -15,7 +16,7 @@ import org.simgrid.msg.Host;
  * @author Andrey
  */
 public class SimpleWorkTaskTimer extends WorkTaskTimer {
-	private double mapWork, reduceWork;
+	private double mapWork, reduceWork, constant;
 
 	/**
 	 * Creates a simple timer without XML input that sets default values for coefficients.
@@ -23,6 +24,7 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 	public SimpleWorkTaskTimer() {
 		super(null);
 		mapWork = reduceWork = 5;
+		constant = -1;
 	}
 
 	/**
@@ -32,12 +34,17 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 	 */
 	public SimpleWorkTaskTimer(XMLElement input) {
 		super(input);
+		constant = SimConfig.parseDoubleAttribute(input, "Constant", -1);
 		mapWork = SimConfig.parseDoubleAttribute(input, "MapCoefficient", 5);
 		reduceWork = SimConfig.parseDoubleAttribute(input, "ReduceCoefficient", 5);
+		if(constant!=-1)
+			Msg.info("Using constant timer length " + constant);
 	}
 
 	@Override
 	public double estimateComputeDuration(Host onHost, WorkTask task) {
+		if (constant != -1)
+			return constant;
 		return task.WORK_AMOUNT / onHost.getSpeed();
 	}
 
@@ -49,7 +56,8 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 	 */
 	@Override
 	public double estimateComputeDuration(Host onHost, WorkTask task, KeyValuePairs pairs) {
-		System.out.println(pairs.getTotalSize());
+		if (constant != -1)
+			return constant;
 		if (task.TYPE == WorkTask.Type.MAP)
 			return mapWork * pairs.getTotalSize() * 8 / onHost.getSpeed();
 		else

@@ -1,20 +1,34 @@
-<?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">	<platform version="3">
+<?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">	
+<platform version="3">
 		<AS id="main" routing="Full">
-			<host id="JobTracker" state="ON" power="1">
-			</host>
-			<host id="JobSubmitter" state="ON" power="1">
-			</host>
-			<host id="Storage" state="ON" power="1">
-			</host>
-			<host id="TaskTracker0" state="ON" power="1">
-			</host>
-			<link id="link0" latency="0.1" bandwidth="100000">
-			</link>
+			<host id="JobTracker" state="ON" power="1"></host>
+			<host id="JobSubmitter" state="ON" power="1"></host>
+			<host id="Storage" state="ON" power="1"></host>
+			<link id="link0" latency="0.1" bandwidth="100000"></link>
+			<host id="TaskTracker0" state="ON" power="100"></host>
+			<host id="TaskTracker1" state="ON" power="100"></host>
+			<host id="TaskTracker2" state="ON" power="100"></host>
 			<route src="TaskTracker0" dst="JobTracker">
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>
 			<route src="TaskTracker0" dst="Storage">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+<route src="TaskTracker1" dst="JobTracker">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+			<route src="TaskTracker1" dst="Storage">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+<route src="TaskTracker2" dst="JobTracker">
+				<link_ctn id="link0">
+				</link_ctn>
+			</route>
+			<route src="TaskTracker2" dst="Storage">
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>

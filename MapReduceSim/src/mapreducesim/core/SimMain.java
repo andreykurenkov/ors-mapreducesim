@@ -2,9 +2,6 @@ package mapreducesim.core;
 
 import mapreducesim.util.SmartFile;
 import mapreducesim.util.xml.XMLDocument;
-import mapreducesim.util.xml.XMLElement;
-import mapreducesim.util.xml.XMLNode;
-import mapreducesim.util.xml.XMLParser;
 
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.NativeException;
@@ -29,6 +26,7 @@ public class SimMain {
 	// the configuration of the current Simulation, to be used in static
 	// intialization blocks for init and during the
 	// simulation
+	public static final boolean DEBUG = false;
 	private static XMLDocument config;
 	private static XMLDocument platform;
 

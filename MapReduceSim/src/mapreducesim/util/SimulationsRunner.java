@@ -1,7 +1,6 @@
 package mapreducesim.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -90,7 +89,7 @@ public class SimulationsRunner {
 	public double runSimulation(File platform, File deployment, XMLDocument configuration, File logOut, String... csvValues) {
 		try {
 			SmartFile tempFile = new SmartFile("tempConfiguration.xml");
-			tempFile.createNewFile();// TODO: use boolean?
+			tempFile.createNewFile();
 			String content = configuration.toRawXML(XMLNode.PRETTYFORMAT);
 			tempFile.write(content, false);
 
@@ -149,16 +148,15 @@ public class SimulationsRunner {
 	public double runSimulation(XMLDocument platform, XMLDocument deployment, XMLDocument configuration, File logOut,
 			String... csvValues) {
 		try {
-			String prepend = "<?xml version='1.0'?>\n"
-					+ "<!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid.dtd\">";
+			String prepend = "<?xml version='1.0'?> <!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid.dtd\">\n";
 			SmartFile tempPlat = new SmartFile("tempPlatform.xml");
 			tempPlat.createNewFile();
-			String content = prepend + configuration.toRawXML(XMLNode.PRETTYFORMAT);
+			String content = prepend + platform.toRawXML(XMLNode.PRETTYFORMAT);
 			tempPlat.write(content, false);
 
 			SmartFile tempDeploy = new SmartFile("tempDeployment.xml");
 			tempDeploy.createNewFile();
-			content = prepend + configuration.toRawXML(XMLNode.PRETTYFORMAT);
+			content = prepend + deployment.toRawXML(XMLNode.PRETTYFORMAT);
 			tempDeploy.write(content, false);
 
 			return runSimulation(tempPlat, tempDeploy, configuration, logOut, csvValues);
@@ -227,18 +225,19 @@ public class SimulationsRunner {
 			ProcessBuilder builder = new ProcessBuilder("java", "-cp", ".:./java/simgrid.jar", "mapreducesim/core/SimMain",
 					simArgs[0], simArgs[1], simArgs[2]);
 			builder.directory(new File("./bin"));
-
 			File tempFile = new File("temp.txt");
 			if (logOut == null)
 				logOut = tempFile;
+			builder.redirectError(logOut);
+			builder.redirectOutput(logOut);
 
 			Process process = builder.start();
-			if (logOut != null) {
 
+			// if (logOut != null) {
 				// java 6 modifications by troy
-				copy(process.getInputStream(), new FileOutputStream(logOut));
-				copy(process.getErrorStream(), new FileOutputStream(logOut));
-			}
+			// copy(process.getInputStream(), new FileOutputStream(logOut));
+			// copy(process.getErrorStream(), new FileOutputStream(logOut));
+			// }
 
 			boolean done = false;
 			// TODO: consider launching many Processes in parallel and then
@@ -246,7 +245,6 @@ public class SimulationsRunner {
 			double runtime = -1;
 			String lastLine = null;
 			Scanner scan = new Scanner(logOut);
-
 			while (!done) {
 				try {
 					process.exitValue();
@@ -381,7 +379,7 @@ public class SimulationsRunner {
 		String[] toReturn = new String[(int) Math.round(Math.abs((end - start) / add)) + addToLength];
 		int counter = 0;
 		for (double val = start; val >= start && val <= end; val += add) {
-			toReturn[counter++] = String.valueOf((int) val);
+			toReturn[counter++] = "" + ((int) val);
 		}
 		return toReturn;
 	}

@@ -49,6 +49,10 @@ public class XMLElement extends XMLNode {
 		children.add(child);
 	}
 
+	public void addChild(XMLNode child, int location) {
+		children.add(location, child);
+	}
+
 	public String getQName() {
 		return qname;
 	}

@@ -1,0 +1,57 @@
+<?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
+	<platform version="3">
+		<process host="JobSubmitter" function="mapreducesim.scheduling.test.JobSubmitterProcess">
+			<argument value="job0">
+			</argument>
+		</process>
+		<process host="Storage" function="mapreducesim.execution.test.TestStorage">
+		</process>
+		<process host="JobTracker" function="mapreducesim.scheduling.test.FIFOScheduler">
+		</process>
+		<process host="TaskTracker0" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker1" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker2" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker3" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker4" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker5" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker6" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker7" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker8" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker9" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker10" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker11" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker12" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker13" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker14" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker15" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker16" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker17" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker18" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker19" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker20" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker21" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+		<process host="TaskTracker22" function="mapreducesim.execution.TaskRunnerProcess">
+		</process>
+	</platform>

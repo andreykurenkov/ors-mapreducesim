@@ -112,7 +112,8 @@ public abstract class ConfigurableClass {
 				}
 
 				} else {
-					Msg.info("No " + CLASS_ATTRIBUTE_KEY + " for " + classType.getSimpleName() + " given. Using default of "
+					Msg.info("No " + CLASS_ATTRIBUTE_KEY + " for " + classType.getSimpleName() + " given. In "
+							+ element.toRawXML() + ". Using default of "
 							+ defaultInstance.getClass().getSimpleName());
 					toReturn = defaultInstance;
 				}
@@ -152,7 +153,7 @@ public abstract class ConfigurableClass {
 			if (element != null) {
 				return instantiateFromXMLElement(classType, defaultInstance, element);
 			} else {
-				Msg.info("No config for " + classType.getSimpleName() + " found. Using default of "
+				Msg.info("No config for " + nameOfNode + " found. Using default of "
 						+ defaultInstance.getClass().getSimpleName());
 				toReturn = defaultInstance;
 			}

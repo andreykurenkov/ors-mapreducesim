@@ -79,7 +79,7 @@ public class TaskRunnerProcess extends SimProcess {
 
 		}
 
-		timeUntilNextHeartbeat = Math.random() * 50;// A bit of randomness with startup
+		timeUntilNextHeartbeat = Math.random() * 10;// A bit of randomness with startup
 		completed = new HashMap<WorkTask, List<FileBlock>>();
 		while (!finished) {
 			try {
@@ -164,7 +164,7 @@ public class TaskRunnerProcess extends SimProcess {
 		} else if (received instanceof NotifyNoMoreTasks) {
 			// we have received a notification that there are no more tasks to
 			// run
-			this.finish();
+				this.finish();
 		}
 	}
 
