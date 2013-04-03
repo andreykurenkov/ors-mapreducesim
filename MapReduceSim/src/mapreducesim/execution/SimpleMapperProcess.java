@@ -25,7 +25,6 @@ import org.simgrid.msg.TimeoutException;
  * @version 1.0 Mar 13, 2013
  */
 public class SimpleMapperProcess extends WorkerProcess {
-	public final double failureRate = 0.001;// TODO:use
 
 	/**
 	 * Constructor for SimpleMapperProcess that gives values to the instance variables corresponding to the parameters using
@@ -75,7 +74,7 @@ public class SimpleMapperProcess extends WorkerProcess {
 			}
 			for (FileBlock block : ((FileTransferTask) transferTask).getTransferFileBlocks()) {
 				this.elapseTime(TaskRunnerProcess.getTimer().estimateComputeDuration(this.getHost(), task, block.getPairs()));
-				FileBlock out = new FileBlock(outFile, index++, block.getSize() / 2);// TODO: get compression rate?
+				FileBlock out = new FileBlock(outFile, index++, block.getSize() / 2);
 				output.add(out);
 				if (task.JOB.getOriginalReduceTasks().size() == 0) {
 					Msg.info("Sending write request task to storage");

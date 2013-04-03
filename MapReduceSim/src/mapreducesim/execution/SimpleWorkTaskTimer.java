@@ -32,8 +32,8 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 	 */
 	public SimpleWorkTaskTimer(XMLElement input) {
 		super(input);
-		mapWork = SimConfig.parseDoubleAttribute(input, "Map Coefficient", 5);
-		reduceWork = SimConfig.parseDoubleAttribute(input, "Reduce Coefficient", 5);
+		mapWork = SimConfig.parseDoubleAttribute(input, "MapCoefficient", 5);
+		reduceWork = SimConfig.parseDoubleAttribute(input, "ReduceCoefficient", 5);
 	}
 
 	@Override
@@ -49,10 +49,11 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 	 */
 	@Override
 	public double estimateComputeDuration(Host onHost, WorkTask task, KeyValuePairs pairs) {
+		System.out.println(pairs.getTotalSize());
 		if (task.TYPE == WorkTask.Type.MAP)
-			return mapWork * pairs.getTotalSize() / onHost.getSpeed();
+			return mapWork * pairs.getTotalSize() * 8 / onHost.getSpeed();
 		else
-			return reduceWork * pairs.getTotalSize() / onHost.getSpeed();
+			return reduceWork * pairs.getTotalSize() * 8 / onHost.getSpeed();
 
 	}
 

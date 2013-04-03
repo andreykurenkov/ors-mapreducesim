@@ -3,7 +3,7 @@
 			<argument value="job0">
 			</argument>
 		</process>
-		<process host="Storage" function="mapreducesim.execution.test.TestStorage">
+		<process host="Storage" function="mapreducesim.storage.StorageProcess">
 		</process>
 		<process host="JobTracker" function="mapreducesim.scheduling.test.FIFOScheduler">
 		</process>

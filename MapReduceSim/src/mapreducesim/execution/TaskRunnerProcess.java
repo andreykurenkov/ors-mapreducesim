@@ -1,27 +1,20 @@
 package mapreducesim.execution;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import mapreducesim.core.ConfigurableClass;
 import mapreducesim.core.SimConfig;
-import mapreducesim.core.SimMain;
 import mapreducesim.core.SimProcess;
 import mapreducesim.execution.tasks.HeartbeatTask;
 import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.scheduling.NotifyNoMoreTasks;
 import mapreducesim.scheduling.SchedulerProcess;
 import mapreducesim.storage.FileBlock;
-import mapreducesim.util.ExceptionUtil;
-import mapreducesim.util.ReflectionUtil;
 import mapreducesim.util.SafeParsing;
-import mapreducesim.util.xml.XMLDocument;
-import mapreducesim.util.xml.XMLElement;
 
 import org.simgrid.msg.Host;
-import org.simgrid.msg.HostFailureException;
 import org.simgrid.msg.HostNotFoundException;
 import org.simgrid.msg.Msg;
 import org.simgrid.msg.MsgException;
@@ -91,7 +84,7 @@ public class TaskRunnerProcess extends SimProcess {
 		while (!finished) {
 			try {
 				if (timeUntilNextHeartbeat <= 0) {
-					Msg.info("Sending heatbeat to " + SchedulerProcess.SCHEDULER_MAILBOX);
+					Msg.info("Sending heartbeat to " + SchedulerProcess.SCHEDULER_MAILBOX);
 					(new HeartbeatTask(this, completed)).send(SchedulerProcess.SCHEDULER_MAILBOX);
 
 					completed = new HashMap<WorkTask, List<FileBlock>>();// reset completed list

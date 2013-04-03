@@ -1,9 +1,9 @@
 <?xml version='1.0'?>
  <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
  <platform version="3">
- 	<AS id="main" routing="Full">
+ 	<AS id="main" routing="Full">	
+	<host id="Storage" power="10000" state="ON" />
  	<host id="JobTracker" power="10000" state="ON" />
- 	<host id="JobSubmitter" power="1" state="ON" />
  	<host id="TaskTracker1" power="1" state="ON" />
  	<host id="TaskTracker2" power="1" state="ON" />
  	<host id="TaskTracker3" power="1" state="ON" />
@@ -18,6 +18,15 @@
  		<link_ctn id="link1"/>
  	</route>
  	<route src="TaskTracker3" dst="JobTracker">
+ 		<link_ctn id="link1"/>
+ 	</route>
+	<route src="TaskTracker1" dst="Storage">
+ 		<link_ctn id="link1"/>
+ 	</route>
+ 	<route src="TaskTracker2" dst="Storage">
+ 		<link_ctn id="link1"/>
+ 	</route>
+ 	<route src="TaskTracker3" dst="Storage">
  		<link_ctn id="link1"/>
  	</route>
  	</AS>

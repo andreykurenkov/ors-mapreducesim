@@ -1,5 +1,6 @@
 package mapreducesim.storage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.simgrid.msg.Msg;
@@ -25,6 +26,7 @@ public class DataNode extends Node {
 	public DataNode(Rack parent, String name) {
 		super(parent, name);
 		setSpeed(5);
+		blocks = new ArrayList<FileBlock>();
 	}
 
 	public List<FileBlock> getBlocks() {

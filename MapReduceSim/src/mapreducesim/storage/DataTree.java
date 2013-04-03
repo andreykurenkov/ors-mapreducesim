@@ -3,15 +3,13 @@ package mapreducesim.storage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.simgrid.msg.Msg;
-
 /**
  * 
  * Holds the root element for a data tree. Makes it easier to maintain the
  * seperation between the fs tree and topology tree.
  * 
  */
-public class DataTree<T> {
+public class DataTree {
 
 	private Node rootElement;
 
@@ -55,6 +53,14 @@ public class DataTree<T> {
 		List<Node> linearizedTree = new ArrayList<Node>();
 		recursiveLinearize(getRoot(), linearizedTree);
 		return linearizedTree;
+	}
+
+	public List<DataNode> getDataNodes() {
+		ArrayList<DataNode> nodes = new ArrayList<DataNode>();
+		for (Node N : linearize())
+			if (N instanceof DataNode)
+				nodes.add((DataNode) N);
+		return nodes;
 	}
 
 	public String toString() {
