@@ -1,7 +1,7 @@
 <?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">	
 <config>
 
-	<WorkTaskTimer 	classname="mapreducesim.execution.SimpleWorkTaskTimer" MapCoefficient="10"> </WorkTaskTimer>
+	<WorkTaskTimer classname="mapreducesim.execution.SimpleWorkTaskTimer" MapCoefficient="10"> </WorkTaskTimer>
 	<heartbeat>50</heartbeat>
     <tasklength>25</tasklength>
 	
@@ -14,11 +14,19 @@
 			<job taskSpecification="full" name="job0">
 				<task preferredLocation="TaskTracker0" type="map">
 				</task>
-				<task preferredLocation="TaskTracker0" type="map">
+				<task preferredLocation="TaskTracker1" type="map">
+				</task>
+				<task preferredLocation="TaskTracker2" type="map">
+				</task>
+				<task preferredLocation="TaskTracker1" type="map">
 				</task>
 				<task preferredLocation="TaskTracker0" type="map">
 				</task>
-				<task preferredLocation="TaskTracker0" type="map">
+				<task preferredLocation="TaskTracker1" type="map">
+				</task>
+				<task preferredLocation="TaskTracker2" type="map">
+				</task>
+				<task preferredLocation="TaskTracker1" type="map">
 				</task>
 				
 			</job>

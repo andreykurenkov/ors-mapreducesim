@@ -50,11 +50,8 @@ public abstract class SchedulerProcess extends SimProcess {
 
 		while (true) {
 			onTaskReceived(taskReceived);
-			// continue receiving tasks, or exit if no more tasks received
-			// within 0.5s
 			try {
-				taskReceived = Task
-						.receive(this.MAILBOX, heartbeatInterval * 2);
+				taskReceived = Task.receive(this.MAILBOX, heartbeatInterval + 10);
 			} catch (TimeoutException te) {
 				NotifyNoMoreTasks notify = new NotifyNoMoreTasks();
 				notify.send(StorageProcess.DEFAULT_STORAGE_MAILBOX);

@@ -3,10 +3,9 @@
 			<argument value="job0">
 			</argument>
 		</process>
-		<process host="Storage" function="mapreducesim.storage.StorageProcess">
-		</process>
-		<process host="JobTracker" function="mapreducesim.scheduling.test.FIFOScheduler">
-		</process>
-		<process host="TaskTracker0" function="mapreducesim.execution.TaskRunnerProcess">
-		</process>
+		<process host="Storage" function="mapreducesim.execution.test.TestStorage"></process>
+		<process host="JobTracker" function="mapreducesim.scheduling.test.FIFOScheduler"></process>
+		<process host="TaskTracker0" function="mapreducesim.execution.TaskRunnerProcess"></process>
+		<process host="TaskTracker1" function="mapreducesim.execution.TaskRunnerProcess"></process>
+		<process host="TaskTracker2" function="mapreducesim.execution.TaskRunnerProcess"></process>
 	</platform>

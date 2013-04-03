@@ -3,6 +3,7 @@ package mapreducesim.scheduling.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import mapreducesim.core.SimMain;
 import mapreducesim.execution.TaskRunnerProcess;
 import mapreducesim.execution.tasks.WorkTask;
 import mapreducesim.scheduling.JobSubmission;
@@ -69,7 +70,8 @@ public class FIFOScheduler extends SchedulerProcess {
 		Msg.info("FIFOScheduler received heartbeat from: "
 				+ process.getHost().getName());
 		// debug the current state of the task pool
-		dumpTaskPool();
+		if (SimMain.DEBUG)
+			dumpTaskPool();
 		int availMapSlots = process.getNumMapSlots()
 				- process.getNumMapRunning();
 		int availReduceSlots = process.getNumReduceSlots()
