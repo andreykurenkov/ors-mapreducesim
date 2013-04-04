@@ -1,8 +1,8 @@
 <?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">	
 <config>
 
-	<WorkTaskTimer classname="mapreducesim.execution.SimpleWorkTaskTimer" MapCoefficient="10"> </WorkTaskTimer>
-	<heartbeat>50</heartbeat>
+	<WorkTaskTimer classname="mapreducesim.execution.SimpleWorkTaskTimer" MapCoefficient="500"> </WorkTaskTimer>
+	<heartbeat>15</heartbeat>
     <tasklength>25</tasklength>
 	
 	<TaskTrackerDefaultMapSlots>2</TaskTrackerDefaultMapSlots>
@@ -11,32 +11,7 @@
 		<FileSplitter classname="mapreducesim.scheduling.SimpleFileSplitter" type="random">
 		</FileSplitter>
 		<JobMaker classname="mapreducesim.scheduling.SimpleJobMaker">
-			<job taskSpecification="full" name="job0">
-				<task preferredLocation="TaskTracker0" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker2" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker0" type="map"></task>
-				<task preferredLocation="TaskTracker0" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker2" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker0" type="map"></task>
-				<task preferredLocation="TaskTracker0" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker2" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker0" type="map"></task>
-				<task preferredLocation="TaskTracker0" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker2" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker0" type="map"></task>
-				<task preferredLocation="TaskTracker0" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker2" type="map"></task>
-				<task preferredLocation="TaskTracker1" type="map"></task>
-				<task preferredLocation="TaskTracker0" type="map"></task>				
+			<job taskSpecification="random" name="job0" numTask="200" numRunners="4">	
 			</job>
 		</JobMaker>
 </config>

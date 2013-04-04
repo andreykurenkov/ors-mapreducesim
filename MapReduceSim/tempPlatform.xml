@@ -1,45 +1,35 @@
 <?xml version='1.0'?> <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
 	<platform version="3">
 		<AS id="main" routing="Full">
-			<host id="TaskTracker22" state="ON" power="975">
+			<host id="TaskTracker17" state="ON" power="800">
 			</host>
-			<host id="TaskTracker21" state="ON" power="975">
+			<host id="TaskTracker16" state="ON" power="800">
 			</host>
-			<host id="TaskTracker20" state="ON" power="975">
+			<host id="TaskTracker15" state="ON" power="800">
 			</host>
-			<host id="TaskTracker19" state="ON" power="975">
+			<host id="TaskTracker14" state="ON" power="800">
 			</host>
-			<host id="TaskTracker18" state="ON" power="975">
+			<host id="TaskTracker13" state="ON" power="800">
 			</host>
-			<host id="TaskTracker17" state="ON" power="975">
+			<host id="TaskTracker12" state="ON" power="800">
 			</host>
-			<host id="TaskTracker16" state="ON" power="975">
+			<host id="TaskTracker11" state="ON" power="800">
 			</host>
-			<host id="TaskTracker15" state="ON" power="975">
+			<host id="TaskTracker10" state="ON" power="800">
 			</host>
-			<host id="TaskTracker14" state="ON" power="975">
+			<host id="TaskTracker9" state="ON" power="800">
 			</host>
-			<host id="TaskTracker13" state="ON" power="975">
+			<host id="TaskTracker8" state="ON" power="800">
 			</host>
-			<host id="TaskTracker12" state="ON" power="975">
+			<host id="TaskTracker7" state="ON" power="800">
 			</host>
-			<host id="TaskTracker11" state="ON" power="975">
+			<host id="TaskTracker6" state="ON" power="800">
 			</host>
-			<host id="TaskTracker10" state="ON" power="975">
+			<host id="TaskTracker5" state="ON" power="800">
 			</host>
-			<host id="TaskTracker9" state="ON" power="975">
+			<host id="TaskTracker4" state="ON" power="800">
 			</host>
-			<host id="TaskTracker8" state="ON" power="975">
-			</host>
-			<host id="TaskTracker7" state="ON" power="975">
-			</host>
-			<host id="TaskTracker6" state="ON" power="975">
-			</host>
-			<host id="TaskTracker5" state="ON" power="975">
-			</host>
-			<host id="TaskTracker4" state="ON" power="975">
-			</host>
-			<host id="TaskTracker3" state="ON" power="975">
+			<host id="TaskTracker3" state="ON" power="800">
 			</host>
 			<host id="JobTracker" state="ON" power="1">
 			</host>
@@ -204,46 +194,6 @@
 				</link_ctn>
 			</route>
 			<route src="TaskTracker17" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker18" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker18" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker19" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker19" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker20" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker20" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker21" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker21" dst="Storage">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker22" dst="JobTracker">
-				<link_ctn id="link0">
-				</link_ctn>
-			</route>
-			<route src="TaskTracker22" dst="Storage">
 				<link_ctn id="link0">
 				</link_ctn>
 			</route>

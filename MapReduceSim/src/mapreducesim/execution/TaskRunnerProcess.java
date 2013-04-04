@@ -164,6 +164,7 @@ public class TaskRunnerProcess extends SimProcess {
 		} else if (received instanceof NotifyNoMoreTasks) {
 			// we have received a notification that there are no more tasks to
 			// run
+			if (numMapRunning == 0 && numReduceRunning == 0)
 				this.finish();
 		}
 	}

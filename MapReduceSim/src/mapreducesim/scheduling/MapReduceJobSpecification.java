@@ -75,7 +75,7 @@ public class MapReduceJobSpecification {
 	public static MapReduceJobSpecification constructFromXML(
 			XMLElement jobListElement, String jobName) {
 
-		if (SimConfig.CONFIG == null) {
+		if (jobListElement == null) {
 			throw new RuntimeException(
 					"Cannot construct job from xml because no config was specified");
 		}
@@ -125,7 +125,6 @@ public class MapReduceJobSpecification {
 				XMLElement taskNode = taskNodes.get(i);
 				TaskCacheEntry tce = TaskCacheEntry.constructFromXML(taskNode);
 				if (tce.type == Type.MAP) {
-
 					maps.add(tce);
 				} else if (tce.type == Type.REDUCE) {
 					reduces.add(tce);
@@ -161,9 +160,40 @@ public class MapReduceJobSpecification {
 
 			return returnVal;
 
-		} else {
+		} else if (taskSpec.equalsIgnoreCase("random")) {
+			int numTask = SimConfig.parseIntAttribute(jobXML, "numTask", 100);
+			int numRunners = SimConfig.parseIntAttribute(jobXML, "numRunners", 20);
+			int numPreferred = SimConfig.parseIntAttribute(jobXML, "numPreferred", 1);
+			String baseName = jobXML.getAttributeValue("taskBaseName");
+
+			if (baseName == null)
+				baseName = "TaskTracker";
+			for (int i = 0; i < numTask; i++) {
+				ArrayList<String> preferred = new ArrayList<String>();
+				for (int p = 0; p < numPreferred; p++)
+					preferred.add(baseName + ((int) (Math.random() * numRunners)));
+				TaskCacheEntry tce = new TaskCacheEntry(preferred, Type.MAP);
+				maps.add(tce);
+			}
+
+			MapReduceJobSpecification returnVal = new MapReduceJobSpecification(jobName, maps, reduces);
+
+			FileSplitter fs = ConfigurableClass.instantiateFromSimConfig(FileSplitter.class);
+			List<InputSplit> iSplits = fs.getInputSlits(returnVal);
+			Msg.info("input splits for job " + jobName + ":" + iSplits);
+
+			if (returnVal.getOriginalMapTasks().size() != iSplits.size()) {
+				throw new RuntimeException("Number of input splits obtained from FileSplitter (" + iSplits.size()
+						+ ") didn't match number of map tasks (" + returnVal.getOriginalMapTasks().size() + ")");
+			}
+			for (int i = 0; i < returnVal.getOriginalMapTasks().size(); i++) {
+				TaskCacheEntry tce = returnVal.getOriginalMapTasks().get(i);
+				tce.taskData = iSplits.get(i);
+			}
+			return returnVal;
+		}else{
 			throw new RuntimeException(
-					"Task specifications other than 'full' not supported at this time");
+					"Task specifications other than 'full' and 'random' not supported at this time");
 		}
 
 	}

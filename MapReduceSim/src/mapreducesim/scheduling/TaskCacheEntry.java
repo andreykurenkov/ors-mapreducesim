@@ -1,15 +1,11 @@
 package mapreducesim.scheduling;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.simgrid.msg.Msg;
-
-import mapreducesim.core.ConfigurableClass;
-import mapreducesim.storage.FileBlock;
-import mapreducesim.storage.FileBlockLocation;
 import mapreducesim.util.xml.XMLElement;
+
+import org.simgrid.msg.Msg;
 
 public class TaskCacheEntry {
 
@@ -48,6 +44,10 @@ public class TaskCacheEntry {
 
 	public TaskCacheEntry(Type type, StatusType initialStatus) {
 		this(null, type, initialStatus);
+	}
+
+	public TaskCacheEntry(List<String> preferredLocation, Type type) {
+		this(preferredLocation, type, StatusType.NOTSTARTED);
 	}
 
 	public String toString() {

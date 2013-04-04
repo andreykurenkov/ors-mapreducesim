@@ -37,7 +37,7 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 		constant = SimConfig.parseDoubleAttribute(input, "Constant", -1);
 		mapWork = SimConfig.parseDoubleAttribute(input, "MapCoefficient", 5);
 		reduceWork = SimConfig.parseDoubleAttribute(input, "ReduceCoefficient", 5);
-		if(constant!=-1)
+		if (constant != -1)
 			Msg.info("Using constant timer length " + constant);
 	}
 
@@ -59,9 +59,9 @@ public class SimpleWorkTaskTimer extends WorkTaskTimer {
 		if (constant != -1)
 			return constant;
 		if (task.TYPE == WorkTask.Type.MAP)
-			return mapWork * pairs.getTotalSize() * 8 / onHost.getSpeed();
+			return mapWork * pairs.getTotalSize() / onHost.getSpeed();
 		else
-			return reduceWork * pairs.getTotalSize() * 8 / onHost.getSpeed();
+			return reduceWork * pairs.getTotalSize() / onHost.getSpeed();
 
 	}
 
