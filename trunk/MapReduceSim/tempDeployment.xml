@@ -44,14 +44,4 @@
 		</process>
 		<process host="TaskTracker17" function="mapreducesim.execution.TaskRunnerProcess">
 		</process>
-		<process host="TaskTracker18" function="mapreducesim.execution.TaskRunnerProcess">
-		</process>
-		<process host="TaskTracker19" function="mapreducesim.execution.TaskRunnerProcess">
-		</process>
-		<process host="TaskTracker20" function="mapreducesim.execution.TaskRunnerProcess">
-		</process>
-		<process host="TaskTracker21" function="mapreducesim.execution.TaskRunnerProcess">
-		</process>
-		<process host="TaskTracker22" function="mapreducesim.execution.TaskRunnerProcess">
-		</process>
 	</platform>

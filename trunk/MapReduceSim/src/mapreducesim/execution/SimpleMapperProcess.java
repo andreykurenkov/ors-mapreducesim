@@ -54,7 +54,6 @@ public class SimpleMapperProcess extends WorkerProcess {
 		int index = 0;
 		for (DataLocation dataLocation : task.NEEDED_DATA.getLocations()) {
 			ReadRequestTask read = new ReadRequestTask(dataLocation, this.MAILBOX);
-			Msg.info("Sending thing to " + StorageProcess.DEFAULT_STORAGE_MAILBOX);
 			read.send(StorageProcess.DEFAULT_STORAGE_MAILBOX);
 			Task transferTask = null;
 			try {
