@@ -1,0 +1,1 @@
+This is the eclipse project for a simgrid-based simulation framework of MapReduce.
